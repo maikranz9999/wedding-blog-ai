@@ -2442,14 +2442,17 @@
                 return;
             }
             
-            // Update the content
-            const paragraphElement = currentChatContent.querySelector('p');
-            if (paragraphElement) {
-                paragraphElement.innerHTML = improvedTextContent.replace(/\n/g, '<br>');
-            } else {
-                currentChatContent.innerHTML = `<p>${improvedTextContent.replace(/\n/g, '<br>')}</p>`;
-                addContentActions(currentChatContent);
+            // Remove existing content-actions to avoid duplication
+            const existingActions = currentChatContent.querySelector('.content-actions');
+            if (existingActions) {
+                existingActions.remove();
             }
+            
+            // Replace the entire content with improved text
+            currentChatContent.innerHTML = `<p>${improvedTextContent.replace(/\n/g, '<br>')}</p>`;
+            
+            // Re-add content actions
+            addContentActions(currentChatContent);
             
             // Close popup
             closeChatPopup();
