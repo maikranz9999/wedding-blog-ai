@@ -453,10 +453,10 @@
             margin-top: 0;
         }
 
-        .generate-content-btn {
+        .download-outline-btn {
             width: 100%;
             padding: 14px;
-            background: linear-gradient(135deg, #7209b7, #533483);
+            background: linear-gradient(135deg, #6c757d, #495057);
             color: white;
             border: none;
             border-radius: 8px;
@@ -464,19 +464,20 @@
             font-weight: 600;
             cursor: pointer;
             transition: all 0.2s ease;
-            box-shadow: 0 4px 12px rgba(114, 9, 183, 0.3);
+            box-shadow: 0 4px 12px rgba(108, 117, 125, 0.3);
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 8px;
         }
 
-        .generate-content-btn:hover {
+        .download-outline-btn:hover {
             transform: translateY(-1px);
-            box-shadow: 0 6px 16px rgba(114, 9, 183, 0.4);
+            box-shadow: 0 6px 16px rgba(108, 117, 125, 0.4);
+            background: linear-gradient(135deg, #8a929b, #6c757d);
         }
 
-        .generate-content-btn:disabled {
+        .download-outline-btn:disabled {
             opacity: 0.5;
             cursor: not-allowed;
             transform: none;
@@ -1638,7 +1639,7 @@ Antworte NUR mit dem optimierten Titel, ohne Anführungszeichen oder Erklärunge
             isGenerating = true;
 
             const generateBtn = document.getElementById('generateOutlineBtn');
-            const generateContentBtn = document.getElementById('generateContentBtn');
+            const downloadBtn = document.getElementById('downloadOutlineBtn');
             if (generateBtn) {
                 generateBtn.disabled = true;
                 generateBtn.innerHTML = '⏳ Generiere Gliederung...';
@@ -1674,14 +1675,14 @@ WICHTIG: Überprüfe vor der Antwort, dass wirklich ALLE Keywords in den Übersc
                 
                 if (outlineContent) outlineContent.innerHTML = outline;
                 if (outlineContainer) outlineContainer.classList.add('visible');
-                if (generateContentBtn) generateContentBtn.style.display = 'block';
+                if (downloadBtn) downloadBtn.style.display = 'block';
                 
                 setTimeout(() => {
                     addHeadingActions();
                 }, 100);
                 
                 hideTyping();
-                showPreviewMessage('✅ <strong>Gliederung erfolgreich erstellt!</strong><br><br>📋 Die H2 und H3-Struktur wurde automatisch generiert und ist SEO-optimiert.<br><br>💡 <em>Klicke auf "Vollständigen Blog generieren" oder hovere über Überschriften für individuelle Bearbeitung!</em>');
+                showPreviewMessage('✅ <strong>Gliederung erfolgreich erstellt!</strong><br><br>📋 Die H2 und H3-Struktur wurde automatisch generiert und ist SEO-optimiert.<br><br>💡 <em>Generiere Texte zu einzelnen Überschriften oder lade die Outline als HTML herunter!</em>');
                 
             } catch (error) {
                 hideTyping();
@@ -1695,62 +1696,142 @@ WICHTIG: Überprüfe vor der Antwort, dass wirklich ALLE Keywords in den Übersc
             }
         }
 
-        async function generateFullBlog() {
+        function downloadOutlineAsHTML() {
             const titleInput = document.getElementById('blogTitle');
-            const wordCountSelect = document.getElementById('wordCount');
-            const toneSelect = document.getElementById('toneStyle');
             const outlineContent = document.getElementById('outlineContent');
-
-            if (!titleInput || !wordCountSelect || !toneSelect || !outlineContent) return;
-
-            const title = titleInput.value.trim();
-            const keywords = getKeywordsString();
-            const wordCount = wordCountSelect.value;
-            const tone = toneSelect.value;
-            const outline = outlineContent.innerHTML;
             
-            if (!title || !outline) {
-                alert('Bitte erstelle zuerst eine Gliederung!');
+            if (!titleInput || !outlineContent) {
+                showPreviewMessage('❌ Keine Gliederung zum Download gefunden!');
                 return;
             }
 
-            if (isGenerating) return;
-            isGenerating = true;
-
-            const generateBtn = document.getElementById('generateContentBtn');
-            if (generateBtn) {
-                generateBtn.disabled = true;
-                generateBtn.innerHTML = '⏳ Generiere vollständigen Blog...';
-            }
-
-            showTyping();
-
-            try {
-                const content = await callAI(`Schreibe einen vollständigen SEO-optimierten Hochzeitsblog basierend auf folgenden Informationen:
-
-Titel: ${title}
-Keywords: ${keywords}
-Wortanzahl: ${wordCount}
-Stil: ${tone}
-Gliederung: ${outline}
-
-Der Blog sollte informativ, hilfreich und für Hochzeitspaare geschrieben sein. Verwende HTML-Formatting mit <h2>, <h3>, <p> Tags. Integriere die Keywords natürlich in den Text.`, 'full-blog-generation');
-                
-                currentBlogPost = content;
-                
-                hideTyping();
-                showBlogPreview(title, content);
-                
-            } catch (error) {
-                hideTyping();
-                showPreviewMessage(`❌ <strong>Fehler bei der Blog-Generierung:</strong> ${error.message}`);
-            } finally {
-                if (generateBtn) {
-                    generateBtn.disabled = false;
-                    generateBtn.innerHTML = '✨ Vollständigen Blog generieren';
+            const title = titleInput.value.trim() || 'Hochzeitsblog';
+            const keywords = getKeywordsString();
+            const wordCount = document.getElementById('wordCount')?.value || '1500';
+            const tone = document.getElementById('toneStyle')?.value || 'freundlich-beratend';
+            
+            // Sammle alle Inhalte aus der Outline
+            let htmlContent = '';
+            
+            // Durchlaufe alle Kinder der Outline
+            const allElements = Array.from(outlineContent.children);
+            
+            allElements.forEach(element => {
+                if (element.tagName === 'H2') {
+                    // Entferne Action-Buttons aus dem Text
+                    const headingText = element.textContent.replace(/✎×✦/g, '').trim();
+                    htmlContent += `<h2>${headingText}</h2>\n`;
+                } else if (element.tagName === 'H3') {
+                    // Entferne Action-Buttons aus dem Text
+                    const headingText = element.textContent.replace(/✎×✦/g, '').trim();
+                    htmlContent += `<h3>${headingText}</h3>\n`;
+                } else if (element.classList.contains('generated-content')) {
+                    // Füge generierten Content hinzu
+                    const paragraph = element.querySelector('p');
+                    if (paragraph) {
+                        htmlContent += `<p>${paragraph.textContent}</p>\n`;
+                    }
                 }
-                isGenerating = false;
-            }
+            });
+
+            // Erstelle vollständiges HTML-Dokument
+            const fullHTML = `<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>${title}</title>
+    <meta name="description" content="Hochzeitsblog: ${title}">
+    <meta name="keywords" content="${keywords}">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            line-height: 1.6;
+            color: #333;
+            background-color: #fff;
+        }
+        h1 {
+            color: #2c3e50;
+            border-bottom: 3px solid #ff6b35;
+            padding-bottom: 10px;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            font-weight: 700;
+        }
+        h2 {
+            color: #ff6b35;
+            border-left: 5px solid #ff6b35;
+            padding-left: 15px;
+            margin-top: 40px;
+            margin-bottom: 20px;
+            font-size: 1.8em;
+            font-weight: 600;
+        }
+        h3 {
+            color: #20c997;
+            border-left: 3px solid #20c997;
+            padding-left: 15px;
+            margin-left: 20px;
+            margin-top: 25px;
+            margin-bottom: 15px;
+            font-size: 1.4em;
+            font-weight: 500;
+        }
+        p {
+            margin-bottom: 20px;
+            text-align: justify;
+            font-size: 1.1em;
+        }
+        .meta-info {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 30px;
+            font-size: 0.9em;
+            color: #6c757d;
+        }
+        .meta-info strong {
+            color: #495057;
+        }
+        @media (max-width: 768px) {
+            body { padding: 20px 15px; }
+            h1 { font-size: 2em; }
+            h2 { font-size: 1.5em; }
+            h3 { font-size: 1.2em; margin-left: 10px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="meta-info">
+        <strong>📊 Blog-Informationen:</strong><br>
+        Keywords: ${keywords || 'Nicht angegeben'}<br>
+        Zielwortanzahl: ${wordCount}<br>
+        Stil: ${tone.replace('-', ' & ')}<br>
+        Erstellt: ${new Date().toLocaleDateString('de-DE')}
+    </div>
+    
+    <h1>${title}</h1>
+    
+    ${htmlContent}
+</body>
+</html>`;
+
+            // Download starten
+            const blob = new Blob([fullHTML], { type: 'text/html;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${title.replace(/[^a-zA-Z0-9äöüÄÖÜß\s]/g, '').replace(/\s+/g, '-')}.html`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            showPreviewMessage('📄 <strong>HTML-Download erfolgreich!</strong><br><br>Die Outline mit allen generierten Texten wurde als HTML-Datei heruntergeladen.');
         }
 
         function addHeadingActions() {
