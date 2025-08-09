@@ -1,4 +1,4 @@
-// api/claude.js - Vercel API Route für Claude Integration
+// api/claude.js - Vercel API Route mit verbesserten Prompts
 
 export default async function handler(req, res) {
     // CORS Headers setzen
@@ -33,19 +33,19 @@ export default async function handler(req, res) {
             });
         }
 
-        // Optimierte Prompts basierend auf Typ
+        // Verbesserte Prompts - präzise und ohne Erklärungen
         const systemPrompts = {
-          'title-optimization': 'Du bist ein SEO-Experte für die Hochzeitsbranche. Optimiere den gegebenen Titel für bessere Suchmaschinenrankings. REGELN: - Hauptkeyword möglichst weit vorne platzieren. - Länge: 50–60 Zeichen (niemals über 60). - Emotional ansprechend und relevant für Hochzeitspaare. - Zahlen und spezifische Begriffe einbauen, wenn sinnvoll. - Clickbait vermeiden, aber Neugier wecken. - Keine Füllwörter oder unnötigen Zeichen. - Verwende, wenn passend, das Format: [Keyword(s)]: [Aufruf]. - Aufruf-Beispiele: Der ultimative Guide für XXXXX / Inspiration & Tipps für eure Hochzeit am Strand! / Das sind die schönsten Spots an der Nord- und Ostsee / Alles was ihr für eure Hochzeit wissen müsst! / Das sind die 6 schönsten Orte für eure Sylt-Hochzeit. Gib NUR den optimierten Titel aus, ohne Erklärungen oder Zusatztexte.',
-
-            'outline-generation': 'Du bist ein Experte für Hochzeitsplanung und Content-Erstellung. Erstelle eine strukturierte HTML-Gliederung mit H2 und H3-Tags für einen informativen Hochzeitsblog.',
+            'title-optimization': 'Du bist ein SEO-Experte für Hochzeitsblogs. Antworte NUR mit dem optimierten Titel, ohne Anführungszeichen, ohne Erklärungen, ohne zusätzlichen Text.',
             
-            'full-blog-generation': 'Du bist ein professioneller Hochzeits-Blogger. Schreibe einen vollständigen, informativen und SEO-optimierten Blogbeitrag in HTML-Format.',
+            'outline-generation': 'Du bist ein Experte für Hochzeitsplanung. Erstelle NUR eine HTML-Gliederung mit <h2> und <h3> Tags. Keine Erklärungen, keine zusätzlichen Texte.',
             
-            'content-generation': 'Du bist ein Hochzeitsexperte. Erstelle einen informativen Textabschnitt für den gegebenen Bereich eines Hochzeitsblogs.',
+            'full-blog-generation': 'Du bist ein Hochzeits-Blogger. Schreibe NUR den Blogbeitrag-Content in HTML mit <p>, <h2>, <h3> Tags. Keine Metakommentare oder Erklärungen.',
             
-            'text-improvement': 'Du bist ein Texteditor für Hochzeitsblogs. Verbessere den gegebenen Text basierend auf den Anweisungen.',
+            'content-generation': 'Du bist ein Hochzeitsexperte. Schreibe NUR einen informativen Textabsatz ohne HTML-Tags. Keine Einleitung, keine Erklärung.',
             
-            'content-regeneration': 'Du bist ein kreativer Hochzeits-Content-Writer. Erstelle eine alternative Version des Textes mit frischen Ideen.',
+            'text-improvement': 'Du bist ein Texteditor für Hochzeitsblogs. Antworte NUR mit dem verbesserten Text, keine Erklärungen oder Kommentare.',
+            
+            'content-regeneration': 'Du bist ein Hochzeits-Content-Writer. Antworte NUR mit dem neuen Text-Inhalt, keine Metakommentare.',
             
             'general': 'Du bist ein hilfreicher Assistent für Hochzeitsplanung und Content-Erstellung.'
         };
@@ -103,7 +103,20 @@ export default async function handler(req, res) {
             });
         }
 
-        const content = data.content[0].text;
+        let content = data.content[0].text;
+
+        // Zusätzliche Bereinigung für bestimmte Typen
+        if (type === 'title-optimization') {
+            // Entferne Anführungszeichen und trimme
+            content = content.replace(/^["']|["']$/g, '').trim();
+            
+            // Falls Claude doch Erklärungen hinzufügt, nimm nur die erste Zeile
+            const lines = content.split('\n');
+            content = lines[0].trim();
+            
+            // Entferne "Titel:" oder ähnliche Präfixe
+            content = content.replace(/^(Titel|Optimiert|Neu|Verbesserter Titel):\s*/i, '');
+        }
 
         // Erfolgreiche Antwort
         res.status(200).json({ 
