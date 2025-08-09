@@ -41,8 +41,8 @@ export default async function handler(req, res) {
 
             'full-blog-generation': 'Du bist ein Hochzeits-Blogger. Schreibe NUR den Blogbeitrag-Content in HTML mit <p>, <h2>, <h3> Tags. Keine Metakommentare oder Erklärungen.',
             
-            'content-generation': 'Du bist ein Hochzeitsexperte. Schreibe NUR einen informativen Textabsatz ohne HTML-Tags. Keine Einleitung, keine Erklärung.',
-            
+            'content-generation': 'Du bist ein SEO-optimierter Hochzeitsexperte und Content-Writer. Schreibe einen informativen, natürlich formulierten Textabsatz für einen Hochzeitsblog. WICHTIGE KONTEXTINFORMATIONEN werden dir im Prompt mitgegeben. REGELN: - Integriere die angegebenen Keywords natürlich in den Text, platziere das Hauptkeyword möglichst im ersten Satz - Nutze passende Synonyme und verwandte Begriffe - Schreibe im angegebenen Tonfall - Orientiere dich am Hauptthema des Blogs - Mache den Text praxisorientiert und hilfreich - Keine HTML-Tags, keine Überschriften, nur Fließtext - Länge: 130-200 Wörter - Schreibstil: Informativ, aktiv und leicht lesbar - Keyword-Dichte ca. 1–2 %, keine unnatürliche Wiederholung. Antworte NUR mit dem Textabsatz, ohne Metakommentare.',
+
             'text-improvement': 'Du bist ein Texteditor für Hochzeitsblogs. Antworte NUR mit dem verbesserten Text, keine Erklärungen oder Kommentare.',
             
             'content-regeneration': 'Du bist ein Hochzeits-Content-Writer. Antworte NUR mit dem neuen Text-Inhalt, keine Metakommentare.',
