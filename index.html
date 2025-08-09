@@ -282,6 +282,9 @@
             position: relative;
             cursor: pointer;
             transition: all 0.2s ease;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
         }
 
         .outline-content h2 {
@@ -309,6 +312,23 @@
         .outline-content h2:hover,
         .outline-content h3:hover {
             background: rgba(255, 255, 255, 0.05);
+        }
+
+        .heading-text {
+            font-size: inherit;
+            font-weight: inherit;
+            color: inherit;
+            margin: 0;
+        }
+
+        .heading-content {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 14px;
+            font-weight: normal;
+            line-height: 1.6;
+            margin: 0;
+            padding-top: 8px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .heading-actions {
@@ -391,43 +411,7 @@
             animation: actionSpin 1s linear infinite;
         }
 
-        .generated-content {
-            background: rgba(40, 167, 69, 0.1);
-            border: 1px solid rgba(40, 167, 69, 0.3);
-            border-radius: 12px;
-            padding: 16px;
-            margin: 12px 0;
-            color: rgba(255, 255, 255, 0.9);
-            font-size: 14px;
-            line-height: 1.6;
-            animation: slideIn 0.3s ease;
-            position: relative;
-            transition: all 0.2s ease;
-        }
-
-        .generated-content:hover {
-            background: rgba(40, 167, 69, 0.15);
-            padding-right: 160px;
-        }
-
-        .generated-content .content-actions {
-            position: absolute;
-            right: 16px;
-            top: 50%;
-            transform: translateY(-50%);
-            display: none;
-            gap: 8px;
-            z-index: 10;
-            background: rgba(0, 0, 0, 0.8);
-            backdrop-filter: blur(10px);
-            padding: 6px;
-            border-radius: 10px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .generated-content:hover .content-actions {
-            display: flex;
-        }
+        /* Entfernt - generated-content wird nicht mehr benötigt */
 
         @keyframes slideIn {
             from {
@@ -914,11 +898,11 @@
 
             .outline-content h2:hover,
             .outline-content h3:hover {
-                padding-right: 20px;
+                background: rgba(255, 255, 255, 0.05);
             }
 
             .generated-content:hover {
-                padding-right: 20px;
+                background: rgba(40, 167, 69, 0.15);
             }
 
             .heading-actions,
@@ -927,9 +911,10 @@
                 display: flex !important;
                 justify-content: center;
                 margin-top: 8px;
-                background: none;
-                border: none;
-                padding: 0;
+                background: rgba(0, 0, 0, 0.8);
+                border: 1px solid rgba(255, 255, 255, 0.2);
+                padding: 6px;
+                border-radius: 8px;
             }
         }
     </style>
@@ -1881,11 +1866,20 @@ WICHTIG: Überprüfe vor der Antwort, dass wirklich ALLE Keywords in den Übersc
             }
         }
 
-        // VERBESSERTE generateContentForHeading Funktion mit vollem Kontext
+        // VERBESSERTE generateContentForHeading Funktion - Text direkt in Headline-Box
         async function generateContentForHeading(heading) {
-            const headingText = heading.textContent.trim();
+            // Extrahiere Headline-Text (ohne Actions)
+            const headingTextElement = heading.querySelector('.heading-text') || heading;
+            const headingText = headingTextElement.textContent.trim();
             const headingLevel = heading.tagName;
             const isH2 = headingLevel === 'H2';
+            
+            // Prüfe ob bereits Content vorhanden ist
+            const existingContent = heading.querySelector('.heading-content');
+            if (existingContent) {
+                showStatusMessage('⚠️ Für diese Überschrift wurde bereits Text generiert!');
+                return;
+            }
             
             const outlineContent = document.getElementById('outlineContent');
             const allElements = Array.from(outlineContent.children);
@@ -1933,18 +1927,20 @@ TEXTTYP: ${hasSubHeadings ? 'Kurze Einleitung (da Unterüberschriften folgen)' :
 
 AUFGABE: Generiere einen informativen Textabsatz für die oben genannte Headline. Der Text soll sich nahtlos in den Gesamtblog einfügen und die Keywords natürlich verwenden.`;
 
-                const demoContent = await callAI(enhancedPrompt, 'content-generation');
+                const generatedContent = await callAI(enhancedPrompt, 'content-generation');
                 
                 hideTyping();
                 
-                const contentDiv = document.createElement('div');
-                contentDiv.className = 'generated-content';
-                contentDiv.innerHTML = `<p>${demoContent}</p>`;
+                // Erstelle Content-Element
+                const contentElement = document.createElement('div');
+                contentElement.className = 'heading-content';
+                contentElement.textContent = generatedContent;
                 
-                heading.insertAdjacentElement('afterend', contentDiv);
+                // Füge Content direkt in die Headline-Box ein
+                heading.appendChild(contentElement);
                 
-                // Füge Content-Actions hinzu
-                addContentActions(contentDiv);
+                // Update Actions um Content-spezifische Buttons hinzuzufügen
+                updateHeadingActions(heading);
                 
                 const contentType = hasSubHeadings ? 'Einleitungstext' : 'Vollständiger Abschnitt';
                 showStatusMessage(`✅ ${contentType} erfolgreich generiert für "${headingText}"`);
@@ -1957,6 +1953,84 @@ AUFGABE: Generiere einen informativen Textabsatz für die oben genannte Headline
                     generateBtn.classList.remove('loading');
                     generateBtn.disabled = false;
                 }
+            }
+        }
+
+        function updateHeadingActions(heading) {
+            const actions = heading.querySelector('.heading-actions');
+            if (!actions) return;
+            
+            const hasContent = heading.querySelector('.heading-content');
+            
+            // Lösche alle bestehenden Actions
+            actions.innerHTML = '';
+            
+            // Standard Actions
+            const editBtn = document.createElement('button');
+            editBtn.className = 'action-btn edit';
+            editBtn.innerHTML = '✎';
+            editBtn.title = 'Überschrift bearbeiten';
+            editBtn.onclick = (e) => {
+                e.stopPropagation();
+                editHeading(heading);
+            };
+
+            const deleteBtn = document.createElement('button');
+            deleteBtn.className = 'action-btn delete';
+            deleteBtn.innerHTML = '×';
+            deleteBtn.title = 'Löschen';
+            deleteBtn.onclick = (e) => {
+                e.stopPropagation();
+                deleteHeading(heading);
+            };
+
+            actions.appendChild(editBtn);
+            actions.appendChild(deleteBtn);
+            
+            if (hasContent) {
+                // Content-spezifische Actions
+                const editContentBtn = document.createElement('button');
+                editContentBtn.className = 'action-btn edit';
+                editContentBtn.innerHTML = '📝';
+                editContentBtn.title = 'Text bearbeiten';
+                editContentBtn.onclick = (e) => {
+                    e.stopPropagation();
+                    editHeadingContent(heading);
+                };
+
+                const regenerateBtn = document.createElement('button');
+                regenerateBtn.className = 'action-btn magic';
+                regenerateBtn.innerHTML = '🪄';
+                regenerateBtn.title = 'Text neu generieren';
+                regenerateBtn.onclick = (e) => {
+                    e.stopPropagation();
+                    regenerateHeadingContent(heading);
+                };
+
+                const improveBtn = document.createElement('button');
+                improveBtn.className = 'action-btn magic';
+                improveBtn.innerHTML = '✨';
+                improveBtn.title = 'Text mit KI verbessern';
+                improveBtn.onclick = (e) => {
+                    e.stopPropagation();
+                    openChatPopup(heading);
+                };
+
+                actions.appendChild(editContentBtn);
+                actions.appendChild(regenerateBtn);
+                actions.appendChild(improveBtn);
+            } else {
+                // Generate Button falls noch kein Content vorhanden
+                const generateBtn = document.createElement('button');
+                generateBtn.className = 'action-btn generate';
+                generateBtn.innerHTML = '✦';
+                generateBtn.title = 'Text generieren';
+                generateBtn.onclick = (e) => {
+                    e.stopPropagation();
+                    generateContentForHeading(heading);
+                };
+
+                actions.appendChild(generateBtn);
             }
         }
 
