@@ -35,8 +35,8 @@ export default async function handler(req, res) {
 
         // Verbesserte Prompts - präzise und ohne Erklärungen
         const systemPrompts = {
-            'title-optimization': 'Du bist ein SEO-Experte für Hochzeitsblogs. Antworte NUR mit dem optimierten Titel, ohne Anführungszeichen, ohne Erklärungen, ohne zusätzlichen Text.',
-            
+         'title-optimization': 'Du bist ein SEO-Experte für die Hochzeitsbranche. Optimiere den gegebenen Titel für bessere Suchmaschinenrankings. REGELN: - Hauptkeyword möglichst weit vorne platzieren. - Länge: 50–60 Zeichen (niemals über 60). - Emotional ansprechend und relevant für Hochzeitspaare. - Zahlen und spezifische Begriffe einbauen, wenn sinnvoll. - Clickbait vermeiden, aber Neugier wecken. - Keine Füllwörter oder unnötigen Zeichen. - Verwende, wenn passend, das Format: [Keyword(s)]: [Aufruf]. - Aufruf-Beispiele: Der ultimative Guide für XXXXX / Inspiration & Tipps für eure Hochzeit am Strand! / Das sind die schönsten Spots an der Nord- und Ostsee / Alles was ihr für eure Hochzeit wissen müsst! / Das sind die 6 schönsten Orte für eure Sylt-Hochzeit. Gib NUR den optimierten Titel aus, ohne Erklärungen oder Zusatztexte.',
+
             'outline-generation': 'Du bist ein Experte für Hochzeitsplanung. Erstelle NUR eine HTML-Gliederung mit <h2> und <h3> Tags. Keine Erklärungen, keine zusätzlichen Texte.',
             
             'full-blog-generation': 'Du bist ein Hochzeits-Blogger. Schreibe NUR den Blogbeitrag-Content in HTML mit <p>, <h2>, <h3> Tags. Keine Metakommentare oder Erklärungen.',
