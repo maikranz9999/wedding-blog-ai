@@ -282,9 +282,6 @@
             position: relative;
             cursor: pointer;
             transition: all 0.2s ease;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
         }
 
         .outline-content h2 {
@@ -312,23 +309,6 @@
         .outline-content h2:hover,
         .outline-content h3:hover {
             background: rgba(255, 255, 255, 0.05);
-        }
-
-        .heading-text {
-            font-size: inherit;
-            font-weight: inherit;
-            color: inherit;
-            margin: 0;
-        }
-
-        .heading-content {
-            color: rgba(255, 255, 255, 0.9);
-            font-size: 14px;
-            font-weight: normal;
-            line-height: 1.6;
-            margin: 0;
-            padding-top: 8px;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .heading-actions {
@@ -411,7 +391,42 @@
             animation: actionSpin 1s linear infinite;
         }
 
-        /* Entfernt - generated-content wird nicht mehr benötigt */
+        .generated-content {
+            background: rgba(40, 167, 69, 0.1);
+            border: 1px solid rgba(40, 167, 69, 0.3);
+            border-radius: 12px;
+            padding: 16px;
+            margin: 12px 0;
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 14px;
+            line-height: 1.6;
+            animation: slideIn 0.3s ease;
+            position: relative;
+            transition: all 0.2s ease;
+        }
+
+        .generated-content:hover {
+            background: rgba(40, 167, 69, 0.15);
+        }
+
+        .generated-content .content-actions {
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            display: none;
+            gap: 6px;
+            z-index: 10;
+            background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(10px);
+            padding: 4px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+        }
+
+        .generated-content:hover .content-actions {
+            display: flex;
+        }
 
         @keyframes slideIn {
             from {
@@ -1649,22 +1664,18 @@ WICHTIG: Überprüfe vor der Antwort, dass wirklich ALLE Keywords in den Übersc
 
             const headings = outlineContent.querySelectorAll('h2, h3');
             headings.forEach((heading, index) => {
-                // Wrap heading text in title container
-                const headingText = heading.textContent.trim();
-                heading.innerHTML = '';
-                
-                const headingTitle = document.createElement('div');
-                headingTitle.className = 'heading-title';
-                headingTitle.textContent = headingText;
-                
-                // Create actions container for heading
+                const existingActions = heading.querySelector('.heading-actions');
+                if (existingActions) {
+                    existingActions.remove();
+                }
+
                 const actions = document.createElement('div');
                 actions.className = 'heading-actions';
                 
                 const editBtn = document.createElement('button');
                 editBtn.className = 'action-btn edit';
                 editBtn.innerHTML = '✎';
-                editBtn.title = 'Überschrift bearbeiten';
+                editBtn.title = 'Bearbeiten';
                 editBtn.onclick = (e) => {
                     e.stopPropagation();
                     editHeading(heading);
@@ -1691,18 +1702,14 @@ WICHTIG: Überprüfe vor der Antwort, dass wirklich ALLE Keywords in den Übersc
                 actions.appendChild(editBtn);
                 actions.appendChild(deleteBtn);
                 actions.appendChild(generateBtn);
-                headingTitle.appendChild(actions);
-                heading.appendChild(headingTitle);
+                heading.appendChild(actions);
             });
         }
 
         function editHeading(heading) {
-            const headingTitle = heading.querySelector('.heading-title');
-            if (!headingTitle) return;
+            const actionsElement = heading.querySelector('.heading-actions');
             
-            const actionsElement = headingTitle.querySelector('.heading-actions');
-            
-            let currentText = headingTitle.textContent.trim();
+            let currentText = heading.textContent.trim();
             if (actionsElement) {
                 const actionsText = actionsElement.textContent.trim();
                 currentText = currentText.replace(actionsText, '').trim();
@@ -1719,8 +1726,8 @@ WICHTIG: Überprüfe vor der Antwort, dass wirklich ALLE Keywords in den Übersc
             input.type = 'text';
             input.value = currentText;
             
-            headingTitle.innerHTML = '';
-            headingTitle.appendChild(input);
+            heading.innerHTML = '';
+            heading.appendChild(input);
             
             input.focus();
             input.select();
@@ -1733,21 +1740,21 @@ WICHTIG: Überprüfe vor der Antwort, dass wirklich ALLE Keywords in den Übersc
                 
                 const newText = input.value.trim();
                 if (newText && newText !== currentText) {
-                    headingTitle.textContent = newText;
+                    heading.textContent = newText;
                     if (originalActions) {
-                        headingTitle.appendChild(originalActions);
+                        heading.appendChild(originalActions);
                         reattachEventListeners(heading);
                     }
                 } else if (newText === currentText) {
-                    headingTitle.textContent = currentText;
+                    heading.textContent = currentText;
                     if (originalActions) {
-                        headingTitle.appendChild(originalActions);
+                        heading.appendChild(originalActions);
                         reattachEventListeners(heading);
                     }
                 } else {
-                    headingTitle.textContent = currentText;
+                    heading.textContent = currentText;
                     if (originalActions) {
-                        headingTitle.appendChild(originalActions);
+                        heading.appendChild(originalActions);
                         reattachEventListeners(heading);
                     }
                     showStatusMessage('❌ Überschrift-Änderung abgebrochen (leerer Text)');
@@ -1758,9 +1765,9 @@ WICHTIG: Überprüfe vor der Antwort, dass wirklich ALLE Keywords in den Übersc
                 if (isHandled) return;
                 isHandled = true;
                 
-                headingTitle.textContent = currentText;
+                heading.textContent = currentText;
                 if (originalActions) {
-                    headingTitle.appendChild(originalActions);
+                    heading.appendChild(originalActions);
                     reattachEventListeners(heading);
                 }
             }
@@ -1779,10 +1786,7 @@ WICHTIG: Überprüfe vor der Antwort, dass wirklich ALLE Keywords in den Übersc
         }
 
         function reattachEventListeners(heading) {
-            const headingTitle = heading.querySelector('.heading-title');
-            if (!headingTitle) return;
-            
-            const actions = headingTitle.querySelector('.heading-actions');
+            const actions = heading.querySelector('.heading-actions');
             if (!actions) return;
             
             const editBtn = actions.querySelector('.edit');
@@ -1812,9 +1816,8 @@ WICHTIG: Überprüfe vor der Antwort, dass wirklich ALLE Keywords in den Übersc
         }
 
         function deleteHeading(heading) {
-            const headingTitle = heading.querySelector('.heading-title');
-            const actionsElement = headingTitle?.querySelector('.heading-actions');
-            let headingText = headingTitle?.textContent.trim() || heading.textContent.trim();
+            const actionsElement = heading.querySelector('.heading-actions');
+            let headingText = heading.textContent.trim();
             
             if (actionsElement) {
                 const actionsText = actionsElement.textContent.trim();
@@ -1844,7 +1847,7 @@ WICHTIG: Überprüfe vor der Antwort, dass wirklich ALLE Keywords in den Übersc
                             break;
                         }
                         
-                        if (nextElement.tagName === 'H3') {
+                        if (nextElement.tagName === 'H3' || nextElement.classList.contains('generated-content')) {
                             elementsToDelete.push(nextElement);
                         }
                         
@@ -1858,7 +1861,19 @@ WICHTIG: Überprüfe vor der Antwort, dass wirklich ALLE Keywords in den Übersc
                     });
                     
                 } else {
-                    heading.remove();
+                    const elementsToDelete = [heading];
+                    
+                    let nextElement = heading.nextElementSibling;
+                    while (nextElement && nextElement.classList.contains('generated-content')) {
+                        elementsToDelete.push(nextElement);
+                        nextElement = nextElement.nextElementSibling;
+                    }
+                    
+                    elementsToDelete.forEach(el => {
+                        if (el && el.parentNode) {
+                            el.parentNode.removeChild(el);
+                        }
+                    });
                 }
                 
             } catch (error) {
@@ -1866,20 +1881,11 @@ WICHTIG: Überprüfe vor der Antwort, dass wirklich ALLE Keywords in den Übersc
             }
         }
 
-        // VERBESSERTE generateContentForHeading Funktion - Text direkt in Headline-Box mit getrennten Actions
+        // VERBESSERTE generateContentForHeading Funktion mit vollem Kontext
         async function generateContentForHeading(heading) {
-            // Extrahiere Headline-Text (ohne Actions)
-            const headingTitle = heading.querySelector('.heading-title') || heading;
-            const headingText = headingTitle.textContent.replace(/✎×✦📝🪄✨/g, '').trim();
+            const headingText = heading.textContent.trim();
             const headingLevel = heading.tagName;
             const isH2 = headingLevel === 'H2';
-            
-            // Prüfe ob bereits Content vorhanden ist
-            const existingContent = heading.querySelector('.heading-content');
-            if (existingContent) {
-                showStatusMessage('⚠️ Für diese Überschrift wurde bereits Text generiert!');
-                return;
-            }
             
             const outlineContent = document.getElementById('outlineContent');
             const allElements = Array.from(outlineContent.children);
@@ -1927,56 +1933,18 @@ TEXTTYP: ${hasSubHeadings ? 'Kurze Einleitung (da Unterüberschriften folgen)' :
 
 AUFGABE: Generiere einen informativen Textabsatz für die oben genannte Headline. Der Text soll sich nahtlos in den Gesamtblog einfügen und die Keywords natürlich verwenden.`;
 
-                const generatedContent = await callAI(enhancedPrompt, 'content-generation');
+                const demoContent = await callAI(enhancedPrompt, 'content-generation');
                 
                 hideTyping();
                 
-                // Erstelle Content-Element mit eigenen Actions
-                const contentElement = document.createElement('div');
-                contentElement.className = 'heading-content';
-                contentElement.textContent = generatedContent;
+                const contentDiv = document.createElement('div');
+                contentDiv.className = 'generated-content';
+                contentDiv.innerHTML = `<p>${demoContent}</p>`;
+                
+                heading.insertAdjacentElement('afterend', contentDiv);
                 
                 // Füge Content-Actions hinzu
-                const contentActions = document.createElement('div');
-                contentActions.className = 'content-actions';
-                
-                const editContentBtn = document.createElement('button');
-                editContentBtn.className = 'action-btn edit';
-                editContentBtn.innerHTML = '📝';
-                editContentBtn.title = 'Text bearbeiten';
-                editContentBtn.onclick = (e) => {
-                    e.stopPropagation();
-                    editHeadingContent(heading);
-                };
-
-                const regenerateBtn = document.createElement('button');
-                regenerateBtn.className = 'action-btn magic';
-                regenerateBtn.innerHTML = '🪄';
-                regenerateBtn.title = 'Text neu generieren';
-                regenerateBtn.onclick = (e) => {
-                    e.stopPropagation();
-                    regenerateHeadingContent(heading);
-                };
-
-                const improveBtn = document.createElement('button');
-                improveBtn.className = 'action-btn magic';
-                improveBtn.innerHTML = '✨';
-                improveBtn.title = 'Text mit KI verbessern';
-                improveBtn.onclick = (e) => {
-                    e.stopPropagation();
-                    openChatPopup(heading);
-                };
-
-                contentActions.appendChild(editContentBtn);
-                contentActions.appendChild(regenerateBtn);
-                contentActions.appendChild(improveBtn);
-                contentElement.appendChild(contentActions);
-                
-                // Füge Content direkt in die Headline-Box ein
-                heading.appendChild(contentElement);
-                
-                // Update nur die Heading-Actions (nicht die Content-Actions)
-                updateHeadingActionsOnly(heading);
+                addContentActions(contentDiv);
                 
                 const contentType = hasSubHeadings ? 'Einleitungstext' : 'Vollständiger Abschnitt';
                 showStatusMessage(`✅ ${contentType} erfolgreich generiert für "${headingText}"`);
@@ -1992,67 +1960,62 @@ AUFGABE: Generiere einen informativen Textabsatz für die oben genannte Headline
             }
         }
 
-        function updateHeadingActionsOnly(heading) {
-            const headingTitle = heading.querySelector('.heading-title');
-            if (!headingTitle) return;
+        function addContentActions(contentDiv) {
+            const actions = document.createElement('div');
+            actions.className = 'content-actions';
             
-            const actions = headingTitle.querySelector('.heading-actions');
-            if (!actions) return;
-            
-            const hasContent = heading.querySelector('.heading-content');
-            
-            // Lösche alle bestehenden Actions
-            actions.innerHTML = '';
-            
-            // Standard Heading Actions (immer gleich)
             const editBtn = document.createElement('button');
             editBtn.className = 'action-btn edit';
             editBtn.innerHTML = '✎';
-            editBtn.title = 'Überschrift bearbeiten';
+            editBtn.title = 'Text bearbeiten';
             editBtn.onclick = (e) => {
                 e.stopPropagation();
-                editHeading(heading);
+                editContent(contentDiv);
             };
 
             const deleteBtn = document.createElement('button');
             deleteBtn.className = 'action-btn delete';
             deleteBtn.innerHTML = '×';
             deleteBtn.title = 'Löschen';
-            editBtn.onclick = (e) => {
+            deleteBtn.onclick = (e) => {
                 e.stopPropagation();
-                deleteHeading(heading);
+                deleteContent(contentDiv);
+            };
+
+            const regenerateBtn = document.createElement('button');
+            regenerateBtn.className = 'action-btn magic';
+            regenerateBtn.innerHTML = '🪄';
+            regenerateBtn.title = 'Neu generieren';
+            regenerateBtn.onclick = (e) => {
+                e.stopPropagation();
+                regenerateContent(contentDiv);
+            };
+
+            const improveBtn = document.createElement('button');
+            improveBtn.className = 'action-btn magic';
+            improveBtn.innerHTML = '✨';
+            improveBtn.title = 'Mit KI verbessern';
+            improveBtn.onclick = (e) => {
+                e.stopPropagation();
+                openChatPopup(contentDiv);
             };
 
             actions.appendChild(editBtn);
             actions.appendChild(deleteBtn);
-            
-            if (!hasContent) {
-                // Generate Button nur falls noch kein Content vorhanden
-                const generateBtn = document.createElement('button');
-                generateBtn.className = 'action-btn generate';
-                generateBtn.innerHTML = '✦';
-                generateBtn.title = 'Text generieren';
-                generateBtn.onclick = (e) => {
-                    e.stopPropagation();
-                    generateContentForHeading(heading);
-                };
-
-                actions.appendChild(generateBtn);
-            }
+            actions.appendChild(regenerateBtn);
+            actions.appendChild(improveBtn);
+            contentDiv.appendChild(actions);
         }
 
-        function editHeadingContent(heading) {
-            const contentElement = heading.querySelector('.heading-content');
-            if (!contentElement) return;
-            
-            const currentText = contentElement.textContent;
+        function editContent(contentDiv) {
+            const currentText = contentDiv.querySelector('p').textContent;
             const textarea = document.createElement('textarea');
             textarea.value = currentText;
             textarea.style.width = '100%';
             textarea.style.minHeight = '100px';
             textarea.style.background = 'rgba(0, 0, 0, 0.5)';
-            textarea.style.border = '1px solid rgba(255, 255, 255, 0.3)';
-            textarea.style.borderRadius = '6px';
+            textarea.style.border = '1px solid #7209b7';
+            textarea.style.borderRadius = '8px';
             textarea.style.color = 'white';
             textarea.style.padding = '12px';
             textarea.style.fontFamily = 'inherit';
@@ -2060,17 +2023,17 @@ AUFGABE: Generiere einen informativen Textabsatz für die oben genannte Headline
             textarea.style.outline = 'none';
             textarea.style.resize = 'vertical';
             
-            contentElement.innerHTML = '';
-            contentElement.appendChild(textarea);
+            contentDiv.innerHTML = '';
+            contentDiv.appendChild(textarea);
             textarea.focus();
             
             function saveEdit() {
                 const newText = textarea.value.trim();
                 if (newText) {
-                    contentElement.textContent = newText;
+                    contentDiv.innerHTML = `<p>${newText}</p>`;
+                    addContentActions(contentDiv);
                 } else {
-                    contentElement.remove();
-                    updateHeadingActions(heading);
+                    deleteContent(contentDiv);
                 }
             }
             
@@ -2080,18 +2043,22 @@ AUFGABE: Generiere einen informativen Textabsatz für die oben genannte Headline
                     saveEdit();
                 } else if (e.key === 'Escape') {
                     e.preventDefault();
-                    contentElement.textContent = currentText;
+                    contentDiv.innerHTML = `<p>${currentText}</p>`;
+                    addContentActions(contentDiv);
                 }
             });
             
             textarea.addEventListener('blur', saveEdit);
         }
 
-        async function regenerateHeadingContent(heading) {
-            const contentElement = heading.querySelector('.heading-content');
-            if (!contentElement) return;
-            
-            const regenerateBtn = heading.querySelector('.action-btn.magic');
+        function deleteContent(contentDiv) {
+            if (confirm('Möchtest du diesen generierten Content wirklich löschen?')) {
+                contentDiv.remove();
+            }
+        }
+
+        async function regenerateContent(contentDiv) {
+            const regenerateBtn = contentDiv.querySelector('.action-btn.magic');
             if (regenerateBtn) {
                 regenerateBtn.classList.add('loading');
                 regenerateBtn.disabled = true;
@@ -2104,9 +2071,13 @@ AUFGABE: Generiere einen informativen Textabsatz für die oben genannte Headline
                 
                 hideTyping();
                 
-                contentElement.textContent = newContent;
+                const currentActions = contentDiv.querySelector('.content-actions');
+                if (currentActions) currentActions.remove();
                 
-                showStatusMessage('✅ Text erfolgreich neu generiert!');
+                contentDiv.innerHTML = `<p>${newContent}</p>`;
+                addContentActions(contentDiv);
+                
+                showStatusMessage('✅ Content erfolgreich neu generiert!');
                 
             } catch (error) {
                 hideTyping();
@@ -2119,17 +2090,16 @@ AUFGABE: Generiere einen informativen Textabsatz für die oben genannte Headline
             }
         }
 
-        // Chat Popup Functions - angepasst für Heading-Content
-        function openChatPopup(headingElement) {
-            const contentElement = headingElement.querySelector('.heading-content');
-            const textContent = contentElement?.textContent || '';
+        // Chat Popup Functions
+        function openChatPopup(contentElement) {
+            const textContent = contentElement.querySelector('p')?.textContent || contentElement.textContent || '';
             
             if (!textContent.trim()) {
                 showStatusMessage('❌ Kein Text zum Verbessern gefunden!');
                 return;
             }
 
-            currentChatContent = headingElement;
+            currentChatContent = contentElement;
             chatMessages = [];
             improvedTextContent = '';
             
@@ -2307,17 +2277,23 @@ Gib nur den verbesserten Text zurück, ohne zusätzliche Erklärungen.`, 'text-i
                 return;
             }
             
-            // Update content in heading
-            const contentElement = currentChatContent.querySelector('.heading-content');
-            if (contentElement) {
-                contentElement.textContent = improvedTextContent;
+            // Remove existing content-actions to avoid duplication
+            const existingActions = currentChatContent.querySelector('.content-actions');
+            if (existingActions) {
+                existingActions.remove();
             }
+            
+            // Replace the entire content with improved text
+            currentChatContent.innerHTML = `<p>${improvedTextContent.replace(/\n/g, '<br>')}</p>`;
+            
+            // Re-add content actions
+            addContentActions(currentChatContent);
             
             // Close popup
             closeChatPopup();
             
             // Show success message
-            showStatusMessage('✅ Text erfolgreich verbessert und übernommen!');
+            showStatusMessage('✅ Text erfolgreich verbessert und übernehmen!');
         }
 
         // Auto-resize textarea
