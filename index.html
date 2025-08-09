@@ -1120,7 +1120,7 @@
             </div>
 
             <div class="api-notice">
-                <strong>⚠️ Demo-Modus:</strong> Diese Version läuft mit simulierten KI-Antworten. Für die Vollversion integriere deine bevorzugte KI-API (OpenAI, Claude, etc.).
+                <strong>⚡ Claude API Integration:</strong> Verbunden mit Anthropic Claude über dein Vercel Backend. Stelle sicher, dass dein ANTHROPIC_API_KEY in den Vercel Environment Variables konfiguriert ist.
             </div>
 
             <div class="input-group">
@@ -1324,123 +1324,32 @@
             "Boho Hochzeit"
         ];
 
-        // Demo-Funktionen (da keine echte API verfügbar)
-        async function mockAPICall(prompt, isOutline = false) {
-            // Simuliere API-Aufruf mit realistischer Verzögerung
-            await new Promise(resolve => setTimeout(resolve, 2000 + Math.random() * 3000));
-            
-            if (isOutline) {
-                return generateMockOutline(prompt);
-            } else {
-                return generateMockContent(prompt);
+        // Claude API Integration über Backend
+        async function callAI(prompt, type = 'general') {
+            try {
+                const response = await fetch('/api/claude', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        prompt: prompt,
+                        type: type
+                    })
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
+                }
+
+                const data = await response.json();
+                return data.content;
+
+            } catch (error) {
+                console.error('API Error:', error);
+                throw new Error(`Fehler bei der KI-Anfrage: ${error.message}`);
             }
-        }
-
-        function generateMockOutline(prompt) {
-            const outlines = {
-                'location': `<h2>Einführung in die Hochzeitslocationsuche</h2>
-        <h3>Warum die richtige Location so wichtig ist</h3>
-        <h3>Was macht eine perfekte Hochzeitslocation aus</h3>
-        <h2>Die verschiedenen Location-Typen</h2>
-        <h3>Schlösser und Burgen</h3>
-        <h3>Hotels und Eventlocations</h3>
-        <h3>Outdoor-Locations und Gärten</h3>
-        <h3>Vintage und rustikale Locations</h3>
-        <h3>Moderne Eventlocations</h3>
-        <h2>Budget und Kostenfaktoren</h2>
-        <h3>Versteckte Kosten vermeiden</h3>
-        <h3>Preisverhandlungen erfolgreich führen</h3>
-        <h2>Besichtigungstermine optimal nutzen</h2>
-        <h3>Die richtige Vorbereitung</h3>
-        <h3>Wichtige Fragen an den Veranstalter</h3>
-        <h2>Vertragsabschluss und Buchung</h2>
-        <h3>Worauf im Vertrag zu achten ist</h3>
-        <h3>Stornobedingungen und Versicherung</h3>`,
-                
-                'planung': `<h2>Die ersten Schritte der Hochzeitsplanung</h2>
-        <h3>Timeline erstellen</h3>
-        <h3>Budget festlegen</h3>
-        <h2>Wichtige Entscheidungen treffen</h2>
-        <h3>Datum und Saison wählen</h3>
-        <h3>Gästeliste zusammenstellen</h3>
-        <h2>Dienstleister finden und buchen</h2>
-        <h3>Hochzeitsfotograf auswählen</h3>
-        <h3>Catering und Menü planen</h3>
-        <h2>Dekoration und Atmosphäre</h2>
-        <h3>Farbkonzept entwickeln</h3>
-        <h3>Blumenschmuck und Tischdekorationen</h3>`,
-                
-                'default': `<h2>Einführung in das Thema</h2>
-        <h3>Grundlagen verstehen</h3>
-        <h3>Wichtige Aspekte berücksichtigen</h3>
-        <h2>Praktische Tipps und Tricks</h2>
-        <h3>Schritt-für-Schritt Anleitung</h3>
-        <h3>Häufige Fehler vermeiden</h3>
-        <h2>Expertenrat und Empfehlungen</h2>
-        <h3>Bewährte Strategien</h3>
-        <h3>Zukunftstrends</h3>
-        <h2>Fazit und Zusammenfassung</h2>
-        <h3>Die wichtigsten Punkte</h3>
-        <h3>Nächste Schritte</h3>`
-            };
-            
-            if (prompt.toLowerCase().includes('location')) {
-                return outlines.location;
-            } else if (prompt.toLowerCase().includes('planung')) {
-                return outlines.planung;
-            } else {
-                return outlines.default;
-            }
-        }
-
-        function generateMockContent(prompt) {
-            const contents = [
-                `<p>Die Auswahl der perfekten Hochzeitslocation ist einer der wichtigsten Schritte bei der Hochzeitsplanung. Sie bestimmt nicht nur das Ambiente eurer Feier, sondern auch maßgeblich euer Budget und die Möglichkeiten für Dekoration, Catering und weitere Details.</p>
-
-        <p>Eine durchdachte Locationwahl kann den Unterschied zwischen einer unvergesslichen Traumhochzeit und enttäuschten Erwartungen ausmachen. Dabei spielen viele Faktoren eine Rolle: von der Anzahl der Gäste über das verfügbare Budget bis hin zu euren persönlichen Vorstellungen vom perfekten Hochzeitstag.</p>
-
-        <h2>Die verschiedenen Location-Typen</h2>
-
-        <h3>Schlösser und Burgen</h3>
-        <p>Historische Locations wie Schlösser und Burgen bieten eine märchenhafte Kulisse für eure Hochzeit. Die imposante Architektur und die romantische Atmosphäre schaffen unvergessliche Erinnerungen. Allerdings sind diese Locations oft preisintensiver und haben längere Vorlaufzeiten für Buchungen.</p>
-
-        <p>Bei der Auswahl solltet ihr bedenken, dass historische Gebäude oft Einschränkungen bezüglich Dekoration und Technik haben. Dafür bieten sie eine einzigartige Atmosphäre, die eure Gäste begeistern wird.</p>
-
-        <h3>Hotels und Eventlocations</h3>
-        <p>Hotels bieten den Vorteil eines Rundum-sorglos-Pakets. Catering, Service und oft auch Übernachtungsmöglichkeiten sind bereits vorhanden. Moderne Eventlocations punkten mit flexiblen Räumlichkeiten und professioneller Ausstattung.</p>
-
-        <p>Der große Vorteil liegt in der Erfahrung des Personals und den eingespielten Abläufen. Viele Hotels haben spezielle Hochzeitspakete, die verschiedene Services bündeln und oft günstiger sind als Einzelbuchungen.</p>
-
-        <h2>Budget und Kostenfaktoren</h2>
-
-        <h3>Versteckte Kosten vermeiden</h3>
-        <p>Bei der Budgetplanung solltet ihr nicht nur die Grundmiete berücksichtigen. Zusatzkosten für Dekoration, Technik, Parkplätze oder Reinigung können das Budget erheblich belasten. Fragt daher nach einer detaillierten Kostenaufstellung.</p>
-
-        <p>Plant etwa 20-30% eures Gesamtbudgets für die Location ein. Bei einer Hochzeit mit 100 Gästen und einem Budget von 15.000 Euro solltet ihr also 3.000-4.500 Euro für die Location kalkulieren.</p>
-
-        <h3>Preisverhandlungen erfolgreich führen</h3>
-        <p>Viele Locations sind bereit zu verhandeln, besonders bei Terminen außerhalb der Hauptsaison oder bei größeren Gesellschaften. Erkundigt euch nach Rabatten für Nebensaison-Termine oder Package-Deals.</p>
-
-        <p>Ein professioneller Tip: Fragt nach kostenlosen Zusatzleistungen statt nur nach Preisnachlässen. Oft sind Locations eher bereit, zusätzliche Services zu gewähren als den Grundpreis zu reduzieren.</p>`,
-
-                `<p>Die Hochzeitsplanung kann überwältigend erscheinen, aber mit der richtigen Herangehensweise wird sie zu einem aufregenden Abenteuer. Eine systematische Planung hilft dabei, den Überblick zu behalten und Stress zu vermeiden.</p>
-
-        <p>Beginnt mindestens 12-18 Monate vor dem geplanten Hochzeitstermin mit der Planung. So habt ihr genügend Zeit für alle wichtigen Entscheidungen und könnt von besseren Preisen und größerer Auswahl profitieren.</p>
-
-        <h2>Die ersten Schritte der Hochzeitsplanung</h2>
-
-        <h3>Timeline erstellen</h3>
-        <p>Eine detaillierte Timeline ist das Fundament einer erfolgreichen Hochzeitsplanung. Arbeitet euch von eurem Wunschtermin rückwärts vor und plant wichtige Meilensteine ein.</p>
-
-        <p>Wichtige Termine sind beispielsweise: Location-Buchung (12-18 Monate vorher), Fotografen-Buchung (6-12 Monate), Einladungen versenden (6-8 Wochen vorher) und finale Details besprechen (1 Woche vorher).</p>
-
-        <h3>Budget festlegen</h3>
-        <p>Setzt euch zusammen und bestimmt ein realistisches Gesamtbudget. Berücksichtigt dabei nicht nur die offensichtlichen Kosten, sondern auch kleinere Ausgaben, die sich schnell summieren können.</p>
-
-        <p>Eine typische Budgetaufteilung könnte so aussehen: 40-50% für Location und Catering, 15% für Fotograf, 10% für Kleidung, 10% für Dekoration und Blumen, 5% für Musik, 10% für sonstige Ausgaben und 5-10% als Puffer für unvorhergesehene Kosten.</p>`
-            ];
-            
-            return contents[Math.floor(Math.random() * contents.length)];
         }
 
         // Tag-System für Keywords
@@ -1679,24 +1588,12 @@
             showTyping();
 
             try {
-                await mockAPICall(`Optimiere diesen Titel: ${originalTitle}`);
+                const optimizedTitle = await callAI(`Optimiere diesen SEO-Titel für einen Hochzeitsblog: "${originalTitle}". Mache ihn ansprechender, keyword-optimiert und maximal 60 Zeichen lang.`, 'title-optimization');
                 
-                // Generiere SEO-optimierten Titel basierend auf Input
-                let newTitle = originalTitle;
-                if (originalTitle.toLowerCase().includes('hochzeitslocation')) {
-                    newTitle = "Die 10 besten Tipps für die perfekte Hochzeitslocation 2024";
-                } else if (originalTitle.toLowerCase().includes('planung')) {
-                    newTitle = "Ultimativer Guide: " + originalTitle + " - Schritt für Schritt";
-                } else if (originalTitle.toLowerCase().includes('budget')) {
-                    newTitle = originalTitle + " - Spartipps & Kostenfallen vermeiden";
-                } else {
-                    newTitle = "Ultimativer Guide: " + originalTitle.substring(0, 45) + "...";
-                }
-                
-                titleInput.value = newTitle;
+                titleInput.value = optimizedTitle;
                 
                 hideTyping();
-                showPreviewMessage(`✅ <strong>SEO-optimierter Titel:</strong><br>"${newTitle}"<br><br>💡 <em>Optimiert für: Keyword-Integration, Länge, Klick-Appeal</em>`);
+                showPreviewMessage(`✅ <strong>SEO-optimierter Titel:</strong><br>"${optimizedTitle}"<br><br>💡 <em>Optimiert für: Keyword-Integration, Länge, Klick-Appeal</em>`);
                 
             } catch (error) {
                 hideTyping();
@@ -1739,7 +1636,13 @@
             showTyping();
 
             try {
-                const outline = await mockAPICall(`Erstelle Gliederung für: ${title}`, true);
+                const outline = await callAI(`Erstelle eine strukturierte SEO-optimierte Gliederung für einen Hochzeitsblog mit dem Titel: "${title}". 
+                
+Keywords: ${keywords}
+Wortanzahl: ${wordCount}
+Stil: ${tone}
+
+Die Gliederung sollte H2 und H3 Überschriften verwenden und perfekt für Hochzeitspaare geeignet sein. Format: HTML mit <h2> und <h3> Tags.`, 'outline-generation');
                 
                 currentOutline = outline;
                 
@@ -1800,7 +1703,15 @@
             showTyping();
 
             try {
-                const content = await mockAPICall(`Schreibe Blog für: ${title}`);
+                const content = await callAI(`Schreibe einen vollständigen SEO-optimierten Hochzeitsblog basierend auf folgenden Informationen:
+
+Titel: ${title}
+Keywords: ${keywords}
+Wortanzahl: ${wordCount}
+Stil: ${tone}
+Gliederung: ${outline}
+
+Der Blog sollte informativ, hilfreich und für Hochzeitspaare geschrieben sein. Verwende HTML-Formatting mit <h2>, <h3>, <p> Tags. Integriere die Keywords natürlich in den Text.`, 'full-blog-generation');
                 
                 currentBlogPost = content;
                 
@@ -2131,11 +2042,7 @@
             showTyping();
             
             try {
-                await mockAPICall(`Generiere Content für: ${headingText}`);
-                
-                const demoContent = hasSubHeadings ? 
-                    `Dieser Abschnitt führt in das wichtige Thema "${headingText}" ein und gibt einen Überblick über die folgenden Unterkapitel. Es ist wichtig, diese Grundlagen zu verstehen, bevor wir in die Details einsteigen.` :
-                    `Dies ist ein ausführlicher Absatz zum Thema "${headingText}". Hier würde normalerweise der vollständige, SEO-optimierte Content stehen, der durch die KI generiert wurde. Der Text enthält wertvolle Informationen, praktische Tipps und ist im gewählten Stil verfasst. Zusätzlich werden relevante Keywords natürlich eingebunden, um die Suchmaschinenoptimierung zu unterstützen.`;
+                const demoContent = await callAI(`Generiere einen informativen Textabsatz für die Überschrift "${headingText}" in einem Hochzeitsblog. Der Text sollte ${hasSubHeadings ? 'eine kurze Einleitung sein' : 'ein vollständiger Abschnitt sein'} und hilfreich für Hochzeitspaare.`, 'content-generation');
                 
                 hideTyping();
                 
@@ -2388,11 +2295,15 @@
                 // Get original text
                 const originalText = document.getElementById('originalTextDisplay')?.textContent || '';
                 
-                // Simulate AI response
-                await mockAPICall(`Verbessere Text: ${originalText} basierend auf: ${message}`);
+                // Call AI for text improvement
+                const improvedText = await callAI(`Verbessere folgenden Text basierend auf dieser Anweisung: "${message}"
+
+Originaltext: "${originalText}"
+
+Anweisung: ${message}
+
+Gib nur den verbesserten Text zurück, ohne zusätzliche Erklärungen.`, 'text-improvement');
                 
-                // Generate improved text
-                const improvedText = generateImprovedText(originalText, message);
                 improvedTextContent = improvedText;
                 
                 hidePopupTyping();
@@ -2421,20 +2332,10 @@
             }
         }
 
-        function generateImprovedText(originalText, instruction) {
-            // Demo implementation - würde normalerweise echte KI verwenden
-            if (instruction.toLowerCase().includes('emotional') || instruction.toLowerCase().includes('gefühl')) {
-                return originalText.replace(/\./g, '! ❤️') + '\n\nDieser besondere Moment wird euch für immer in Erinnerung bleiben und eure Herzen mit Freude erfüllen.';
-            } else if (instruction.toLowerCase().includes('kürzer') || instruction.toLowerCase().includes('verkürz')) {
-                const sentences = originalText.split('. ');
-                return sentences.slice(0, Math.ceil(sentences.length / 2)).join('. ') + '.';
-            } else if (instruction.toLowerCase().includes('seo') || instruction.toLowerCase().includes('keyword')) {
-                return originalText + '\n\nDieser Artikel behandelt wichtige Aspekte der Hochzeitsplanung und hilft euch dabei, eure Traumhochzeit zu verwirklichen.';
-            } else if (instruction.toLowerCase().includes('tipp') || instruction.toLowerCase().includes('praktisch')) {
-                return originalText + '\n\n💡 Profi-Tipp: Plant mindestens 3 Monate im Voraus und erstellt eine detaillierte Checkliste für alle wichtigen Schritte.';
-            } else {
-                return originalText.replace(/\b\w/g, (match) => Math.random() > 0.8 ? match.toUpperCase() : match) + '\n\nDieser überarbeitete Text berücksichtigt eure Wünsche und bietet noch wertvollere Informationen für eure Hochzeitsplanung.';
-            }
+        // Demo-Funktionen entfernt - bereit für echte API-Integration
+        async function callAI(prompt, type = 'general') {
+            // Hier wird die echte KI-API integriert
+            throw new Error('API noch nicht konfiguriert. Bitte KI-API-Schlüssel hinzufügen.');
         }
 
         function confirmImprovedText() {
@@ -2538,9 +2439,7 @@
             showTyping();
             
             try {
-                await mockAPICall('Regeneriere Content');
-                
-                const newContent = `Dies ist ein neu generierter Absatz mit anderem Inhalt und Fokus. Der Text wurde komplett überarbeitet und bietet eine frische Perspektive auf das Thema. Hier finden sich neue Aspekte und Informationen, die vorher nicht erwähnt wurden.`;
+                const newContent = await callAI(`Generiere einen neuen, alternativen Text für diesen Abschnitt eines Hochzeitsblogs. Der Text sollte das gleiche Thema behandeln, aber anders formuliert und mit frischen Ideen.`, 'content-regeneration');
                 
                 hideTyping();
                 
@@ -2598,7 +2497,7 @@
             setupTextareaAutoResize();
             
             setTimeout(() => {
-                showPreviewMessage("🎯 <strong>Wedding Blog AI ist bereit!</strong><br><br>Beginne mit der Eingabe deines Blog-Titels und klicke auf den Zauberstab für SEO-Optimierung. Anschließend kannst du eine strukturierte Gliederung generieren lassen.<br><br>💡 <em>Tipp: Nutze aussagekräftige Keywords für bessere SEO-Ergebnisse!</em>");
+                showPreviewMessage("🎯 <strong>Wedding Blog AI ist bereit!</strong><br><br>Konfiguriere deine KI-API und beginne mit der Eingabe deines Blog-Titels. Klicke auf den Zauberstab für SEO-Optimierung und generiere anschließend eine strukturierte Gliederung.<br><br>💡 <em>Tipp: Nutze aussagekräftige Keywords für bessere SEO-Ergebnisse!</em>");
             }, 1000);
 
             // Enter-Taste für Titel-Input
