@@ -25,41 +25,30 @@
         }
 
         .container {
-            max-width: 1200px;
+            max-width: 900px;
             margin: 0 auto;
-            background: none;
-            border: none;
-            border-radius: 0;
-            overflow: visible;
-            display: flex;
-            height: 90vh;
-            box-shadow: none;
-        }
-
-        .sidebar {
-            width: 600px;
             background: rgba(26, 26, 46, 0.85);
             backdrop-filter: blur(15px);
-            padding: 18px;
+            padding: 24px;
             border-radius: 16px;
             border: 1px solid rgba(255, 255, 255, 0.1);
-            margin-right: 20px;
-            overflow-y: auto;
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            overflow-y: auto;
+            max-height: 90vh;
         }
 
         .logo {
-            font-size: 16px;
+            font-size: 20px;
             font-weight: 700;
             color: rgba(255, 255, 255, 0.95);
-            margin-bottom: 18px;
+            margin-bottom: 24px;
             text-align: center;
-            padding-bottom: 12px;
+            padding-bottom: 16px;
             border-bottom: 1px solid rgba(255, 255, 255, 0.15);
         }
 
         .input-group {
-            margin-bottom: 16px;
+            margin-bottom: 20px;
             position: relative;
         }
 
@@ -67,13 +56,13 @@
             display: block;
             font-weight: 500;
             color: rgba(255, 255, 255, 0.9);
-            margin-bottom: 5px;
-            font-size: 13px;
+            margin-bottom: 8px;
+            font-size: 14px;
         }
 
         .input-with-magic {
             display: flex;
-            gap: 8px;
+            gap: 12px;
             align-items: stretch;
         }
 
@@ -82,13 +71,13 @@
         }
 
         .magic-btn {
-            width: 40px;
-            height: 40px;
+            width: 50px;
+            height: 50px;
             background: linear-gradient(135deg, #ff6b35, #f7931e);
             border: none;
-            border-radius: 8px;
+            border-radius: 12px;
             color: white;
-            font-size: 16px;
+            font-size: 18px;
             cursor: pointer;
             transition: all 0.2s ease;
             display: flex;
@@ -98,8 +87,8 @@
         }
 
         .magic-btn:hover {
-            transform: translateY(-1px) scale(1.05);
-            box-shadow: 0 6px 16px rgba(255, 107, 53, 0.4);
+            transform: translateY(-2px) scale(1.05);
+            box-shadow: 0 8px 20px rgba(255, 107, 53, 0.4);
             background: linear-gradient(135deg, #ff8c5a, #ffb347);
         }
 
@@ -120,10 +109,10 @@
         .input-group textarea,
         .input-group select {
             width: 100%;
-            padding: 10px 12px;
+            padding: 14px 16px;
             border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 8px;
-            font-size: 13px;
+            border-radius: 12px;
+            font-size: 14px;
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             transition: all 0.2s ease;
             background: rgba(0, 0, 0, 0.3);
@@ -142,7 +131,7 @@
 
         .input-group textarea {
             resize: vertical;
-            min-height: 70px;
+            min-height: 80px;
         }
 
         /* Keyword System Styles */
@@ -153,27 +142,27 @@
         .keywords-display {
             display: flex;
             flex-wrap: wrap;
-            gap: 6px;
-            margin-bottom: 8px;
-            min-height: 20px;
+            gap: 8px;
+            margin-bottom: 12px;
+            min-height: 24px;
         }
 
         .keyword-pill {
             background: linear-gradient(135deg, #7209b7, #533483);
             color: white;
-            padding: 4px 8px;
-            border-radius: 12px;
-            font-size: 11px;
+            padding: 6px 12px;
+            border-radius: 16px;
+            font-size: 12px;
             display: flex;
             align-items: center;
-            gap: 4px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            gap: 6px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
         }
 
         .keyword-remove {
             cursor: pointer;
             font-weight: bold;
-            font-size: 14px;
+            font-size: 16px;
             opacity: 0.8;
             transition: opacity 0.2s;
         }
@@ -190,7 +179,7 @@
             background: rgba(26, 26, 46, 0.95);
             backdrop-filter: blur(15px);
             border: 1px solid rgba(255, 255, 255, 0.15);
-            border-radius: 8px;
+            border-radius: 12px;
             max-height: 200px;
             overflow-y: auto;
             z-index: 1000;
@@ -199,10 +188,10 @@
         }
 
         .dropdown-item {
-            padding: 8px 12px;
+            padding: 12px 16px;
             cursor: pointer;
             transition: background 0.2s;
-            font-size: 12px;
+            font-size: 13px;
             color: rgba(255, 255, 255, 0.9);
         }
 
@@ -217,26 +206,26 @@
 
         .generate-outline-btn {
             width: 100%;
-            padding: 12px;
+            padding: 16px;
             background: linear-gradient(135deg, #28a745, #20c997);
             color: white;
             border: none;
-            border-radius: 8px;
-            font-size: 14px;
-            font-weight: 500;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
             cursor: pointer;
             transition: all 0.2s ease;
-            box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+            box-shadow: 0 6px 16px rgba(40, 167, 69, 0.3);
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 8px;
-            margin-bottom: 16px;
+            gap: 12px;
+            margin-bottom: 24px;
         }
 
         .generate-outline-btn:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 6px 16px rgba(40, 167, 69, 0.4);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(40, 167, 69, 0.4);
             background: linear-gradient(135deg, #34ce57, #17a2b8);
         }
 
@@ -250,9 +239,9 @@
             background: rgba(0, 0, 0, 0.3);
             backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.15);
-            border-radius: 8px;
-            padding: 16px;
-            margin-bottom: 16px;
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 24px;
             display: none;
         }
 
@@ -264,7 +253,7 @@
         @keyframes slideDown {
             from {
                 opacity: 0;
-                transform: translateY(-10px);
+                transform: translateY(-20px);
             }
             to {
                 opacity: 1;
@@ -275,17 +264,17 @@
         .outline-title {
             font-weight: 600;
             color: rgba(255, 255, 255, 0.95);
-            margin-bottom: 12px;
-            font-size: 14px;
+            margin-bottom: 20px;
+            font-size: 16px;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 12px;
         }
 
         .outline-content {
             color: rgba(255, 255, 255, 0.9);
-            font-size: 13px;
-            line-height: 1.5;
+            font-size: 14px;
+            line-height: 1.6;
         }
 
         .outline-content h2,
@@ -297,41 +286,44 @@
 
         .outline-content h2 {
             color: #ff6b35;
-            font-size: 14px;
+            font-size: 16px;
             font-weight: 600;
-            margin: 12px 0 6px 0;
-            padding-left: 8px;
-            border-left: 3px solid #ff6b35;
+            margin: 16px 0 8px 0;
+            padding: 12px 16px;
+            border-left: 4px solid #ff6b35;
+            background: rgba(255, 107, 53, 0.1);
+            border-radius: 8px;
         }
 
         .outline-content h3 {
             color: #20c997;
-            font-size: 13px;
+            font-size: 14px;
             font-weight: 500;
-            margin: 8px 0 4px 16px;
-            padding-left: 8px;
-            border-left: 2px solid #20c997;
+            margin: 12px 0 6px 20px;
+            padding: 10px 14px;
+            border-left: 3px solid #20c997;
+            background: rgba(32, 201, 151, 0.1);
+            border-radius: 6px;
         }
 
         .outline-content h2:hover,
         .outline-content h3:hover {
             background: rgba(255, 255, 255, 0.05);
-            border-radius: 4px;
-            padding-right: 140px;
+            padding-right: 160px;
         }
 
         .heading-actions {
             position: absolute;
-            right: 12px;
+            right: 16px;
             top: 50%;
             transform: translateY(-50%);
             display: none;
-            gap: 6px;
+            gap: 8px;
             z-index: 10;
             background: rgba(0, 0, 0, 0.8);
             backdrop-filter: blur(10px);
-            padding: 4px;
-            border-radius: 8px;
+            padding: 6px;
+            border-radius: 10px;
             border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
@@ -341,18 +333,18 @@
         }
 
         .action-btn {
-            width: 28px;
-            height: 28px;
+            width: 32px;
+            height: 32px;
             border: none;
-            border-radius: 6px;
+            border-radius: 8px;
             cursor: pointer;
-            font-size: 14px;
+            font-size: 16px;
             font-weight: bold;
             display: flex;
             align-items: center;
             justify-content: center;
             transition: all 0.2s ease;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
             font-family: Arial, sans-serif;
         }
 
@@ -403,12 +395,12 @@
         .generated-content {
             background: rgba(40, 167, 69, 0.1);
             border: 1px solid rgba(40, 167, 69, 0.3);
-            border-radius: 6px;
-            padding: 12px;
-            margin: 8px 0;
+            border-radius: 12px;
+            padding: 16px;
+            margin: 12px 0;
             color: rgba(255, 255, 255, 0.9);
-            font-size: 13px;
-            line-height: 1.5;
+            font-size: 14px;
+            line-height: 1.6;
             animation: slideIn 0.3s ease;
             position: relative;
             transition: all 0.2s ease;
@@ -416,21 +408,21 @@
 
         .generated-content:hover {
             background: rgba(40, 167, 69, 0.15);
-            padding-right: 140px;
+            padding-right: 160px;
         }
 
         .generated-content .content-actions {
             position: absolute;
-            right: 12px;
+            right: 16px;
             top: 50%;
             transform: translateY(-50%);
             display: none;
-            gap: 6px;
+            gap: 8px;
             z-index: 10;
             background: rgba(0, 0, 0, 0.8);
             backdrop-filter: blur(10px);
-            padding: 4px;
-            border-radius: 8px;
+            padding: 6px;
+            border-radius: 10px;
             border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
@@ -441,7 +433,7 @@
         @keyframes slideIn {
             from {
                 opacity: 0;
-                transform: translateY(-10px);
+                transform: translateY(-15px);
             }
             to {
                 opacity: 1;
@@ -455,25 +447,25 @@
 
         .download-outline-btn {
             width: 100%;
-            padding: 14px;
+            padding: 16px;
             background: linear-gradient(135deg, #6c757d, #495057);
             color: white;
             border: none;
-            border-radius: 8px;
-            font-size: 15px;
+            border-radius: 12px;
+            font-size: 16px;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.2s ease;
-            box-shadow: 0 4px 12px rgba(108, 117, 125, 0.3);
+            box-shadow: 0 6px 16px rgba(108, 117, 125, 0.3);
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 8px;
+            gap: 12px;
         }
 
         .download-outline-btn:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 6px 16px rgba(108, 117, 125, 0.4);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(108, 117, 125, 0.4);
             background: linear-gradient(135deg, #8a929b, #6c757d);
         }
 
@@ -483,125 +475,70 @@
             transform: none;
         }
 
-        .chat-area {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            position: relative;
-            background: none;
-            overflow: hidden;
-        }
-
-        .chat-header {
-            background: rgba(26, 26, 46, 0.85);
-            backdrop-filter: blur(15px);
+        .heading-edit-input {
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid #7209b7;
+            border-radius: 6px;
             color: white;
-            padding: 16px 24px;
-            font-weight: 500;
-            font-size: 15px;
-            border-radius: 16px 16px 0 0;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-            position: relative;
-            z-index: 100;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-size: inherit;
+            font-weight: inherit;
+            font-family: inherit;
+            padding: 6px 12px;
+            width: calc(100% - 140px);
+            outline: none;
         }
 
-        .messages {
-            flex: 1;
-            padding: 24px 24px 0 24px;
-            overflow-y: auto;
-            background: none;
-            position: relative;
-            scroll-behavior: smooth;
-        }
-
-        .messages::-webkit-scrollbar {
-            width: 6px;
-        }
-
-        .messages::-webkit-scrollbar-track {
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 3px;
-        }
-
-        .messages::-webkit-scrollbar-thumb {
-            background: linear-gradient(
-                to bottom,
-                rgba(114, 9, 183, 0.6),
-                rgba(83, 52, 131, 0.6)
-            );
-            border-radius: 3px;
-            transition: background 0.3s ease;
-        }
-
-        .messages::-webkit-scrollbar-thumb:hover {
-            background: linear-gradient(
-                to bottom,
-                rgba(114, 9, 183, 0.8),
-                rgba(83, 52, 131, 0.8)
-            );
-        }
-
-        .message {
-            margin-bottom: 12px;
-            opacity: 0;
-            animation: fadeIn 0.3s forwards;
-        }
-
-        @keyframes fadeIn {
-            to { opacity: 1; }
-        }
-
-        .message.user {
-            text-align: right;
-        }
-
-        .message.bot {
-            text-align: left;
-        }
-
-        .message-content {
-            display: inline-block;
-            max-width: 85%;
-            padding: 12px 16px;
-            border-radius: 8px;
+        .api-notice {
+            background: rgba(255, 193, 7, 0.1);
+            border: 1px solid rgba(255, 193, 7, 0.3);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 24px;
             font-size: 13px;
-            line-height: 1.4;
+            color: rgba(255, 255, 255, 0.9);
         }
 
-        .message.user .message-content {
-            background: linear-gradient(135deg, #7209b7, #533483);
-            color: white;
+        .api-notice strong {
+            color: #ffc107;
         }
 
-        .message.bot .message-content {
+        .status-message {
             background: rgba(26, 26, 46, 0.8);
             backdrop-filter: blur(15px);
-            color: rgba(255, 255, 255, 0.95);
             border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 12px;
+            padding: 16px;
+            margin: 16px 0;
             box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+            color: rgba(255, 255, 255, 0.95);
+            font-size: 14px;
+            line-height: 1.5;
+            animation: slideIn 0.3s ease;
         }
 
         .typing {
             display: none;
-            text-align: left;
+            text-align: center;
+            margin: 20px 0;
         }
 
-        .typing .message-content {
+        .typing-content {
             background: rgba(26, 26, 46, 0.8);
             backdrop-filter: blur(15px);
             border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 12px;
+            padding: 16px;
+            display: inline-block;
         }
 
         .typing-dots {
             display: inline-flex;
-            gap: 4px;
+            gap: 6px;
         }
 
         .typing-dots span {
-            width: 5px;
-            height: 5px;
+            width: 6px;
+            height: 6px;
             background: rgba(255, 255, 255, 0.8);
             border-radius: 50%;
             animation: typing 1.4s infinite ease-in-out;
@@ -613,136 +550,6 @@
         @keyframes typing {
             0%, 80%, 100% { transform: scale(0.8); opacity: 0.3; }
             40% { transform: scale(1); opacity: 1; }
-        }
-
-        .welcome {
-            text-align: center;
-            color: rgba(255, 255, 255, 0.8);
-            font-size: 14px;
-            margin-top: 40px;
-            margin-bottom: 20px;
-        }
-
-        .welcome h3 {
-            color: rgba(255, 255, 255, 0.95);
-            font-weight: 600;
-            margin-bottom: 12px;
-            font-size: 18px;
-        }
-
-        .blog-content {
-            background: rgba(26, 26, 46, 0.8);
-            backdrop-filter: blur(15px);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            border-radius: 12px;
-            padding: 20px;
-            margin: 16px 0;
-            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
-        }
-
-        .blog-content h1 {
-            color: #ff6b35;
-            font-size: 22px;
-            font-weight: 700;
-            margin-bottom: 16px;
-            line-height: 1.3;
-        }
-
-        .blog-content h2 {
-            color: #ff6b35;
-            font-size: 18px;
-            font-weight: 600;
-            margin: 24px 0 12px 0;
-            padding-left: 12px;
-            border-left: 4px solid #ff6b35;
-        }
-
-        .blog-content h3 {
-            color: #20c997;
-            font-size: 16px;
-            font-weight: 500;
-            margin: 16px 0 8px 20px;
-            padding-left: 12px;
-            border-left: 3px solid #20c997;
-        }
-
-        .blog-content p {
-            color: rgba(255, 255, 255, 0.9);
-            font-size: 14px;
-            line-height: 1.6;
-            margin-bottom: 12px;
-        }
-
-        .blog-content ul, .blog-content ol {
-            color: rgba(255, 255, 255, 0.9);
-            font-size: 14px;
-            line-height: 1.6;
-            margin: 12px 0 12px 20px;
-        }
-
-        .blog-content li {
-            margin-bottom: 6px;
-        }
-
-        .blog-meta {
-            background: rgba(40, 167, 69, 0.1);
-            border: 1px solid rgba(40, 167, 69, 0.3);
-            border-radius: 8px;
-            padding: 12px;
-            margin-bottom: 16px;
-            font-size: 12px;
-            color: rgba(255, 255, 255, 0.8);
-        }
-
-        .export-buttons {
-            display: flex;
-            gap: 8px;
-            margin-top: 16px;
-            flex-wrap: wrap;
-        }
-
-        .export-btn {
-            padding: 8px 12px;
-            background: linear-gradient(135deg, #6c757d, #495057);
-            color: white;
-            border: none;
-            border-radius: 6px;
-            font-size: 12px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            box-shadow: 0 2px 8px rgba(108, 117, 125, 0.3);
-        }
-
-        .export-btn:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(108, 117, 125, 0.4);
-        }
-
-        .heading-edit-input {
-            background: rgba(0, 0, 0, 0.5);
-            border: 1px solid #7209b7;
-            border-radius: 4px;
-            color: white;
-            font-size: inherit;
-            font-weight: inherit;
-            font-family: inherit;
-            padding: 4px 8px;
-            width: calc(100% - 120px);
-            outline: none;
-        }
-
-        .api-notice {
-            background: rgba(255, 193, 7, 0.1);
-            border: 1px solid rgba(255, 193, 7, 0.3);
-            border-radius: 8px;
-            padding: 12px;
-            margin-bottom: 16px;
-            font-size: 12px;
-            color: rgba(255, 255, 255, 0.9);
-        }
-
-        .api-notice strong {
-            color: #ffc107;
         }
 
         /* Chat Popup Styles */
@@ -1077,29 +884,19 @@
 
         @media (max-width: 768px) {
             .container {
-                flex-direction: column;
-                height: auto;
-                min-height: 90vh;
-            }
-            
-            .sidebar {
-                width: 100%;
                 padding: 16px;
-                margin-right: 0;
-                margin-bottom: 20px;
-            }
-            
-            .chat-area {
-                min-height: 400px;
+                margin: 10px;
+                max-height: 95vh;
             }
             
             body {
                 font-size: 13px;
+                padding: 10px;
             }
             
-            .chat-header {
-                font-size: 14px;
-                padding: 12px 16px;
+            .logo {
+                font-size: 18px;
+                margin-bottom: 20px;
             }
 
             .input-with-magic {
@@ -1108,99 +905,113 @@
 
             .magic-btn {
                 width: 100%;
-                height: 40px;
+                height: 50px;
+            }
+
+            .generate-outline-btn {
+                padding: 14px;
+                font-size: 15px;
+            }
+
+            .outline-content h2:hover,
+            .outline-content h3:hover {
+                padding-right: 20px;
+            }
+
+            .generated-content:hover {
+                padding-right: 20px;
+            }
+
+            .heading-actions,
+            .content-actions {
+                position: static;
+                display: flex !important;
+                justify-content: center;
+                margin-top: 8px;
+                background: none;
+                border: none;
+                padding: 0;
             }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="sidebar">
-            <div class="logo">
-                💍 Wedding Blog AI
-            </div>
-
-            <div class="api-notice">
-                <strong>⚡ Claude API Integration:</strong> Verbunden mit Anthropic Claude über dein Vercel Backend. Stelle sicher, dass dein ANTHROPIC_API_KEY in den Vercel Environment Variables konfiguriert ist.
-            </div>
-
-            <div class="input-group">
-                <label>Titel des Blogbeitrags</label>
-                <div class="input-with-magic">
-                    <input type="text" id="blogTitle" placeholder="z.B. Die perfekte Hochzeitslocation finden">
-                    <button class="magic-btn" id="optimizeTitleBtn" onclick="optimizeTitle()" title="Titel SEO-optimieren">
-                        🪄
-                    </button>
-                </div>
-            </div>
-
-            <div class="input-group">
-                <label>Hauptkeywords (SEO)</label>
-                <div class="tag-input-container">
-                    <div class="keywords-display" id="keywordsDisplay"></div>
-                    <input type="text" id="mainKeyword" placeholder="z.B. Hochzeitslocation, Hochzeitsplanung..." autocomplete="off">
-                    <div class="dropdown" id="keywordDropdown"></div>
-                </div>
-                <small>Gib Keywords ein und drücke Enter um sie hinzuzufügen</small>
-            </div>
-
-            <div class="input-group">
-                <label>Gewünschte Wortanzahl</label>
-                <select id="wordCount">
-                    <option value="800">800-1000 Wörter (kurzer Artikel)</option>
-                    <option value="1500" selected>1500-2000 Wörter (mittlerer Artikel)</option>
-                    <option value="2500">2500-3000 Wörter (ausführlicher Artikel)</option>
-                </select>
-            </div>
-
-            <div class="input-group">
-                <label>Ton & Stil</label>
-                <select id="toneStyle">
-                    <option value="freundlich-beratend" selected>Freundlich & beratend</option>
-                    <option value="professionell-sachlich">Professionell & sachlich</option>
-                    <option value="emotional-inspirierend">Emotional & inspirierend</option>
-                    <option value="praktisch-hilfsbereit">Praktisch & hilfsbereit</option>
-                    <option value="luxurioes-exklusiv">Luxuriös & exklusiv</option>
-                </select>
-            </div>
-
-            <button class="generate-outline-btn" id="generateOutlineBtn" onclick="generateOutline()">
-                🪄 Gliederung generieren
-            </button>
-
-            <div class="outline-container" id="outlineContainer">
-                <div class="outline-title">
-                    📋 Generierte Gliederung
-                </div>
-                <div class="outline-content" id="outlineContent">
-                    <!-- Gliederung wird hier eingefügt -->
-                </div>
-            </div>
-
-            <button class="download-outline-btn" id="downloadOutlineBtn" onclick="downloadForWordpress()" style="display: none;">
-                📄 Beitrag für WordPress downloaden
-            </button>
+        <div class="logo">
+            💍 Wedding Blog AI
         </div>
 
-        <div class="chat-area">
-            <div class="chat-header" id="chatHeader">
-                Blog-Vorschau - Wedding Blog AI
+        <div class="api-notice">
+            <strong>⚡ Claude API Integration:</strong> Verbunden mit Anthropic Claude über dein Vercel Backend. Stelle sicher, dass dein ANTHROPIC_API_KEY in den Vercel Environment Variables konfiguriert ist.
+        </div>
+
+        <div class="input-group">
+            <label>Titel des Blogbeitrags</label>
+            <div class="input-with-magic">
+                <input type="text" id="blogTitle" placeholder="z.B. Die perfekte Hochzeitslocation finden">
+                <button class="magic-btn" id="optimizeTitleBtn" onclick="optimizeTitle()" title="Titel SEO-optimieren">
+                    🪄
+                </button>
             </div>
-            <div class="messages" id="messages">
-                <div class="welcome">
-                    <h3>Blog-Vorschau</h3>
-                    <p>Hier wird dein generierter Blogbeitrag angezeigt.<br>
-                    Erstelle zuerst eine Gliederung und generiere dann den Content.</p>
-                </div>
+        </div>
+
+        <div class="input-group">
+            <label>Hauptkeywords (SEO)</label>
+            <div class="tag-input-container">
+                <div class="keywords-display" id="keywordsDisplay"></div>
+                <input type="text" id="mainKeyword" placeholder="z.B. Hochzeitslocation, Hochzeitsplanung..." autocomplete="off">
+                <div class="dropdown" id="keywordDropdown"></div>
             </div>
-            
-            <div class="typing" id="typing">
-                <div class="message-content">
-                    <div class="typing-dots">
-                        <span></span>
-                        <span></span>
-                        <span></span>
-                    </div>
+            <small>Gib Keywords ein und drücke Enter um sie hinzuzufügen</small>
+        </div>
+
+        <div class="input-group">
+            <label>Gewünschte Wortanzahl</label>
+            <select id="wordCount">
+                <option value="800">800-1000 Wörter (kurzer Artikel)</option>
+                <option value="1500" selected>1500-2000 Wörter (mittlerer Artikel)</option>
+                <option value="2500">2500-3000 Wörter (ausführlicher Artikel)</option>
+            </select>
+        </div>
+
+        <div class="input-group">
+            <label>Ton & Stil</label>
+            <select id="toneStyle">
+                <option value="freundlich-beratend" selected>Freundlich & beratend</option>
+                <option value="professionell-sachlich">Professionell & sachlich</option>
+                <option value="emotional-inspirierend">Emotional & inspirierend</option>
+                <option value="praktisch-hilfsbereit">Praktisch & hilfsbereit</option>
+                <option value="luxurioes-exklusiv">Luxuriös & exklusiv</option>
+            </select>
+        </div>
+
+        <button class="generate-outline-btn" id="generateOutlineBtn" onclick="generateOutline()">
+            🪄 Gliederung generieren
+        </button>
+
+        <div class="outline-container" id="outlineContainer">
+            <div class="outline-title">
+                📋 Generierte Gliederung
+            </div>
+            <div class="outline-content" id="outlineContent">
+                <!-- Gliederung wird hier eingefügt -->
+            </div>
+        </div>
+
+        <button class="download-outline-btn" id="downloadOutlineBtn" onclick="downloadForWordpress()" style="display: none;">
+            📄 Beitrag für WordPress downloaden
+        </button>
+
+        <!-- Status Messages werden hier angezeigt -->
+        <div id="statusMessages"></div>
+
+        <!-- Typing Indicator -->
+        <div class="typing" id="typing">
+            <div class="typing-content">
+                <div class="typing-dots">
+                    <span></span>
+                    <span></span>
+                    <span></span>
                 </div>
             </div>
         </div>
@@ -1353,13 +1164,42 @@
             }
         }
 
+        // Status Message Functions
+        function showStatusMessage(content) {
+            const statusContainer = document.getElementById('statusMessages');
+            if (!statusContainer) return;
+
+            const message = document.createElement('div');
+            message.className = 'status-message';
+            message.innerHTML = content;
+            
+            statusContainer.appendChild(message);
+            statusContainer.scrollTop = statusContainer.scrollHeight;
+            
+            // Auto-remove after 10 seconds for success messages
+            if (content.includes('✅')) {
+                setTimeout(() => {
+                    if (message.parentNode) {
+                        message.remove();
+                    }
+                }, 10000);
+            }
+        }
+
+        function clearStatusMessages() {
+            const statusContainer = document.getElementById('statusMessages');
+            if (statusContainer) {
+                statusContainer.innerHTML = '';
+            }
+        }
+
         // WordPress Download Funktion
         function downloadForWordpress() {
             const titleInput = document.getElementById('blogTitle');
             const outlineContent = document.getElementById('outlineContent');
             
             if (!titleInput || !outlineContent) {
-                showPreviewMessage('❌ Keine Gliederung zum Download gefunden!');
+                showStatusMessage('❌ Keine Gliederung zum Download gefunden!');
                 return;
             }
 
@@ -1534,7 +1374,7 @@ Version: 1.0
             document.body.removeChild(a);
             URL.revokeObjectURL(url);
             
-            showPreviewMessage('📄 <strong>WordPress-Import erfolgreich!</strong><br><br>✅ Die Datei enthält:<br>• Gutenberg-kompatiblen Content<br>• SEO-Metadaten<br>• Import-Anleitung<br>• Schema Markup<br><br>💡 <em>Öffne die Datei und folge der Schritt-für-Schritt Anleitung!</em>');
+            showStatusMessage('📄 <strong>WordPress-Import erfolgreich!</strong><br><br>✅ Die Datei enthält:<br>• Gutenberg-kompatiblen Content<br>• SEO-Metadaten<br>• Import-Anleitung<br>• Schema Markup<br><br>💡 <em>Öffne die Datei und folge der Schritt-für-Schritt Anleitung!</em>');
         }
 
         // Tag-System für Keywords
@@ -1679,73 +1519,14 @@ Version: 1.0
             });
         }
 
-        function showPreviewMessage(content) {
-            const messages = document.getElementById('messages');
-            if (!messages) return;
-
-            const message = document.createElement('div');
-            message.className = 'message bot';
-            
-            const messageContent = document.createElement('div');
-            messageContent.className = 'message-content';
-            messageContent.innerHTML = content;
-            
-            message.appendChild(messageContent);
-            messages.appendChild(message);
-            messages.scrollTop = messages.scrollHeight;
-        }
-
-        function showBlogPreview(title, content) {
-            const messages = document.getElementById('messages');
-            if (!messages) return;
-
-            messages.innerHTML = '';
-
-            const blogContainer = document.createElement('div');
-            blogContainer.className = 'blog-content';
-            
-            const meta = document.createElement('div');
-            meta.className = 'blog-meta';
-            const keywords = getKeywordsString();
-            const wordCount = document.getElementById('wordCount')?.value || '1500';
-            const tone = document.getElementById('toneStyle')?.value || 'freundlich-beratend';
-            
-            meta.innerHTML = `
-                <strong>📊 Blog-Metadaten:</strong><br>
-                Keywords: ${keywords || 'Nicht angegeben'}<br>
-                Zielwortanzahl: ${wordCount}<br>
-                Stil: ${tone.replace('-', ' & ')}
-            `;
-            
-            const titleElement = document.createElement('h1');
-            titleElement.textContent = title;
-            
-            const contentElement = document.createElement('div');
-            contentElement.innerHTML = content;
-            
-            const exportContainer = document.createElement('div');
-            exportContainer.className = 'export-buttons';
-            exportContainer.innerHTML = `
-                <button class="export-btn" onclick="exportAsHTML()">📄 HTML Export</button>
-                <button class="export-btn" onclick="exportAsMarkdown()">📝 Markdown Export</button>
-                <button class="export-btn" onclick="copyToClipboard()">📋 Kopieren</button>
-                <button class="export-btn" onclick="generateSEOReport()">🔍 SEO-Report</button>
-            `;
-            
-            blogContainer.appendChild(meta);
-            blogContainer.appendChild(titleElement);
-            blogContainer.appendChild(contentElement);
-            blogContainer.appendChild(exportContainer);
-            
-            messages.appendChild(blogContainer);
-            messages.scrollTop = 0;
-        }
-
         function showTyping() {
             const typing = document.getElementById('typing');
-            const messages = document.getElementById('messages');
             if (typing) typing.style.display = 'block';
-            if (messages) messages.scrollTop = messages.scrollHeight + 100;
+            
+            // Scroll to typing indicator
+            setTimeout(() => {
+                typing.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }, 100);
         }
 
         function hideTyping() {
@@ -1760,7 +1541,7 @@ Version: 1.0
             const originalTitle = titleInput.value.trim();
             
             if (!originalTitle) {
-                alert('Bitte gib zuerst einen Titel ein!');
+                showStatusMessage('❌ Bitte gib zuerst einen Titel ein!');
                 return;
             }
 
@@ -1789,11 +1570,11 @@ Antworte NUR mit dem optimierten Titel, ohne Anführungszeichen oder Erklärunge
                 titleInput.value = optimizedTitle;
                 
                 hideTyping();
-                showPreviewMessage(`✅ <strong>SEO-optimierter Titel:</strong><br>"${optimizedTitle}"<br><br>💡 <em>Optimiert für: Keyword-Integration, Länge, Klick-Appeal</em>`);
+                showStatusMessage(`✅ <strong>SEO-optimierter Titel:</strong><br>"${optimizedTitle}"<br><br>💡 <em>Optimiert für: Keyword-Integration, Länge, Klick-Appeal</em>`);
                 
             } catch (error) {
                 hideTyping();
-                showPreviewMessage(`❌ <strong>Fehler bei der Titel-Optimierung:</strong> ${error.message}`);
+                showStatusMessage(`❌ <strong>Fehler bei der Titel-Optimierung:</strong> ${error.message}`);
             } finally {
                 if (optimizeBtn) {
                     optimizeBtn.classList.remove('loading');
@@ -1815,7 +1596,7 @@ Antworte NUR mit dem optimierten Titel, ohne Anführungszeichen oder Erklärunge
             const tone = toneSelect.value;
             
             if (!title) {
-                alert('Bitte gib zuerst einen Titel ein!');
+                showStatusMessage('❌ Bitte gib zuerst einen Titel ein!');
                 return;
             }
 
@@ -1830,6 +1611,7 @@ Antworte NUR mit dem optimierten Titel, ohne Anführungszeichen oder Erklärunge
             }
 
             showTyping();
+            clearStatusMessages();
 
             try {
                 const outline = await callAI(`Erstelle eine SEO-optimierte Gliederung für diesen Hochzeitsblog:
@@ -1866,11 +1648,11 @@ WICHTIG: Überprüfe vor der Antwort, dass wirklich ALLE Keywords in den Übersc
                 }, 100);
                 
                 hideTyping();
-                showPreviewMessage('✅ <strong>Gliederung erfolgreich erstellt!</strong><br><br>📋 Die H2 und H3-Struktur wurde automatisch generiert und ist SEO-optimiert.<br><br>💡 <em>Generiere Texte zu einzelnen Überschriften oder lade die Outline als HTML herunter!</em>');
+                showStatusMessage('✅ <strong>Gliederung erfolgreich erstellt!</strong><br><br>📋 Die H2 und H3-Struktur wurde automatisch generiert und ist SEO-optimiert.<br><br>💡 <em>Generiere Texte zu einzelnen Überschriften oder lade die Outline als HTML herunter!</em>');
                 
             } catch (error) {
                 hideTyping();
-                showPreviewMessage(`❌ <strong>Fehler bei der Gliederung-Generierung:</strong> ${error.message}`);
+                showStatusMessage(`❌ <strong>Fehler bei der Gliederung-Generierung:</strong> ${error.message}`);
             } finally {
                 if (generateBtn) {
                     generateBtn.disabled = false;
@@ -1979,7 +1761,7 @@ WICHTIG: Überprüfe vor der Antwort, dass wirklich ALLE Keywords in den Übersc
                         heading.appendChild(originalActions);
                         reattachEventListeners(heading);
                     }
-                    showPreviewMessage('❌ Überschrift-Änderung abgebrochen (leerer Text)');
+                    showStatusMessage('❌ Überschrift-Änderung abgebrochen (leerer Text)');
                 }
             }
             
@@ -2099,7 +1881,7 @@ WICHTIG: Überprüfe vor der Antwort, dass wirklich ALLE Keywords in den Übersc
                 }
                 
             } catch (error) {
-                showPreviewMessage(`❌ Fehler beim Löschen: ${error.message}`);
+                showStatusMessage(`❌ Fehler beim Löschen: ${error.message}`);
             }
         }
 
@@ -2169,11 +1951,11 @@ AUFGABE: Generiere einen informativen Textabsatz für die oben genannte Headline
                 addContentActions(contentDiv);
                 
                 const contentType = hasSubHeadings ? 'Einleitungstext' : 'Vollständiger Abschnitt';
-                showPreviewMessage(`✅ ${contentType} erfolgreich generiert für "${headingText}"`);
+                showStatusMessage(`✅ ${contentType} erfolgreich generiert für "${headingText}"`);
                 
             } catch (error) {
                 hideTyping();
-                showPreviewMessage(`❌ <strong>Fehler bei der Content-Generierung:</strong> ${error.message}`);
+                showStatusMessage(`❌ <strong>Fehler bei der Content-Generierung:</strong> ${error.message}`);
             } finally {
                 if (generateBtn) {
                     generateBtn.classList.remove('loading');
@@ -2234,15 +2016,16 @@ AUFGABE: Generiere einen informativen Textabsatz für die oben genannte Headline
             const textarea = document.createElement('textarea');
             textarea.value = currentText;
             textarea.style.width = '100%';
-            textarea.style.minHeight = '80px';
+            textarea.style.minHeight = '100px';
             textarea.style.background = 'rgba(0, 0, 0, 0.5)';
             textarea.style.border = '1px solid #7209b7';
-            textarea.style.borderRadius = '4px';
+            textarea.style.borderRadius = '8px';
             textarea.style.color = 'white';
-            textarea.style.padding = '8px';
+            textarea.style.padding = '12px';
             textarea.style.fontFamily = 'inherit';
-            textarea.style.fontSize = 'inherit';
+            textarea.style.fontSize = '14px';
             textarea.style.outline = 'none';
+            textarea.style.resize = 'vertical';
             
             contentDiv.innerHTML = '';
             contentDiv.appendChild(textarea);
@@ -2298,11 +2081,11 @@ AUFGABE: Generiere einen informativen Textabsatz für die oben genannte Headline
                 contentDiv.innerHTML = `<p>${newContent}</p>`;
                 addContentActions(contentDiv);
                 
-                showPreviewMessage('✅ Content erfolgreich neu generiert!');
+                showStatusMessage('✅ Content erfolgreich neu generiert!');
                 
             } catch (error) {
                 hideTyping();
-                showPreviewMessage(`❌ <strong>Fehler bei der Neu-Generierung:</strong> ${error.message}`);
+                showStatusMessage(`❌ <strong>Fehler bei der Neu-Generierung:</strong> ${error.message}`);
             } finally {
                 if (regenerateBtn) {
                     regenerateBtn.classList.remove('loading');
@@ -2316,7 +2099,7 @@ AUFGABE: Generiere einen informativen Textabsatz für die oben genannte Headline
             const textContent = contentElement.querySelector('p')?.textContent || contentElement.textContent || '';
             
             if (!textContent.trim()) {
-                showPreviewMessage('❌ Kein Text zum Verbessern gefunden!');
+                showStatusMessage('❌ Kein Text zum Verbessern gefunden!');
                 return;
             }
 
@@ -2514,7 +2297,7 @@ Gib nur den verbesserten Text zurück, ohne zusätzliche Erklärungen.`, 'text-i
             closeChatPopup();
             
             // Show success message
-            showPreviewMessage('✅ Text erfolgreich verbessert und übernommen!');
+            showStatusMessage('✅ Text erfolgreich verbessert und übernehmen!');
         }
 
         // Auto-resize textarea
@@ -2535,135 +2318,13 @@ Gib nur den verbesserten Text zurück, ohne zusätzliche Erklärungen.`, 'text-i
             });
         }
 
-        function exportAsHTML() {
-            const blogContent = document.querySelector('.blog-content');
-            if (!blogContent) {
-                showPreviewMessage('❌ Kein Blog-Content zum Exportieren gefunden!');
-                return;
-            }
-
-            const content = blogContent.cloneNode(true);
-            // Entferne Export-Buttons vom Export
-            const exportButtons = content.querySelector('.export-buttons');
-            if (exportButtons) exportButtons.remove();
-            
-            const htmlContent = `<!DOCTYPE html>
-        <html lang="de">
-        <head>
-            <meta charset="UTF-8">
-            <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>Hochzeitsblog Export</title>
-            <style>
-                body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }
-                h1 { color: #333; border-bottom: 2px solid #ff6b35; }
-                h2 { color: #ff6b35; border-left: 4px solid #ff6b35; padding-left: 12px; }
-                h3 { color: #20c997; border-left: 3px solid #20c997; padding-left: 12px; margin-left: 20px; }
-                p { line-height: 1.6; margin-bottom: 16px; }
-                .blog-meta { background: #f8f9fa; padding: 12px; border-radius: 8px; margin-bottom: 20px; }
-            </style>
-        </head>
-        <body>
-            ${content.innerHTML}
-        </body>
-        </html>`;
-
-            const blob = new Blob([htmlContent], { type: 'text/html' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = 'wedding-blog-export.html';
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-            showPreviewMessage('📄 HTML-Export erfolgreich!');
-        }
-
-        function exportAsMarkdown() {
-            const blogContent = document.querySelector('.blog-content');
-            if (!blogContent) {
-                showPreviewMessage('❌ Kein Blog-Content zum Exportieren gefunden!');
-                return;
-            }
-
-            const title = blogContent.querySelector('h1')?.textContent || 'Unbenannter Blog';
-            const meta = blogContent.querySelector('.blog-meta')?.textContent || '';
-            
-            let content = blogContent.innerHTML;
-            content = content.replace(/<div class="blog-meta">.*?<\/div>/s, '');
-            content = content.replace(/<div class="export-buttons">.*?<\/div>/s, '');
-            content = content.replace(/<h1[^>]*>(.*?)<\/h1>/g, '# $1\n\n');
-            content = content.replace(/<h2[^>]*>(.*?)<\/h2>/g, '## $1\n\n');
-            content = content.replace(/<h3[^>]*>(.*?)<\/h3>/g, '### $1\n\n');
-            content = content.replace(/<p[^>]*>(.*?)<\/p>/g, '$1\n\n');
-            content = content.replace(/<[^>]*>/g, '');
-            content = content.replace(/\n{3,}/g, '\n\n');
-            
-            const markdownContent = `# ${title}\n\n${meta ? meta + '\n\n' : ''}${content}`;
-            
-            const blob = new Blob([markdownContent], { type: 'text/markdown' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = 'wedding-blog-export.md';
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-            showPreviewMessage('📝 Markdown-Export erfolgreich!');
-        }
-
-        function copyToClipboard() {
-            const blogContent = document.querySelector('.blog-content');
-            if (!blogContent) {
-                showPreviewMessage('❌ Kein Blog-Content zum Kopieren gefunden!');
-                return;
-            }
-
-            const content = blogContent.innerText;
-            navigator.clipboard.writeText(content).then(() => {
-                showPreviewMessage('📋 Blogbeitrag in Zwischenablage kopiert!');
-            }).catch(() => {
-                showPreviewMessage('❌ Fehler beim Kopieren in die Zwischenablage!');
-            });
-        }
-
-        function generateSEOReport() {
-            const blogContent = document.querySelector('.blog-content');
-            if (!blogContent) {
-                showPreviewMessage('❌ Kein Blog-Content für SEO-Analyse gefunden!');
-                return;
-            }
-
-            const title = blogContent.querySelector('h1')?.textContent || '';
-            const h2Count = blogContent.querySelectorAll('h2').length;
-            const h3Count = blogContent.querySelectorAll('h3').length;
-            const paragraphs = blogContent.querySelectorAll('p').length;
-            const wordCount = blogContent.innerText.split(' ').length;
-            
-            const seoReport = `
-                <div style="background: rgba(40, 167, 69, 0.1); border: 1px solid rgba(40, 167, 69, 0.3); border-radius: 8px; padding: 16px; margin: 12px 0;">
-                    <h4 style="color: #28a745; margin-bottom: 12px;">🔍 SEO-Analyse Report</h4>
-                    <p style="margin: 8px 0;"><strong>Titel-Länge:</strong> ${title.length < 60 ? '✅' : '⚠️'} ${title.length} Zeichen ${title.length < 60 ? '(optimal)' : '(zu lang)'}</p>
-                    <p style="margin: 8px 0;"><strong>Wortanzahl:</strong> ${wordCount > 300 ? '✅' : '⚠️'} ${wordCount} Wörter ${wordCount > 300 ? '(gut)' : '(zu kurz)'}</p>
-                    <p style="margin: 8px 0;"><strong>H2-Struktur:</strong> ${h2Count > 2 ? '✅' : '⚠️'} ${h2Count} H2-Überschriften ${h2Count > 2 ? '(gut strukturiert)' : '(mehr H2s empfohlen)'}</p>
-                    <p style="margin: 8px 0;"><strong>H3-Struktur:</strong> ${h3Count > 3 ? '✅' : '⚠️'} ${h3Count} H3-Überschriften gefunden</p>
-                    <p style="margin: 8px 0;"><strong>Absätze:</strong> ${paragraphs > 5 ? '✅' : '⚠️'} ${paragraphs} Absätze ${paragraphs > 5 ? '(gute Lesbarkeit)' : '(mehr Absätze empfohlen)'}</p>
-                    <p style="margin: 8px 0;"><strong>Keywords:</strong> ${selectedKeywords.length > 2 ? '✅' : '⚠️'} ${selectedKeywords.length} Keywords definiert</p>
-                    <p style="margin: 8px 0;"><strong>Meta-Description:</strong> ✅ Automatisch generiert</p>
-                    <p style="margin: 8px 0;"><strong>Gesamtscore:</strong> <span style="color: #28a745; font-weight: bold;">${Math.min(95, 60 + (h2Count * 5) + (h3Count * 2) + (paragraphs * 2))}/100</span></p>
-                </div>
-            `;
-            showPreviewMessage(seoReport);
-        }
-
         // Initialisierung
         document.addEventListener('DOMContentLoaded', function() {
             initKeywordTagSystem();
             setupTextareaAutoResize();
             
             setTimeout(() => {
-                showPreviewMessage("🎯 <strong>Wedding Blog AI ist bereit!</strong><br><br>Konfiguriere deine KI-API und beginne mit der Eingabe deines Blog-Titels. Klicke auf den Zauberstab für SEO-Optimierung und generiere anschließend eine strukturierte Gliederung.<br><br>💡 <em>Tipp: Nutze aussagekräftige Keywords für bessere SEO-Ergebnisse!</em>");
+                showStatusMessage("🎯 <strong>Wedding Blog AI ist bereit!</strong><br><br>Konfiguriere deine KI-API und beginne mit der Eingabe deines Blog-Titels. Klicke auf den Zauberstab für SEO-Optimierung und generiere anschließend eine strukturierte Gliederung.<br><br>💡 <em>Tipp: Nutze aussagekräftige Keywords für bessere SEO-Ergebnisse!</em>");
             }, 1000);
 
             // Enter-Taste für Titel-Input
