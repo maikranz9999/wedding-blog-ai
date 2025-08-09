@@ -2332,12 +2332,6 @@ Gib nur den verbesserten Text zurück, ohne zusätzliche Erklärungen.`, 'text-i
             }
         }
 
-        // Demo-Funktionen entfernt - bereit für echte API-Integration
-        async function callAI(prompt, type = 'general') {
-            // Hier wird die echte KI-API integriert
-            throw new Error('API noch nicht konfiguriert. Bitte KI-API-Schlüssel hinzufügen.');
-        }
-
         function confirmImprovedText() {
             if (!currentChatContent || !improvedTextContent.trim()) {
                 return;
