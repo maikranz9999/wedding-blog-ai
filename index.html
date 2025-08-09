@@ -309,22 +309,22 @@
         .outline-content h2:hover,
         .outline-content h3:hover {
             background: rgba(255, 255, 255, 0.05);
-            border-radius: 8px;
+            padding-right: 160px;
         }
 
         .heading-actions {
             position: absolute;
-            right: -8px;
-            top: -8px;
+            right: 16px;
+            top: 50%;
+            transform: translateY(-50%);
             display: none;
-            gap: 6px;
+            gap: 8px;
             z-index: 10;
-            background: rgba(0, 0, 0, 0.9);
-            backdrop-filter: blur(15px);
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
             padding: 6px;
-            border-radius: 12px;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .outline-content h2:hover .heading-actions,
@@ -397,7 +397,7 @@
             border: 1px solid rgba(40, 167, 69, 0.3);
             border-radius: 12px;
             padding: 16px;
-            margin: 12px 0 24px 0;
+            margin: 12px 0;
             color: rgba(255, 255, 255, 0.9);
             font-size: 14px;
             line-height: 1.6;
@@ -408,29 +408,22 @@
 
         .generated-content:hover {
             background: rgba(40, 167, 69, 0.15);
-        }
-
-        .generated-content p {
-            margin-bottom: 12px;
-        }
-
-        .generated-content p:last-child {
-            margin-bottom: 0;
+            padding-right: 160px;
         }
 
         .generated-content .content-actions {
             position: absolute;
-            right: -8px;
-            top: -8px;
+            right: 16px;
+            top: 50%;
+            transform: translateY(-50%);
             display: none;
-            gap: 6px;
+            gap: 8px;
             z-index: 10;
-            background: rgba(0, 0, 0, 0.9);
-            backdrop-filter: blur(15px);
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
             padding: 6px;
-            border-radius: 12px;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .generated-content:hover .content-actions {
@@ -938,7 +931,6 @@
                 background: none;
                 border: none;
                 padding: 0;
-                box-shadow: none;
             }
         }
     </style>
@@ -1930,7 +1922,7 @@ WICHTIG: Überprüfe vor der Antwort, dass wirklich ALLE Keywords in den Übersc
                 const wordCount = document.getElementById('wordCount')?.value || '1500';
                 const tone = document.getElementById('toneStyle')?.value || 'freundlich-beratend';
                 
-                // Erweiterte Prompt mit allen Kontextinformationen - inkl. Absatz-Anweisung
+                // Erweiterte Prompt mit allen Kontextinformationen
                 const enhancedPrompt = `BLOG-HAUPTTITEL: "${blogTitle}"
 
 AKTUELLE HEADLINE: "${headingText}"
@@ -1943,25 +1935,15 @@ ZIELWORTANZAHL GESAMT: ${wordCount} Wörter
 
 TEXTTYP: ${hasSubHeadings ? 'Kurze Einleitung (da Unterüberschriften folgen)' : 'Vollständiger Abschnitt'}
 
-FORMAT-ANFORDERUNGEN:
-- Teile den Text in 2-3 sinnvolle Absätze auf
-- Jeder Absatz sollte eine eigenständige Idee behandeln
-- Verwende Zeilenschaltungen (\\n\\n) zwischen den Absätzen
-- Erste Satz sollte das Hauptkeyword enthalten
-
 AUFGABE: Generiere einen informativen Textabsatz für die oben genannte Headline. Der Text soll sich nahtlos in den Gesamtblog einfügen und die Keywords natürlich verwenden.`;
 
                 const demoContent = await callAI(enhancedPrompt, 'content-generation');
                 
                 hideTyping();
                 
-                // Text in Absätze aufteilen und als HTML formatieren
-                const paragraphs = demoContent.split(/\n\s*\n/).filter(p => p.trim());
-                const formattedContent = paragraphs.map(p => `<p>${p.trim()}</p>`).join('');
-                
                 const contentDiv = document.createElement('div');
                 contentDiv.className = 'generated-content';
-                contentDiv.innerHTML = formattedContent;
+                contentDiv.innerHTML = `<p>${demoContent}</p>`;
                 
                 heading.insertAdjacentElement('afterend', contentDiv);
                 
@@ -2030,13 +2012,11 @@ AUFGABE: Generiere einen informativen Textabsatz für die oben genannte Headline
         }
 
         function editContent(contentDiv) {
-            const paragraphs = contentDiv.querySelectorAll('p');
-            const currentText = Array.from(paragraphs).map(p => p.textContent).join('\n\n');
-            
+            const currentText = contentDiv.querySelector('p').textContent;
             const textarea = document.createElement('textarea');
             textarea.value = currentText;
             textarea.style.width = '100%';
-            textarea.style.minHeight = '120px';
+            textarea.style.minHeight = '100px';
             textarea.style.background = 'rgba(0, 0, 0, 0.5)';
             textarea.style.border = '1px solid #7209b7';
             textarea.style.borderRadius = '8px';
@@ -2046,7 +2026,6 @@ AUFGABE: Generiere einen informativen Textabsatz für die oben genannte Headline
             textarea.style.fontSize = '14px';
             textarea.style.outline = 'none';
             textarea.style.resize = 'vertical';
-            textarea.style.lineHeight = '1.6';
             
             contentDiv.innerHTML = '';
             contentDiv.appendChild(textarea);
@@ -2055,10 +2034,7 @@ AUFGABE: Generiere einen informativen Textabsatz für die oben genannte Headline
             function saveEdit() {
                 const newText = textarea.value.trim();
                 if (newText) {
-                    // Text in Absätze aufteilen und als HTML formatieren
-                    const paragraphs = newText.split(/\n\s*\n/).filter(p => p.trim());
-                    const formattedContent = paragraphs.map(p => `<p>${p.trim()}</p>`).join('');
-                    contentDiv.innerHTML = formattedContent;
+                    contentDiv.innerHTML = `<p>${newText}</p>`;
                     addContentActions(contentDiv);
                 } else {
                     deleteContent(contentDiv);
@@ -2071,9 +2047,7 @@ AUFGABE: Generiere einen informativen Textabsatz für die oben genannte Headline
                     saveEdit();
                 } else if (e.key === 'Escape') {
                     e.preventDefault();
-                    const paragraphs = currentText.split(/\n\s*\n/).filter(p => p.trim());
-                    const formattedContent = paragraphs.map(p => `<p>${p.trim()}</p>`).join('');
-                    contentDiv.innerHTML = formattedContent;
+                    contentDiv.innerHTML = `<p>${currentText}</p>`;
                     addContentActions(contentDiv);
                 }
             });
@@ -2097,23 +2071,14 @@ AUFGABE: Generiere einen informativen Textabsatz für die oben genannte Headline
             showTyping();
             
             try {
-                const newContent = await callAI(`Generiere einen neuen, alternativen Text für diesen Abschnitt eines Hochzeitsblogs. Der Text sollte das gleiche Thema behandeln, aber anders formuliert und mit frischen Ideen.
-
-FORMAT-ANFORDERUNGEN:
-- Teile den Text in 2-3 sinnvolle Absätze auf
-- Jeder Absatz sollte eine eigenständige Idee behandeln
-- Verwende Zeilenschaltungen (\\n\\n) zwischen den Absätzen
-- Länge: 130-200 Wörter`, 'content-regeneration');
+                const newContent = await callAI(`Generiere einen neuen, alternativen Text für diesen Abschnitt eines Hochzeitsblogs. Der Text sollte das gleiche Thema behandeln, aber anders formuliert und mit frischen Ideen.`, 'content-regeneration');
                 
                 hideTyping();
                 
                 const currentActions = contentDiv.querySelector('.content-actions');
                 if (currentActions) currentActions.remove();
                 
-                // Text in Absätze aufteilen und als HTML formatieren
-                const paragraphs = newContent.split(/\n\s*\n/).filter(p => p.trim());
-                const formattedContent = paragraphs.map(p => `<p>${p.trim()}</p>`).join('');
-                contentDiv.innerHTML = formattedContent;
+                contentDiv.innerHTML = `<p>${newContent}</p>`;
                 addContentActions(contentDiv);
                 
                 showStatusMessage('✅ Content erfolgreich neu generiert!');
@@ -2131,8 +2096,7 @@ FORMAT-ANFORDERUNGEN:
 
         // Chat Popup Functions
         function openChatPopup(contentElement) {
-            const paragraphs = contentElement.querySelectorAll('p');
-            const textContent = Array.from(paragraphs).map(p => p.textContent).join('\n\n') || contentElement.textContent || '';
+            const textContent = contentElement.querySelector('p')?.textContent || contentElement.textContent || '';
             
             if (!textContent.trim()) {
                 showStatusMessage('❌ Kein Text zum Verbessern gefunden!');
@@ -2324,9 +2288,7 @@ Gib nur den verbesserten Text zurück, ohne zusätzliche Erklärungen.`, 'text-i
             }
             
             // Replace the entire content with improved text
-            const paragraphs = improvedTextContent.split(/\n\s*\n/).filter(p => p.trim());
-            const formattedContent = paragraphs.map(p => `<p>${p.trim()}</p>`).join('');
-            currentChatContent.innerHTML = formattedContent;
+            currentChatContent.innerHTML = `<p>${improvedTextContent.replace(/\n/g, '<br>')}</p>`;
             
             // Re-add content actions
             addContentActions(currentChatContent);
