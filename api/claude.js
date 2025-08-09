@@ -61,7 +61,7 @@ export default async function handler(req, res) {
                 'anthropic-version': '2023-06-01'
             },
             body: JSON.stringify({
-                model: 'claude-3-sonnet-20240229',
+                model: 'claude-3-5-sonnet-20241022',
                 max_tokens: 2000,
                 temperature: 0.7,
                 system: systemPrompt,
