@@ -749,7 +749,284 @@
             100% { transform: rotate(360deg) scale(1.1); }
         }
 
-        @media (max-width: 768px) {
+        .chat-popup {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            z-index: 10000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .chat-popup.show {
+            display: flex;
+        }
+
+        .chat-popup-content {
+            width: 90%;
+            max-width: 800px;
+            height: 80%;
+            background: rgba(26, 26, 46, 0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 16px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .chat-popup-header {
+            background: linear-gradient(135deg, #7209b7, #533483);
+            color: white;
+            padding: 16px 24px;
+            font-weight: 600;
+            font-size: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-radius: 16px 16px 0 0;
+        }
+
+        .chat-popup-close {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            padding: 0;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s;
+        }
+
+        .chat-popup-close:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .original-text-display {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 16px;
+            margin: 16px 24px 0 24px;
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 14px;
+            line-height: 1.5;
+            max-height: 120px;
+            overflow-y: auto;
+        }
+
+        .original-text-label {
+            color: #ff6b35;
+            font-weight: 600;
+            font-size: 12px;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .chat-popup-messages {
+            flex: 1;
+            padding: 24px;
+            overflow-y: auto;
+            background: none;
+        }
+
+        .chat-popup-messages::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .chat-popup-messages::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 3px;
+        }
+
+        .chat-popup-messages::-webkit-scrollbar-thumb {
+            background: linear-gradient(to bottom, rgba(114, 9, 183, 0.6), rgba(83, 52, 131, 0.6));
+            border-radius: 3px;
+        }
+
+        .chat-message {
+            margin-bottom: 16px;
+            animation: slideInMessage 0.3s ease;
+        }
+
+        @keyframes slideInMessage {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .chat-message.user {
+            text-align: right;
+        }
+
+        .chat-message.ai {
+            text-align: left;
+        }
+
+        .chat-message-content {
+            display: inline-block;
+            max-width: 80%;
+            padding: 12px 16px;
+            border-radius: 12px;
+            font-size: 14px;
+            line-height: 1.4;
+        }
+
+        .chat-message.user .chat-message-content {
+            background: linear-gradient(135deg, #7209b7, #533483);
+            color: white;
+            border-bottom-right-radius: 4px;
+        }
+
+        .chat-message.ai .chat-message-content {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            color: rgba(255, 255, 255, 0.95);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-bottom-left-radius: 4px;
+        }
+
+        .chat-popup-input-area {
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 16px 24px;
+            display: flex;
+            gap: 12px;
+            align-items: flex-end;
+        }
+
+        .chat-popup-input {
+            flex: 1;
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            padding: 12px 16px;
+            color: rgba(255, 255, 255, 0.95);
+            font-size: 14px;
+            font-family: inherit;
+            resize: none;
+            min-height: 20px;
+            max-height: 100px;
+            transition: all 0.2s ease;
+        }
+
+        .chat-popup-input:focus {
+            outline: none;
+            border-color: #7209b7;
+            box-shadow: 0 0 0 3px rgba(114, 9, 183, 0.3);
+            background: rgba(0, 0, 0, 0.6);
+        }
+
+        .chat-popup-input::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .chat-send-btn {
+            background: linear-gradient(135deg, #ff6b35, #f7931e);
+            border: none;
+            border-radius: 12px;
+            color: white;
+            padding: 12px 16px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 12px rgba(255, 107, 53, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .chat-send-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 16px rgba(255, 107, 53, 0.4);
+        }
+
+        .chat-send-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .chat-send-btn.loading {
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        .chat-typing-indicator {
+            text-align: left;
+            margin-bottom: 16px;
+            display: none;
+        }
+
+        .chat-typing-indicator.show {
+            display: block;
+        }
+
+        .chat-typing-content {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 12px;
+            border-bottom-left-radius: 4px;
+            padding: 12px 16px;
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 14px;
+        }
+
+        .action-buttons-row {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .action-button {
+            background: linear-gradient(135deg, #28a745, #20c997);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 6px 12px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 8px rgba(40, 167, 69, 0.3);
+        }
+
+        .action-button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(40, 167, 69, 0.4);
+        }
+
+        .action-button.apply {
+            background: linear-gradient(135deg, #7209b7, #533483);
+            box-shadow: 0 2px 8px rgba(114, 9, 183, 0.3);
+        }
+
+        .action-button.apply:hover {
+            box-shadow: 0 4px 12px rgba(114, 9, 183, 0.4);
+        }
             .container {
                 flex-direction: column;
                 height: auto;
@@ -881,7 +1158,193 @@
     </div>
 
     <script>
-        // Wedding Blog AI - Hauptlogik
+        // Globale Variablen für Chat
+        let currentEditingElement = null;
+        let chatHistory = [];
+
+        async function regenerateContent(contentDiv) {
+            // Öffne Chat-Popup statt direkter Regenerierung
+            openChatPopup(contentDiv);
+        }
+
+        function openChatPopup(contentDiv) {
+            currentEditingElement = contentDiv;
+            const originalText = contentDiv.querySelector('p').textContent;
+            
+            // Setze Originaltext
+            document.getElementById('originalTextContent').textContent = originalText;
+            
+            // Leere Chat-Historie
+            chatHistory = [];
+            const chatMessages = document.getElementById('chatMessages');
+            chatMessages.innerHTML = '';
+            
+            // Füge Begrüßungsnachricht hinzu
+            addChatMessage('ai', 'Hallo! Ich helfe dir dabei, diesen Text zu verbessern. Beschreibe einfach, was du ändern möchtest - zum Beispiel:\n\n• "Mache den Text emotionaler"\n• "Füge mehr praktische Tipps hinzu"\n• "Schreibe es professioneller"\n• "Kürze den Text auf die Hälfte"');
+            
+            // Zeige Popup
+            document.getElementById('chatPopup').classList.add('show');
+            document.body.style.overflow = 'hidden';
+            
+            // Focus auf Input
+            setTimeout(() => {
+                document.getElementById('chatInput').focus();
+            }, 300);
+        }
+
+        function closeChatPopup() {
+            document.getElementById('chatPopup').classList.remove('show');
+            document.body.style.overflow = 'auto';
+            currentEditingElement = null;
+            chatHistory = [];
+        }
+
+        function addChatMessage(sender, message, showActions = false) {
+            const chatMessages = document.getElementById('chatMessages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `chat-message ${sender}`;
+            
+            const messageContent = document.createElement('div');
+            messageContent.className = 'chat-message-content';
+            messageContent.innerHTML = message.replace(/\n/g, '<br>');
+            
+            messageDiv.appendChild(messageContent);
+            
+            // Füge Action-Buttons für KI-Antworten hinzu
+            if (sender === 'ai' && showActions && message.length > 50) {
+                const actionsDiv = document.createElement('div');
+                actionsDiv.className = 'action-buttons-row';
+                actionsDiv.innerHTML = `
+                    <button class="action-button apply" onclick="applyImprovedText('${message.replace(/'/g, "\\'")}')">
+                        ✅ Text übernehmen
+                    </button>
+                    <button class="action-button" onclick="requestMoreChanges()">
+                        🔄 Weitere Änderungen
+                    </button>
+                `;
+                messageContent.appendChild(actionsDiv);
+            }
+            
+            chatMessages.appendChild(messageDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+            
+            // Speichere in Historie
+            chatHistory.push({ sender, message });
+        }
+
+        async function sendChatMessage() {
+            const input = document.getElementById('chatInput');
+            const sendBtn = document.getElementById('chatSendBtn');
+            const message = input.value.trim();
+            
+            if (!message || !currentEditingElement) return;
+            
+            // Zeige Benutzer-Nachricht
+            addChatMessage('user', message);
+            input.value = '';
+            
+            // Zeige Typing-Indikator
+            document.getElementById('chatTyping').classList.add('show');
+            sendBtn.disabled = true;
+            sendBtn.classList.add('loading');
+            
+            try {
+                // Simuliere KI-Antwort
+                const originalText = document.getElementById('originalTextContent').textContent;
+                const improvedText = await generateImprovedText(originalText, message);
+                
+                // Verstecke Typing-Indikator
+                document.getElementById('chatTyping').classList.remove('show');
+                
+                // Zeige KI-Antwort
+                addChatMessage('ai', improvedText, true);
+                
+            } catch (error) {
+                document.getElementById('chatTyping').classList.remove('show');
+                addChatMessage('ai', '❌ Entschuldigung, es gab einen Fehler beim Verbessern des Textes. Versuche es bitte erneut.');
+            } finally {
+                sendBtn.disabled = false;
+                sendBtn.classList.remove('loading');
+                input.focus();
+            }
+        }
+
+        async function generateImprovedText(originalText, instruction) {
+            // Simuliere API-Call
+            await new Promise(resolve => setTimeout(resolve, 2000 + Math.random() * 3000));
+            
+            // Demo-Verbesserungen basierend auf Instruction
+            const improvements = {
+                'emotionaler': originalText.replace(/\./g, '. Diese romantischen Momente werden euch für immer in Erinnerung bleiben.').replace(/sind/g, 'sind wahrhaft magisch und'),
+                'professioneller': originalText.replace(/ihr/g, 'Sie').replace(/euch/g, 'Ihnen').replace(/eure/g, 'Ihre'),
+                'kürzer': originalText.split('.').slice(0, 2).join('.') + '.',
+                'tipps': originalText + ' Hier sind einige bewährte Tipps: Planen Sie im Voraus, vergleichen Sie Preise und lassen Sie sich persönlich beraten.',
+                'praktisch': originalText + ' Praktische Empfehlung: Erstellen Sie eine Checkliste und setzen Sie klare Prioritäten für Ihr Budget.'
+            };
+            
+            // Finde passende Verbesserung
+            const lowerInstruction = instruction.toLowerCase();
+            for (const [key, value] of Object.entries(improvements)) {
+                if (lowerInstruction.includes(key)) {
+                    return value;
+                }
+            }
+            
+            // Standard-Verbesserung
+            return originalText.replace(/\./g, '. ') + ' Zusätzlich sollten Sie bedenken, dass eine sorgfältige Planung der Schlüssel zum Erfolg ist.';
+        }
+
+        function applyImprovedText(improvedText) {
+            if (!currentEditingElement) return;
+            
+            // Entferne HTML-Tags aus dem Text
+            const cleanText = improvedText.replace(/<br>/g, '\n').replace(/<[^>]*>/g, '');
+            
+            // Aktualisiere den Content
+            const currentActions = currentEditingElement.querySelector('.content-actions');
+            if (currentActions) currentActions.remove();
+            
+            currentEditingElement.innerHTML = `<p>${cleanText}</p>`;
+            addContentActions(currentEditingElement);
+            
+            // Schließe Popup
+            closeChatPopup();
+            
+            // Zeige Erfolgsmeldung
+            showPreviewMessage('✅ Text erfolgreich verbessert und übernommen!');
+        }
+
+        function requestMoreChanges() {
+            const input = document.getElementById('chatInput');
+            input.value = 'Kannst du den Text noch weiter verbessern?';
+            input.focus();
+        }
+
+        // Enter-Taste für Chat-Input
+        document.addEventListener('DOMContentLoaded', function() {
+            const chatInput = document.getElementById('chatInput');
+            if (chatInput) {
+                chatInput.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter' && !e.shiftKey) {
+                        e.preventDefault();
+                        sendChatMessage();
+                    }
+                });
+                
+                // Auto-resize textarea
+                chatInput.addEventListener('input', function() {
+                    this.style.height = 'auto';
+                    this.style.height = Math.min(this.scrollHeight, 100) + 'px';
+                });
+            }
+            
+            // ESC-Taste zum Schließen
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') {
+                    closeChatPopup();
+                }
+            });
+        });
         // Globale Variablen
         let currentOutline = '';
         let currentBlogPost = '';
