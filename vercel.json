@@ -1,6 +1,8 @@
 {
   "version": 2,
   "name": "wedding-blog-ai",
+  "buildCommand": "echo 'No build needed - static files'",
+  "outputDirectory": ".",
   "rewrites": [
     {
       "source": "/(.*)",
