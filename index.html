@@ -1353,7 +1353,7 @@
             }
         }
 
-        // WordPress Download Funktion (NEUE FUNKTION)
+        // WordPress Download Funktion
         function downloadForWordpress() {
             const titleInput = document.getElementById('blogTitle');
             const outlineContent = document.getElementById('outlineContent');
@@ -2103,6 +2103,7 @@ WICHTIG: Überprüfe vor der Antwort, dass wirklich ALLE Keywords in den Übersc
             }
         }
 
+        // VERBESSERTE generateContentForHeading Funktion mit vollem Kontext
         async function generateContentForHeading(heading) {
             const headingText = heading.textContent.trim();
             const headingLevel = heading.tagName;
@@ -2133,7 +2134,28 @@ WICHTIG: Überprüfe vor der Antwort, dass wirklich ALLE Keywords in den Übersc
             showTyping();
             
             try {
-                const demoContent = await callAI(`Generiere einen informativen Textabsatz für die Überschrift "${headingText}" in einem Hochzeitsblog. Der Text sollte ${hasSubHeadings ? 'eine kurze Einleitung sein' : 'ein vollständiger Abschnitt sein'} und hilfreich für Hochzeitspaare.`, 'content-generation');
+                // Sammle alle Kontextinformationen
+                const blogTitle = document.getElementById('blogTitle')?.value.trim() || '';
+                const keywords = getKeywordsString();
+                const wordCount = document.getElementById('wordCount')?.value || '1500';
+                const tone = document.getElementById('toneStyle')?.value || 'freundlich-beratend';
+                
+                // Erweiterte Prompt mit allen Kontextinformationen
+                const enhancedPrompt = `BLOG-HAUPTTITEL: "${blogTitle}"
+
+AKTUELLE HEADLINE: "${headingText}"
+
+KEYWORDS (integriere diese natürlich): ${keywords || 'Hochzeit, Hochzeitsplanung'}
+
+TONFALL & STIL: ${tone.replace('-', ' & ')}
+
+ZIELWORTANZAHL GESAMT: ${wordCount} Wörter
+
+TEXTTYP: ${hasSubHeadings ? 'Kurze Einleitung (da Unterüberschriften folgen)' : 'Vollständiger Abschnitt'}
+
+AUFGABE: Generiere einen informativen Textabsatz für die oben genannte Headline. Der Text soll sich nahtlos in den Gesamtblog einfügen und die Keywords natürlich verwenden.`;
+
+                const demoContent = await callAI(enhancedPrompt, 'content-generation');
                 
                 hideTyping();
                 
