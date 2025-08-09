@@ -5,7 +5,7 @@
   "main": "index.html",
   "scripts": {
     "dev": "live-server .",
-    "build": "echo 'Build complete - static files ready'",
+    "build": "echo 'Static files ready - no build needed'",
     "start": "live-server .",
     "deploy": "vercel --prod"
   },
@@ -22,13 +22,10 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/yourusername/wedding-blog-ai.git"
+    "url": "https://github.com/maikranz9999/wedding-blog-ai.git"
   },
   "homepage": "https://wedding-blog-ai.vercel.app",
   "devDependencies": {
     "live-server": "^1.2.2"
-  },
-  "engines": {
-    "node": ">=14.0.0"
   }
 }
