@@ -1353,6 +1353,190 @@
             }
         }
 
+        // WordPress Download Funktion (NEUE FUNKTION)
+        function downloadForWordpress() {
+            const titleInput = document.getElementById('blogTitle');
+            const outlineContent = document.getElementById('outlineContent');
+            
+            if (!titleInput || !outlineContent) {
+                showPreviewMessage('❌ Keine Gliederung zum Download gefunden!');
+                return;
+            }
+
+            const title = titleInput.value.trim() || 'Hochzeitsblog';
+            const keywords = getKeywordsString();
+            const wordCount = document.getElementById('wordCount')?.value || '1500';
+            const tone = document.getElementById('toneStyle')?.value || 'freundlich-beratend';
+            
+            // Sammle alle Inhalte aus der Outline
+            let wordpressContent = '';
+            let excerpt = '';
+            let firstParagraph = '';
+            
+            // Durchlaufe alle Kinder der Outline
+            const allElements = Array.from(outlineContent.children);
+            
+            allElements.forEach((element, index) => {
+                if (element.tagName === 'H2') {
+                    // Entferne Action-Buttons aus dem Text
+                    const headingText = element.textContent.replace(/✎×✦/g, '').trim();
+                    wordpressContent += `<!-- wp:heading {"level":2} -->\n<h2 class="wp-block-heading">${headingText}</h2>\n<!-- /wp:heading -->\n\n`;
+                } else if (element.tagName === 'H3') {
+                    // Entferne Action-Buttons aus dem Text
+                    const headingText = element.textContent.replace(/✎×✦/g, '').trim();
+                    wordpressContent += `<!-- wp:heading {"level":3} -->\n<h3 class="wp-block-heading">${headingText}</h3>\n<!-- /wp:heading -->\n\n`;
+                } else if (element.classList.contains('generated-content')) {
+                    // Füge generierten Content hinzu
+                    const paragraph = element.querySelector('p');
+                    if (paragraph) {
+                        const paragraphText = paragraph.textContent.trim();
+                        wordpressContent += `<!-- wp:paragraph -->\n<p>${paragraphText}</p>\n<!-- /wp:paragraph -->\n\n`;
+                        
+                        // Verwende ersten Paragraph als Excerpt
+                        if (!firstParagraph && paragraphText.length > 50) {
+                            firstParagraph = paragraphText;
+                            // Erstelle Excerpt (erste 155 Zeichen für SEO)
+                            excerpt = paragraphText.substring(0, 155);
+                            if (paragraphText.length > 155) {
+                                excerpt += '...';
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Fallback Excerpt falls kein Content generiert wurde
+            if (!excerpt) {
+                excerpt = `Entdecke alles über ${title}. Ein umfassender Guide mit praktischen Tipps und Expertenwissen für deine perfekte Hochzeit.`;
+            }
+
+            // WordPress-spezifisches Format erstellen
+            const wordpressPost = `<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>WordPress Import: ${title}</title>
+</head>
+<body>
+
+<!-- ========================================= -->
+<!-- WORDPRESS POST DATEN                     -->
+<!-- ========================================= -->
+
+POST TITEL:
+${title}
+
+POST EXCERPT (Meta Description):
+${excerpt}
+
+KATEGORIEN:
+Hochzeitsplanung, Hochzeitstipps
+
+TAGS:
+${keywords}
+
+FOKUS KEYWORD (SEO):
+${keywords.split(',')[0]?.trim() || 'Hochzeit'}
+
+<!-- ========================================= -->
+<!-- WORDPRESS GUTENBERG CONTENT              -->
+<!-- ========================================= -->
+
+<!-- Kopiere den folgenden Content direkt in den WordPress Gutenberg Editor: -->
+
+${wordpressContent}
+
+<!-- ========================================= -->
+<!-- SEO OPTIMIERUNGEN                        -->
+<!-- ========================================= -->
+
+YOAST/RANKMATH SEO EINSTELLUNGEN:
+
+Meta Title: ${title}
+Meta Description: ${excerpt}
+Focus Keyword: ${keywords.split(',')[0]?.trim() || 'Hochzeit'}
+Canonical URL: https://deine-website.de/${title.toLowerCase().replace(/[^a-zA-Z0-9äöüß\s]/g, '').replace(/\s+/g, '-')}/
+
+Open Graph:
+- OG Title: ${title}
+- OG Description: ${excerpt}
+- OG Image: [Hochzeitsbild hinzufügen]
+
+Schema Markup (JSON-LD):
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "${title}",
+  "description": "${excerpt}",
+  "keywords": "${keywords}",
+  "author": {
+    "@type": "Person",
+    "name": "[Dein Name]"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "[Deine Website]"
+  },
+  "datePublished": "${new Date().toISOString()}",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://deine-website.de/${title.toLowerCase().replace(/[^a-zA-Z0-9äöüß\s]/g, '').replace(/\s+/g, '-')}/"
+  }
+}
+
+<!-- ========================================= -->
+<!-- WORDPRESS IMPORT ANLEITUNG               -->
+<!-- ========================================= -->
+
+IMPORT SCHRITTE:
+
+1. WordPress Admin → Beiträge → Erstellen
+2. Titel einfügen: "${title}"
+3. Gutenberg Content (oben) kopieren und einfügen
+4. Kategorien setzen: Hochzeitsplanung, Hochzeitstipps
+5. Tags hinzufügen: ${keywords}
+6. Excerpt/Auszug setzen: "${excerpt}"
+
+SEO PLUGIN KONFIGURATION:
+7. Yoast/RankMath: Focus Keyword eintragen
+8. Meta Description überprüfen
+9. Schema Markup hinzufügen (falls nicht automatisch)
+10. Featured Image hochladen
+11. Interne Links zu verwandten Artikeln hinzufügen
+
+ZUSÄTZLICHE OPTIMIERUNGEN:
+- Alt-Texte für Bilder mit Keywords
+- Interne Verlinkung zu anderen Hochzeitsartikeln  
+- Call-to-Action am Ende hinzufügen
+- Social Media Sharing Buttons aktivieren
+
+<!-- ========================================= -->
+<!-- BLOG METADATEN                           -->
+<!-- ========================================= -->
+
+Erstellt: ${new Date().toLocaleDateString('de-DE')}
+Zielwortanzahl: ${wordCount}
+Stil: ${tone.replace('-', ' & ')}
+Tool: Wedding Blog AI
+Version: 1.0
+
+</body>
+</html>`;
+
+            // Download starten
+            const blob = new Blob([wordpressPost], { type: 'text/html;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `wordpress-${title.replace(/[^a-zA-Z0-9äöüÄÖÜß\s]/g, '').replace(/\s+/g, '-')}.html`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            showPreviewMessage('📄 <strong>WordPress-Import erfolgreich!</strong><br><br>✅ Die Datei enthält:<br>• Gutenberg-kompatiblen Content<br>• SEO-Metadaten<br>• Import-Anleitung<br>• Schema Markup<br><br>💡 <em>Öffne die Datei und folge der Schritt-für-Schritt Anleitung!</em>');
+        }
+
         // Tag-System für Keywords
         function initKeywordTagSystem() {
             const input = document.getElementById('mainKeyword');
@@ -1696,144 +1880,6 @@ WICHTIG: Überprüfe vor der Antwort, dass wirklich ALLE Keywords in den Übersc
             }
         }
 
-        function downloadOutlineAsHTML() {
-            const titleInput = document.getElementById('blogTitle');
-            const outlineContent = document.getElementById('outlineContent');
-            
-            if (!titleInput || !outlineContent) {
-                showPreviewMessage('❌ Keine Gliederung zum Download gefunden!');
-                return;
-            }
-
-            const title = titleInput.value.trim() || 'Hochzeitsblog';
-            const keywords = getKeywordsString();
-            const wordCount = document.getElementById('wordCount')?.value || '1500';
-            const tone = document.getElementById('toneStyle')?.value || 'freundlich-beratend';
-            
-            // Sammle alle Inhalte aus der Outline
-            let htmlContent = '';
-            
-            // Durchlaufe alle Kinder der Outline
-            const allElements = Array.from(outlineContent.children);
-            
-            allElements.forEach(element => {
-                if (element.tagName === 'H2') {
-                    // Entferne Action-Buttons aus dem Text
-                    const headingText = element.textContent.replace(/✎×✦/g, '').trim();
-                    htmlContent += `<h2>${headingText}</h2>\n`;
-                } else if (element.tagName === 'H3') {
-                    // Entferne Action-Buttons aus dem Text
-                    const headingText = element.textContent.replace(/✎×✦/g, '').trim();
-                    htmlContent += `<h3>${headingText}</h3>\n`;
-                } else if (element.classList.contains('generated-content')) {
-                    // Füge generierten Content hinzu
-                    const paragraph = element.querySelector('p');
-                    if (paragraph) {
-                        htmlContent += `<p>${paragraph.textContent}</p>\n`;
-                    }
-                }
-            });
-
-            // Erstelle vollständiges HTML-Dokument
-            const fullHTML = `<!DOCTYPE html>
-<html lang="de">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>${title}</title>
-    <meta name="description" content="Hochzeitsblog: ${title}">
-    <meta name="keywords" content="${keywords}">
-    <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 40px 20px;
-            line-height: 1.6;
-            color: #333;
-            background-color: #fff;
-        }
-        h1 {
-            color: #2c3e50;
-            border-bottom: 3px solid #ff6b35;
-            padding-bottom: 10px;
-            margin-bottom: 30px;
-            font-size: 2.5em;
-            font-weight: 700;
-        }
-        h2 {
-            color: #ff6b35;
-            border-left: 5px solid #ff6b35;
-            padding-left: 15px;
-            margin-top: 40px;
-            margin-bottom: 20px;
-            font-size: 1.8em;
-            font-weight: 600;
-        }
-        h3 {
-            color: #20c997;
-            border-left: 3px solid #20c997;
-            padding-left: 15px;
-            margin-left: 20px;
-            margin-top: 25px;
-            margin-bottom: 15px;
-            font-size: 1.4em;
-            font-weight: 500;
-        }
-        p {
-            margin-bottom: 20px;
-            text-align: justify;
-            font-size: 1.1em;
-        }
-        .meta-info {
-            background: #f8f9fa;
-            border: 1px solid #e9ecef;
-            border-radius: 8px;
-            padding: 20px;
-            margin-bottom: 30px;
-            font-size: 0.9em;
-            color: #6c757d;
-        }
-        .meta-info strong {
-            color: #495057;
-        }
-        @media (max-width: 768px) {
-            body { padding: 20px 15px; }
-            h1 { font-size: 2em; }
-            h2 { font-size: 1.5em; }
-            h3 { font-size: 1.2em; margin-left: 10px; }
-        }
-    </style>
-</head>
-<body>
-    <div class="meta-info">
-        <strong>📊 Blog-Informationen:</strong><br>
-        Keywords: ${keywords || 'Nicht angegeben'}<br>
-        Zielwortanzahl: ${wordCount}<br>
-        Stil: ${tone.replace('-', ' & ')}<br>
-        Erstellt: ${new Date().toLocaleDateString('de-DE')}
-    </div>
-    
-    <h1>${title}</h1>
-    
-    ${htmlContent}
-</body>
-</html>`;
-
-            // Download starten
-            const blob = new Blob([fullHTML], { type: 'text/html;charset=utf-8' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `${title.replace(/[^a-zA-Z0-9äöüÄÖÜß\s]/g, '').replace(/\s+/g, '-')}.html`;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-            
-            showPreviewMessage('📄 <strong>HTML-Download erfolgreich!</strong><br><br>Die Outline mit allen generierten Texten wurde als HTML-Datei heruntergeladen.');
-        }
-
         function addHeadingActions() {
             const outlineContent = document.getElementById('outlineContent');
             if (!outlineContent) return;
@@ -1879,65 +1925,6 @@ WICHTIG: Überprüfe vor der Antwort, dass wirklich ALLE Keywords in den Übersc
                 actions.appendChild(deleteBtn);
                 actions.appendChild(generateBtn);
                 heading.appendChild(actions);
-            });
-        }
-
-        function exportAsHTML() {
-            const blogContent = document.querySelector('.blog-content');
-            if (!blogContent) {
-                showPreviewMessage('❌ Kein Blog-Content zum Exportieren gefunden!');
-                return;
-            }
-
-            const content = blogContent.cloneNode(true);
-            // Entferne Export-Buttons vom Export
-            const exportButtons = content.querySelector('.export-buttons');
-            if (exportButtons) exportButtons.remove();
-            
-            const htmlContent = `<!DOCTYPE html>
-        <html lang="de">
-        <head>
-            <meta charset="UTF-8">
-            <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>Hochzeitsblog Export</title>
-            <style>
-                body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }
-                h1 { color: #333; border-bottom: 2px solid #ff6b35; }
-                h2 { color: #ff6b35; border-left: 4px solid #ff6b35; padding-left: 12px; }
-                h3 { color: #20c997; border-left: 3px solid #20c997; padding-left: 12px; margin-left: 20px; }
-                p { line-height: 1.6; margin-bottom: 16px; }
-                .blog-meta { background: #f8f9fa; padding: 12px; border-radius: 8px; margin-bottom: 20px; }
-            </style>
-        </head>
-        <body>
-            ${content.innerHTML}
-        </body>
-        </html>`;
-
-            const blob = new Blob([htmlContent], { type: 'text/html' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = 'wedding-blog-export.html';
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-            showPreviewMessage('📄 HTML-Export erfolgreich!');
-        }
-
-        function copyToClipboard() {
-            const blogContent = document.querySelector('.blog-content');
-            if (!blogContent) {
-                showPreviewMessage('❌ Kein Blog-Content zum Kopieren gefunden!');
-                return;
-            }
-
-            const content = blogContent.innerText;
-            navigator.clipboard.writeText(content).then(() => {
-                showPreviewMessage('📋 Blogbeitrag in Zwischenablage kopiert!');
-            }).catch(() => {
-                showPreviewMessage('❌ Fehler beim Kopieren in die Zwischenablage!');
             });
         }
 
@@ -2220,38 +2207,86 @@ WICHTIG: Überprüfe vor der Antwort, dass wirklich ALLE Keywords in den Übersc
             contentDiv.appendChild(actions);
         }
 
-        function exportAsMarkdown() {
-            const blogContent = document.querySelector('.blog-content');
-            if (!blogContent) {
-                showPreviewMessage('❌ Kein Blog-Content zum Exportieren gefunden!');
-                return;
+        function editContent(contentDiv) {
+            const currentText = contentDiv.querySelector('p').textContent;
+            const textarea = document.createElement('textarea');
+            textarea.value = currentText;
+            textarea.style.width = '100%';
+            textarea.style.minHeight = '80px';
+            textarea.style.background = 'rgba(0, 0, 0, 0.5)';
+            textarea.style.border = '1px solid #7209b7';
+            textarea.style.borderRadius = '4px';
+            textarea.style.color = 'white';
+            textarea.style.padding = '8px';
+            textarea.style.fontFamily = 'inherit';
+            textarea.style.fontSize = 'inherit';
+            textarea.style.outline = 'none';
+            
+            contentDiv.innerHTML = '';
+            contentDiv.appendChild(textarea);
+            textarea.focus();
+            
+            function saveEdit() {
+                const newText = textarea.value.trim();
+                if (newText) {
+                    contentDiv.innerHTML = `<p>${newText}</p>`;
+                    addContentActions(contentDiv);
+                } else {
+                    deleteContent(contentDiv);
+                }
             }
+            
+            textarea.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' && e.ctrlKey) {
+                    e.preventDefault();
+                    saveEdit();
+                } else if (e.key === 'Escape') {
+                    e.preventDefault();
+                    contentDiv.innerHTML = `<p>${currentText}</p>`;
+                    addContentActions(contentDiv);
+                }
+            });
+            
+            textarea.addEventListener('blur', saveEdit);
+        }
 
-            const title = blogContent.querySelector('h1')?.textContent || 'Unbenannter Blog';
-            const meta = blogContent.querySelector('.blog-meta')?.textContent || '';
+        function deleteContent(contentDiv) {
+            if (confirm('Möchtest du diesen generierten Content wirklich löschen?')) {
+                contentDiv.remove();
+            }
+        }
+
+        async function regenerateContent(contentDiv) {
+            const regenerateBtn = contentDiv.querySelector('.action-btn.magic');
+            if (regenerateBtn) {
+                regenerateBtn.classList.add('loading');
+                regenerateBtn.disabled = true;
+            }
             
-            let content = blogContent.innerHTML;
-            content = content.replace(/<div class="blog-meta">.*?<\/div>/s, '');
-            content = content.replace(/<div class="export-buttons">.*?<\/div>/s, '');
-            content = content.replace(/<h1[^>]*>(.*?)<\/h1>/g, '# $1\n\n');
-            content = content.replace(/<h2[^>]*>(.*?)<\/h2>/g, '## $1\n\n');
-            content = content.replace(/<h3[^>]*>(.*?)<\/h3>/g, '### $1\n\n');
-            content = content.replace(/<p[^>]*>(.*?)<\/p>/g, '$1\n\n');
-            content = content.replace(/<[^>]*>/g, '');
-            content = content.replace(/\n{3,}/g, '\n\n');
+            showTyping();
             
-            const markdownContent = `# ${title}\n\n${meta ? meta + '\n\n' : ''}${content}`;
-            
-            const blob = new Blob([markdownContent], { type: 'text/markdown' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = 'wedding-blog-export.md';
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-            showPreviewMessage('📝 Markdown-Export erfolgreich!');
+            try {
+                const newContent = await callAI(`Generiere einen neuen, alternativen Text für diesen Abschnitt eines Hochzeitsblogs. Der Text sollte das gleiche Thema behandeln, aber anders formuliert und mit frischen Ideen.`, 'content-regeneration');
+                
+                hideTyping();
+                
+                const currentActions = contentDiv.querySelector('.content-actions');
+                if (currentActions) currentActions.remove();
+                
+                contentDiv.innerHTML = `<p>${newContent}</p>`;
+                addContentActions(contentDiv);
+                
+                showPreviewMessage('✅ Content erfolgreich neu generiert!');
+                
+            } catch (error) {
+                hideTyping();
+                showPreviewMessage(`❌ <strong>Fehler bei der Neu-Generierung:</strong> ${error.message}`);
+            } finally {
+                if (regenerateBtn) {
+                    regenerateBtn.classList.remove('loading');
+                    regenerateBtn.disabled = false;
+                }
+            }
         }
 
         // Chat Popup Functions
@@ -2478,86 +2513,97 @@ Gib nur den verbesserten Text zurück, ohne zusätzliche Erklärungen.`, 'text-i
             });
         }
 
-        function editContent(contentDiv) {
-            const currentText = contentDiv.querySelector('p').textContent;
-            const textarea = document.createElement('textarea');
-            textarea.value = currentText;
-            textarea.style.width = '100%';
-            textarea.style.minHeight = '80px';
-            textarea.style.background = 'rgba(0, 0, 0, 0.5)';
-            textarea.style.border = '1px solid #7209b7';
-            textarea.style.borderRadius = '4px';
-            textarea.style.color = 'white';
-            textarea.style.padding = '8px';
-            textarea.style.fontFamily = 'inherit';
-            textarea.style.fontSize = 'inherit';
-            textarea.style.outline = 'none';
-            
-            contentDiv.innerHTML = '';
-            contentDiv.appendChild(textarea);
-            textarea.focus();
-            
-            function saveEdit() {
-                const newText = textarea.value.trim();
-                if (newText) {
-                    contentDiv.innerHTML = `<p>${newText}</p>`;
-                    addContentActions(contentDiv);
-                } else {
-                    deleteContent(contentDiv);
-                }
+        function exportAsHTML() {
+            const blogContent = document.querySelector('.blog-content');
+            if (!blogContent) {
+                showPreviewMessage('❌ Kein Blog-Content zum Exportieren gefunden!');
+                return;
             }
+
+            const content = blogContent.cloneNode(true);
+            // Entferne Export-Buttons vom Export
+            const exportButtons = content.querySelector('.export-buttons');
+            if (exportButtons) exportButtons.remove();
             
-            textarea.addEventListener('keydown', (e) => {
-                if (e.key === 'Enter' && e.ctrlKey) {
-                    e.preventDefault();
-                    saveEdit();
-                } else if (e.key === 'Escape') {
-                    e.preventDefault();
-                    contentDiv.innerHTML = `<p>${currentText}</p>`;
-                    addContentActions(contentDiv);
-                }
+            const htmlContent = `<!DOCTYPE html>
+        <html lang="de">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Hochzeitsblog Export</title>
+            <style>
+                body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }
+                h1 { color: #333; border-bottom: 2px solid #ff6b35; }
+                h2 { color: #ff6b35; border-left: 4px solid #ff6b35; padding-left: 12px; }
+                h3 { color: #20c997; border-left: 3px solid #20c997; padding-left: 12px; margin-left: 20px; }
+                p { line-height: 1.6; margin-bottom: 16px; }
+                .blog-meta { background: #f8f9fa; padding: 12px; border-radius: 8px; margin-bottom: 20px; }
+            </style>
+        </head>
+        <body>
+            ${content.innerHTML}
+        </body>
+        </html>`;
+
+            const blob = new Blob([htmlContent], { type: 'text/html' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'wedding-blog-export.html';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            showPreviewMessage('📄 HTML-Export erfolgreich!');
+        }
+
+        function exportAsMarkdown() {
+            const blogContent = document.querySelector('.blog-content');
+            if (!blogContent) {
+                showPreviewMessage('❌ Kein Blog-Content zum Exportieren gefunden!');
+                return;
+            }
+
+            const title = blogContent.querySelector('h1')?.textContent || 'Unbenannter Blog';
+            const meta = blogContent.querySelector('.blog-meta')?.textContent || '';
+            
+            let content = blogContent.innerHTML;
+            content = content.replace(/<div class="blog-meta">.*?<\/div>/s, '');
+            content = content.replace(/<div class="export-buttons">.*?<\/div>/s, '');
+            content = content.replace(/<h1[^>]*>(.*?)<\/h1>/g, '# $1\n\n');
+            content = content.replace(/<h2[^>]*>(.*?)<\/h2>/g, '## $1\n\n');
+            content = content.replace(/<h3[^>]*>(.*?)<\/h3>/g, '### $1\n\n');
+            content = content.replace(/<p[^>]*>(.*?)<\/p>/g, '$1\n\n');
+            content = content.replace(/<[^>]*>/g, '');
+            content = content.replace(/\n{3,}/g, '\n\n');
+            
+            const markdownContent = `# ${title}\n\n${meta ? meta + '\n\n' : ''}${content}`;
+            
+            const blob = new Blob([markdownContent], { type: 'text/markdown' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'wedding-blog-export.md';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            showPreviewMessage('📝 Markdown-Export erfolgreich!');
+        }
+
+        function copyToClipboard() {
+            const blogContent = document.querySelector('.blog-content');
+            if (!blogContent) {
+                showPreviewMessage('❌ Kein Blog-Content zum Kopieren gefunden!');
+                return;
+            }
+
+            const content = blogContent.innerText;
+            navigator.clipboard.writeText(content).then(() => {
+                showPreviewMessage('📋 Blogbeitrag in Zwischenablage kopiert!');
+            }).catch(() => {
+                showPreviewMessage('❌ Fehler beim Kopieren in die Zwischenablage!');
             });
-            
-            textarea.addEventListener('blur', saveEdit);
-        }
-
-        function deleteContent(contentDiv) {
-            if (confirm('Möchtest du diesen generierten Content wirklich löschen?')) {
-                contentDiv.remove();
-            }
-        }
-
-        async function regenerateContent(contentDiv) {
-            const regenerateBtn = contentDiv.querySelector('.action-btn.magic');
-            if (regenerateBtn) {
-                regenerateBtn.classList.add('loading');
-                regenerateBtn.disabled = true;
-            }
-            
-            showTyping();
-            
-            try {
-                const newContent = await callAI(`Generiere einen neuen, alternativen Text für diesen Abschnitt eines Hochzeitsblogs. Der Text sollte das gleiche Thema behandeln, aber anders formuliert und mit frischen Ideen.`, 'content-regeneration');
-                
-                hideTyping();
-                
-                const currentActions = contentDiv.querySelector('.content-actions');
-                if (currentActions) currentActions.remove();
-                
-                contentDiv.innerHTML = `<p>${newContent}</p>`;
-                addContentActions(contentDiv);
-                
-                showPreviewMessage('✅ Content erfolgreich neu generiert!');
-                
-            } catch (error) {
-                hideTyping();
-                showPreviewMessage(`❌ <strong>Fehler bei der Neu-Generierung:</strong> ${error.message}`);
-            } finally {
-                if (regenerateBtn) {
-                    regenerateBtn.classList.remove('loading');
-                    regenerateBtn.disabled = false;
-                }
-            }
         }
 
         function generateSEOReport() {
