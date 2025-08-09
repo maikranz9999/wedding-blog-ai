@@ -1647,13 +1647,25 @@ Antworte NUR mit dem optimierten Titel, ohne Anführungszeichen oder Erklärunge
             showTyping();
 
             try {
-                const outline = await callAI(`Erstelle eine strukturierte SEO-optimierte Gliederung für einen Hochzeitsblog mit dem Titel: "${title}". 
-                
-Keywords: ${keywords}
-Wortanzahl: ${wordCount}
-Stil: ${tone}
+                const outline = await callAI(`Erstelle eine SEO-optimierte Gliederung für diesen Hochzeitsblog:
 
-Die Gliederung sollte H2 und H3 Überschriften verwenden und perfekt für Hochzeitspaare geeignet sein. Format: HTML mit <h2> und <h3> Tags.`, 'outline-generation');
+TITEL: "${title}"
+
+PFLICHT-KEYWORDS (MÜSSEN in Überschriften verwendet werden):
+${keywords}
+
+ZWINGENDE ANFORDERUNGEN:
+- JEDES der oben genannten Keywords MUSS mindestens 1x in einer H2 oder H3 Überschrift vorkommen
+- Verwende weitere relevante Begriffe, aber die Pflicht-Keywords sind NICHT optional
+- Wortanzahl: ${wordCount}
+- Stil: ${tone}
+- Format: NUR HTML <h2> und <h3> Tags
+
+Beispiel einer korrekten Verwendung:
+<h2>Die perfekte Hochzeitslocation finden</h2>
+<h3>Hochzeitsplanung leicht gemacht</h3>
+
+WICHTIG: Überprüfe vor der Antwort, dass wirklich ALLE Keywords in den Überschriften verwendet wurden!`, 'outline-generation');
                 
                 currentOutline = outline;
                 
