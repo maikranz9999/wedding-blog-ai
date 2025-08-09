@@ -1,0 +1,885 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wedding Blog AI - Intelligenter Blog-Generator</title>
+    <meta name="description" content="Erstelle professionelle Hochzeitsblogs mit KI-Unterstützung. SEO-optimiert, strukturiert und hochwertig.">
+    <meta name="keywords" content="Wedding Blog, Hochzeitsblog, KI Generator, SEO, Hochzeitsplanung">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💍</text></svg>">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 25%, #0f3460 50%, #533483 75%, #7209b7 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #ffffff;
+            overflow-x: hidden;
+            font-size: 14px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: none;
+            border: none;
+            border-radius: 0;
+            overflow: visible;
+            display: flex;
+            height: 90vh;
+            box-shadow: none;
+        }
+
+        .sidebar {
+            width: 600px;
+            background: rgba(26, 26, 46, 0.85);
+            backdrop-filter: blur(15px);
+            padding: 18px;
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            margin-right: 20px;
+            overflow-y: auto;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        .logo {
+            font-size: 16px;
+            font-weight: 700;
+            color: rgba(255, 255, 255, 0.95);
+            margin-bottom: 18px;
+            text-align: center;
+            padding-bottom: 12px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+        }
+
+        .input-group {
+            margin-bottom: 16px;
+            position: relative;
+        }
+
+        .input-group label {
+            display: block;
+            font-weight: 500;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 5px;
+            font-size: 13px;
+        }
+
+        .input-with-magic {
+            display: flex;
+            gap: 8px;
+            align-items: stretch;
+        }
+
+        .input-with-magic input {
+            flex: 1;
+        }
+
+        .magic-btn {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #ff6b35, #f7931e);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(255, 107, 53, 0.3);
+        }
+
+        .magic-btn:hover {
+            transform: translateY(-1px) scale(1.05);
+            box-shadow: 0 6px 16px rgba(255, 107, 53, 0.4);
+            background: linear-gradient(135deg, #ff8c5a, #ffb347);
+        }
+
+        .magic-btn:active {
+            transform: scale(0.95);
+        }
+
+        .magic-btn.loading {
+            animation: magicSpin 1s linear infinite;
+        }
+
+        @keyframes magicSpin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .input-group input,
+        .input-group textarea,
+        .input-group select {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            font-size: 13px;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            transition: all 0.2s ease;
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            color: rgba(255, 255, 255, 0.95);
+        }
+
+        .input-group input:focus,
+        .input-group textarea:focus,
+        .input-group select:focus {
+            outline: none;
+            border-color: #7209b7;
+            box-shadow: 0 0 0 3px rgba(114, 9, 183, 0.3);
+            background: rgba(0, 0, 0, 0.5);
+        }
+
+        .input-group textarea {
+            resize: vertical;
+            min-height: 70px;
+        }
+
+        /* Keyword System Styles */
+        .tag-input-container {
+            position: relative;
+        }
+
+        .keywords-display {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-bottom: 8px;
+            min-height: 20px;
+        }
+
+        .keyword-pill {
+            background: linear-gradient(135deg, #7209b7, #533483);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .keyword-remove {
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 14px;
+            opacity: 0.8;
+            transition: opacity 0.2s;
+        }
+
+        .keyword-remove:hover {
+            opacity: 1;
+        }
+
+        .dropdown {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: rgba(26, 26, 46, 0.95);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 8px;
+            max-height: 200px;
+            overflow-y: auto;
+            z-index: 1000;
+            display: none;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        .dropdown-item {
+            padding: 8px 12px;
+            cursor: pointer;
+            transition: background 0.2s;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .dropdown-item:hover {
+            background: rgba(114, 9, 183, 0.3);
+        }
+
+        .dropdown-item.create-new {
+            color: #20c997;
+            font-weight: 500;
+        }
+
+        .generate-outline-btn {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #28a745, #20c997);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        .generate-outline-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 16px rgba(40, 167, 69, 0.4);
+            background: linear-gradient(135deg, #34ce57, #17a2b8);
+        }
+
+        .generate-outline-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .outline-container {
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 16px;
+            display: none;
+        }
+
+        .outline-container.visible {
+            display: block;
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .outline-title {
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.95);
+            margin-bottom: 12px;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .outline-content {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        .outline-content h2,
+        .outline-content h3 {
+            position: relative;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .outline-content h2 {
+            color: #ff6b35;
+            font-size: 14px;
+            font-weight: 600;
+            margin: 12px 0 6px 0;
+            padding-left: 8px;
+            border-left: 3px solid #ff6b35;
+        }
+
+        .outline-content h3 {
+            color: #20c997;
+            font-size: 13px;
+            font-weight: 500;
+            margin: 8px 0 4px 16px;
+            padding-left: 8px;
+            border-left: 2px solid #20c997;
+        }
+
+        .outline-content h2:hover,
+        .outline-content h3:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 4px;
+            padding-right: 140px;
+        }
+
+        .heading-actions {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            display: none;
+            gap: 6px;
+            z-index: 10;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            padding: 4px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .outline-content h2:hover .heading-actions,
+        .outline-content h3:hover .heading-actions {
+            display: flex;
+        }
+
+        .action-btn {
+            width: 28px;
+            height: 28px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+            font-family: Arial, sans-serif;
+        }
+
+        .action-btn.edit {
+            background: linear-gradient(135deg, #17a2b8, #138496);
+            color: white;
+        }
+
+        .action-btn.edit:hover {
+            background: linear-gradient(135deg, #20c4e0, #17a2b8);
+            transform: scale(1.1);
+        }
+
+        .action-btn.delete {
+            background: linear-gradient(135deg, #dc3545, #c82333);
+            color: white;
+        }
+
+        .action-btn.delete:hover {
+            background: linear-gradient(135deg, #e74c3c, #dc3545);
+            transform: scale(1.1);
+        }
+
+        .action-btn.generate {
+            background: linear-gradient(135deg, #ff6b35, #f7931e);
+            color: white;
+        }
+
+        .action-btn.generate:hover {
+            background: linear-gradient(135deg, #ff8c5a, #ffb347);
+            transform: scale(1.1);
+        }
+
+        .action-btn.magic {
+            background: linear-gradient(135deg, #ff6b35, #f7931e);
+            color: white;
+        }
+
+        .action-btn.magic:hover {
+            background: linear-gradient(135deg, #ff8c5a, #ffb347);
+            transform: scale(1.1);
+        }
+
+        .action-btn.magic.loading {
+            animation: actionSpin 1s linear infinite;
+        }
+
+        .generated-content {
+            background: rgba(40, 167, 69, 0.1);
+            border: 1px solid rgba(40, 167, 69, 0.3);
+            border-radius: 6px;
+            padding: 12px;
+            margin: 8px 0;
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 13px;
+            line-height: 1.5;
+            animation: slideIn 0.3s ease;
+            position: relative;
+            transition: all 0.2s ease;
+        }
+
+        .generated-content:hover {
+            background: rgba(40, 167, 69, 0.15);
+            padding-right: 140px;
+        }
+
+        .generated-content .content-actions {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            display: none;
+            gap: 6px;
+            z-index: 10;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            padding: 4px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .generated-content:hover .content-actions {
+            display: flex;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .outline-content h2:first-child {
+            margin-top: 0;
+        }
+
+        .generate-content-btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #7209b7, #533483);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 12px rgba(114, 9, 183, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .generate-content-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 16px rgba(114, 9, 183, 0.4);
+        }
+
+        .generate-content-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .chat-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            background: none;
+            overflow: hidden;
+        }
+
+        .chat-header {
+            background: rgba(26, 26, 46, 0.85);
+            backdrop-filter: blur(15px);
+            color: white;
+            padding: 16px 24px;
+            font-weight: 500;
+            font-size: 15px;
+            border-radius: 16px 16px 0 0;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            position: relative;
+            z-index: 100;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .messages {
+            flex: 1;
+            padding: 24px 24px 0 24px;
+            overflow-y: auto;
+            background: none;
+            position: relative;
+            scroll-behavior: smooth;
+        }
+
+        .messages::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .messages::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 3px;
+        }
+
+        .messages::-webkit-scrollbar-thumb {
+            background: linear-gradient(
+                to bottom,
+                rgba(114, 9, 183, 0.6),
+                rgba(83, 52, 131, 0.6)
+            );
+            border-radius: 3px;
+            transition: background 0.3s ease;
+        }
+
+        .messages::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(
+                to bottom,
+                rgba(114, 9, 183, 0.8),
+                rgba(83, 52, 131, 0.8)
+            );
+        }
+
+        .message {
+            margin-bottom: 12px;
+            opacity: 0;
+            animation: fadeIn 0.3s forwards;
+        }
+
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+
+        .message.user {
+            text-align: right;
+        }
+
+        .message.bot {
+            text-align: left;
+        }
+
+        .message-content {
+            display: inline-block;
+            max-width: 85%;
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-size: 13px;
+            line-height: 1.4;
+        }
+
+        .message.user .message-content {
+            background: linear-gradient(135deg, #7209b7, #533483);
+            color: white;
+        }
+
+        .message.bot .message-content {
+            background: rgba(26, 26, 46, 0.8);
+            backdrop-filter: blur(15px);
+            color: rgba(255, 255, 255, 0.95);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        .typing {
+            display: none;
+            text-align: left;
+        }
+
+        .typing .message-content {
+            background: rgba(26, 26, 46, 0.8);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+
+        .typing-dots {
+            display: inline-flex;
+            gap: 4px;
+        }
+
+        .typing-dots span {
+            width: 5px;
+            height: 5px;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 50%;
+            animation: typing 1.4s infinite ease-in-out;
+        }
+
+        .typing-dots span:nth-child(2) { animation-delay: 0.2s; }
+        .typing-dots span:nth-child(3) { animation-delay: 0.4s; }
+
+        @keyframes typing {
+            0%, 80%, 100% { transform: scale(0.8); opacity: 0.3; }
+            40% { transform: scale(1); opacity: 1; }
+        }
+
+        .welcome {
+            text-align: center;
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 14px;
+            margin-top: 40px;
+            margin-bottom: 20px;
+        }
+
+        .welcome h3 {
+            color: rgba(255, 255, 255, 0.95);
+            font-weight: 600;
+            margin-bottom: 12px;
+            font-size: 18px;
+        }
+
+        .blog-content {
+            background: rgba(26, 26, 46, 0.8);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 12px;
+            padding: 20px;
+            margin: 16px 0;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        .blog-content h1 {
+            color: #ff6b35;
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            line-height: 1.3;
+        }
+
+        .blog-content h2 {
+            color: #ff6b35;
+            font-size: 18px;
+            font-weight: 600;
+            margin: 24px 0 12px 0;
+            padding-left: 12px;
+            border-left: 4px solid #ff6b35;
+        }
+
+        .blog-content h3 {
+            color: #20c997;
+            font-size: 16px;
+            font-weight: 500;
+            margin: 16px 0 8px 20px;
+            padding-left: 12px;
+            border-left: 3px solid #20c997;
+        }
+
+        .blog-content p {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 14px;
+            line-height: 1.6;
+            margin-bottom: 12px;
+        }
+
+        .blog-content ul, .blog-content ol {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 14px;
+            line-height: 1.6;
+            margin: 12px 0 12px 20px;
+        }
+
+        .blog-content li {
+            margin-bottom: 6px;
+        }
+
+        .blog-meta {
+            background: rgba(40, 167, 69, 0.1);
+            border: 1px solid rgba(40, 167, 69, 0.3);
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 16px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .export-buttons {
+            display: flex;
+            gap: 8px;
+            margin-top: 16px;
+            flex-wrap: wrap;
+        }
+
+        .export-btn {
+            padding: 8px 12px;
+            background: linear-gradient(135deg, #6c757d, #495057);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 8px rgba(108, 117, 125, 0.3);
+        }
+
+        .export-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(108, 117, 125, 0.4);
+        }
+
+        .heading-edit-input {
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid #7209b7;
+            border-radius: 4px;
+            color: white;
+            font-size: inherit;
+            font-weight: inherit;
+            font-family: inherit;
+            padding: 4px 8px;
+            width: calc(100% - 120px);
+            outline: none;
+        }
+
+        .api-notice {
+            background: rgba(255, 193, 7, 0.1);
+            border: 1px solid rgba(255, 193, 7, 0.3);
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 16px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .api-notice strong {
+            color: #ffc107;
+        }
+
+        @keyframes actionSpin {
+            0% { transform: rotate(0deg) scale(1.1); }
+            100% { transform: rotate(360deg) scale(1.1); }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+                height: auto;
+                min-height: 90vh;
+            }
+            
+            .sidebar {
+                width: 100%;
+                padding: 16px;
+                margin-right: 0;
+                margin-bottom: 20px;
+            }
+            
+            .chat-area {
+                min-height: 400px;
+            }
+            
+            body {
+                font-size: 13px;
+            }
+            
+            .chat-header {
+                font-size: 14px;
+                padding: 12px 16px;
+            }
+
+            .input-with-magic {
+                flex-direction: column;
+            }
+
+            .magic-btn {
+                width: 100%;
+                height: 40px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="sidebar">
+            <div class="logo">
+                💍 Wedding Blog AI
+            </div>
+
+            <div class="api-notice">
+                <strong>⚠️ Demo-Modus:</strong> Diese Version läuft mit simulierten KI-Antworten. Für die Vollversion integriere deine bevorzugte KI-API (OpenAI, Claude, etc.).
+            </div>
+
+            <div class="input-group">
+                <label>Titel des Blogbeitrags</label>
+                <div class="input-with-magic">
+                    <input type="text" id="blogTitle" placeholder="z.B. Die perfekte Hochzeitslocation finden">
+                    <button class="magic-btn" id="optimizeTitleBtn" onclick="optimizeTitle()" title="Titel SEO-optimieren">
+                        🪄
+                    </button>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label>Hauptkeywords (SEO)</label>
+                <div class="tag-input-container">
+                    <div class="keywords-display" id="keywordsDisplay"></div>
+                    <input type="text" id="mainKeyword" placeholder="z.B. Hochzeitslocation, Hochzeitsplanung..." autocomplete="off">
+                    <div class="dropdown" id="keywordDropdown"></div>
+                </div>
+                <small>Gib Keywords ein und drücke Enter um sie hinzuzufügen</small>
+            </div>
+
+            <div class="input-group">
+                <label>Gewünschte Wortanzahl</label>
+                <select id="wordCount">
+                    <option value="800">800-1000 Wörter (kurzer Artikel)</option>
+                    <option value="1500" selected>1500-2000 Wörter (mittlerer Artikel)</option>
+                    <option value="2500">2500-3000 Wörter (ausführlicher Artikel)</option>
+                </select>
+            </div>
+
+            <div class="input-group">
+                <label>Ton & Stil</label>
+                <select id="toneStyle">
+                    <option value="freundlich-beratend" selected>Freundlich & beratend</option>
+                    <option value="professionell-sachlich">Professionell & sachlich</option>
+                    <option value="emotional-inspirierend">Emotional & inspirierend</option>
+                    <option value="praktisch-hilfsbereit">Praktisch & hilfsbereit</option>
+                    <option value="luxurioes-exklusiv">Luxuriös & exklusiv</option>
+                </select>
+            </div>
+
+            <button class="generate-outline-btn" id="generateOutlineBtn" onclick="generateOutline()">
+                🪄 Gliederung generieren
+            </button>
+
+            <div class="outline-container" id="outlineContainer">
+                <div class="outline-title">
+                    📋 Generierte Gliederung
+                </div>
+                <div class="outline-content" id="outlineContent">
+                    <!-- Gliederung wird hier eingefügt -->
+                </div>
+            </div>
+
+            <button class="generate-content-btn" id="generateContentBtn" onclick="generateFullBlog()" style="display: none;">
+                ✨ Vollständigen Blog generieren
+            </button>
+        </div>
+
+        <div class="chat-area">
+            <div class="chat-header" id="chatHeader">
+                Blog-Vorschau - Wedding Blog AI
+            </div>
+            <div class="messages" id="messages">
+                <div class="welcome">
+                    <h3>Blog-Vorschau</h3>
+                    <p>Hier wird dein generierter Blogbeitrag angezeigt.<br>
+                    Erstelle zuerst eine Gliederung und generiere dann den Content.</p>
+                </div>
+            </div>
+            
+            <div class="typing" id="typing">
+                <div class="message-content">
+                    <div class="typing-dots">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/app.js"></script>
+</body>
+</html>
