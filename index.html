@@ -148,7 +148,6 @@
         }
 
         .keyword-pill {
-            background: linear-gradient(135deg, #7209b7, #533483);
             color: white;
             padding: 6px 12px;
             border-radius: 16px;
@@ -157,6 +156,26 @@
             align-items: center;
             gap: 6px;
             box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+            position: relative;
+        }
+
+        /* Primary keyword (first keyword) styling */
+        .keyword-pill.primary {
+            background: linear-gradient(135deg, #ff6b35, #f7931e);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            font-weight: 600;
+            padding: 7px 14px;
+        }
+
+        .keyword-pill.primary::before {
+            content: "👑";
+            font-size: 10px;
+            margin-right: 4px;
+        }
+
+        /* Secondary keywords styling */
+        .keyword-pill.secondary {
+            background: linear-gradient(135deg, #7209b7, #533483);
         }
 
         .keyword-remove {
@@ -202,6 +221,37 @@
         .dropdown-item.create-new {
             color: #20c997;
             font-weight: 500;
+        }
+
+        .dropdown-item.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        .dropdown-item.disabled:hover {
+            background: none;
+        }
+
+        .keyword-limit-info {
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.6);
+            margin-top: 4px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .keyword-counter {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-weight: 500;
+        }
+
+        .keyword-counter.full {
+            background: rgba(255, 107, 53, 0.3);
+            color: #ff6b35;
         }
 
         .generate-outline-btn {
@@ -988,13 +1038,16 @@
         </div>
 
         <div class="input-group">
-            <label>Hauptkeywords (SEO)</label>
+            <label>Hauptkeywords (SEO) - <span style="color: #ff6b35;">Primäres Keyword</span> wird hervorgehoben</label>
             <div class="tag-input-container">
                 <div class="keywords-display" id="keywordsDisplay"></div>
                 <input type="text" id="mainKeyword" placeholder="z.B. Hochzeitslocation, Hochzeitsplanung..." autocomplete="off">
                 <div class="dropdown" id="keywordDropdown"></div>
             </div>
-            <small>Gib Keywords ein und drücke Enter um sie hinzuzufügen</small>
+            <div class="keyword-limit-info">
+                <span>Gib Keywords ein und drücke Enter um sie hinzuzufügen</span>
+                <span class="keyword-counter" id="keywordCounter">0/3</span>
+            </div>
         </div>
 
         <div class="input-group">
@@ -1109,6 +1162,9 @@
         let isGenerating = false;
         let selectedKeywords = [];
         let currentEditingContent = null;
+
+        // Constants
+        const MAX_KEYWORDS = 3;
 
         // Chat Popup Variablen
         let currentChatContent = null;
@@ -1413,7 +1469,7 @@ Version: 1.0
             showStatusMessage('📄 <strong>WordPress-Import erfolgreich!</strong><br><br>✅ Die Datei enthält:<br>• Gutenberg-kompatiblen Content<br>• SEO-Metadaten<br>• Import-Anleitung<br>• Schema Markup<br><br>💡 <em>Öffne die Datei und folge der Schritt-für-Schritt Anleitung!</em>');
         }
 
-        // Tag-System für Keywords
+        // Tag-System für Keywords (MODIFIZIERT für max 3 Keywords)
         function initKeywordTagSystem() {
             const input = document.getElementById('mainKeyword');
             const dropdown = document.getElementById('keywordDropdown');
@@ -1467,25 +1523,62 @@ Version: 1.0
         }
 
         function addKeyword(keywordText) {
+            // Check if maximum keywords reached
+            if (selectedKeywords.length >= MAX_KEYWORDS) {
+                showStatusMessage(`❌ Maximum ${MAX_KEYWORDS} Keywords erreicht! Entferne erst ein Keyword, um ein neues hinzuzufügen.`);
+                return;
+            }
+            
             if (!selectedKeywords.includes(keywordText)) {
                 selectedKeywords.push(keywordText);
                 renderKeywords();
+                updateKeywordCounter();
                 const input = document.getElementById('mainKeyword');
                 if (input) input.value = '';
                 hideKeywordDropdown();
+                
+                // Show special message for primary keyword
+                if (selectedKeywords.length === 1) {
+                    showStatusMessage(`👑 <strong>Primäres Keyword gesetzt:</strong> "${keywordText}"<br><br>💡 <em>Das erste Keyword wird als Haupt-SEO-Keyword verwendet und ist farblich hervorgehoben.</em>`);
+                }
             }
         }
 
         function removeKeyword(keywordText) {
+            const wasFirst = selectedKeywords[0] === keywordText;
             selectedKeywords = selectedKeywords.filter(keyword => keyword !== keywordText);
             renderKeywords();
+            updateKeywordCounter();
+            
+            if (wasFirst && selectedKeywords.length > 0) {
+                showStatusMessage(`👑 <strong>Neues primäres Keyword:</strong> "${selectedKeywords[0]}"<br><br>💡 <em>Das erste Keyword in der Liste ist immer das primäre SEO-Keyword.</em>`);
+            }
         }
 
         function getKeywordsString() {
             return selectedKeywords.join(', ');
         }
 
+        function updateKeywordCounter() {
+            const counter = document.getElementById('keywordCounter');
+            if (counter) {
+                counter.textContent = `${selectedKeywords.length}/${MAX_KEYWORDS}`;
+                
+                if (selectedKeywords.length >= MAX_KEYWORDS) {
+                    counter.classList.add('full');
+                } else {
+                    counter.classList.remove('full');
+                }
+            }
+        }
+
         function showAllKeywords() {
+            // Don't show dropdown if max keywords reached
+            if (selectedKeywords.length >= MAX_KEYWORDS) {
+                hideKeywordDropdown();
+                return;
+            }
+            
             const dropdown = document.getElementById('keywordDropdown');
             if (!dropdown) return;
 
@@ -1505,6 +1598,12 @@ Version: 1.0
         }
 
         function showKeywordDropdown(searchTerm) {
+            // Don't show dropdown if max keywords reached
+            if (selectedKeywords.length >= MAX_KEYWORDS) {
+                hideKeywordDropdown();
+                return;
+            }
+            
             const dropdown = document.getElementById('keywordDropdown');
             if (!dropdown) return;
 
@@ -1544,9 +1643,9 @@ Version: 1.0
 
             container.innerHTML = '';
 
-            selectedKeywords.forEach(keyword => {
+            selectedKeywords.forEach((keyword, index) => {
                 const pill = document.createElement('div');
-                pill.className = 'keyword-pill';
+                pill.className = index === 0 ? 'keyword-pill primary' : 'keyword-pill secondary';
                 pill.innerHTML = `
                     <span>${keyword}</span>
                     <span class="keyword-remove" onclick="removeKeyword('${keyword.replace(/'/g, "\\'")}')">\u00D7</span>
@@ -2386,9 +2485,10 @@ Gib nur den verbesserten Text zurück, ohne zusätzliche Erklärungen.`, 'text-i
         document.addEventListener('DOMContentLoaded', function() {
             initKeywordTagSystem();
             setupTextareaAutoResize();
+            updateKeywordCounter(); // Initialize counter
             
             setTimeout(() => {
-                showStatusMessage("🎯 <strong>Wedding Blog AI ist bereit!</strong><br><br>Konfiguriere deine KI-API und beginne mit der Eingabe deines Blog-Titels. Klicke auf den Zauberstab für SEO-Optimierung und generiere anschließend eine strukturierte Gliederung.<br><br>💡 <em>Tipp: Nutze aussagekräftige Keywords für bessere SEO-Ergebnisse!</em>");
+                showStatusMessage("🎯 <strong>Wedding Blog AI ist bereit!</strong><br><br>Konfiguriere deine KI-API und beginne mit der Eingabe deines Blog-Titels. Klicke auf den Zauberstab für SEO-Optimierung und generiere anschließend eine strukturierte Gliederung.<br><br>💡 <em>Tipp: Nutze aussagekräftige Keywords für bessere SEO-Ergebnisse! Maximal 3 Keywords, das erste wird als primäres SEO-Keyword hervorgehoben.</em>");
             }, 1000);
 
             // Enter-Taste für Titel-Input
