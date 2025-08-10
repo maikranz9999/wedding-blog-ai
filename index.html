@@ -461,7 +461,7 @@
             border: 2px solid rgba(255, 255, 255, 0.9);
             border-radius: 50%;
             cursor: pointer;
-            display: none;
+            display: flex;
             align-items: center;
             justify-content: center;
             font-size: 16px;
@@ -470,15 +470,21 @@
             transition: all 0.2s ease;
             box-shadow: 0 2px 8px rgba(255, 107, 53, 0.4);
             z-index: 101;
+            opacity: 0;
         }
 
         .block-inserter-trigger:hover {
             transform: translateX(-50%) scale(1.1);
             box-shadow: 0 4px 12px rgba(255, 107, 53, 0.6);
+            opacity: 1;
         }
 
         .block-inserter.show .block-inserter-trigger {
-            display: flex;
+            opacity: 1;
+        }
+
+        .block-inserter:hover .block-inserter-trigger {
+            opacity: 1;
         }
 
         .block-inserter-options {
@@ -1895,6 +1901,19 @@ WICHTIG: Überprüfe vor der Antwort, dass wirklich ALLE Keywords in den Übersc
                 
                 setTimeout(() => {
                     addHeadingActions();
+                    
+                    // Test: Add a visible inserter for debugging
+                    const testInserter = createBlockInserter();
+                    testInserter.style.marginTop = '20px';
+                    testInserter.style.position = 'relative';
+                    testInserter.style.height = '40px';
+                    testInserter.querySelector('.block-inserter-trigger').style.opacity = '1';
+                    testInserter.querySelector('.block-inserter-trigger').style.position = 'relative';
+                    testInserter.querySelector('.block-inserter-trigger').style.top = '0';
+                    testInserter.querySelector('.block-inserter-trigger').style.transform = 'none';
+                    testInserter.querySelector('.block-inserter-trigger').style.left = '50%';
+                    testInserter.querySelector('.block-inserter-trigger').style.marginLeft = '-12px';
+                    outlineContent.appendChild(testInserter);
                 }, 100);
                 
                 hideTyping();
@@ -2044,13 +2063,15 @@ WICHTIG: Überprüfe vor der Antwort, dass wirklich ALLE Keywords in den Übersc
             // Event listeners for show/hide
             inserter.addEventListener('mouseenter', () => {
                 inserter.classList.add('show');
+                trigger.style.opacity = '1';
             });
             
             inserter.addEventListener('mouseleave', () => {
-                if (!options.matches(':hover')) {
+                if (!options.classList.contains('show')) {
                     inserter.classList.remove('show');
-                    options.classList.remove('show');
+                    trigger.style.opacity = '0';
                 }
+                options.classList.remove('show');
             });
             
             trigger.addEventListener('click', (e) => {
@@ -2739,6 +2760,9 @@ Gib nur den verbesserten Text zurück, ohne zusätzliche Erklärungen.`, 'text-i
             setupTextareaAutoResize();
             updateKeywordCounter(); // Initialize counter
             
+            // Add initial block inserter even without outline
+            addInitialBlockInserter();
+            
             setTimeout(() => {
                 showStatusMessage("🎯 <strong>Wedding Blog AI ist bereit!</strong><br><br>Konfiguriere deine KI-API und beginne mit der Eingabe deines Blog-Titels. Klicke auf den Zauberstab für SEO-Optimierung und generiere anschließend eine strukturierte Gliederung.<br><br>💡 <em>Tipp: Nutze aussagekräftige Keywords für bessere SEO-Ergebnisse! Maximal 3 Keywords, das erste wird als primäres SEO-Keyword hervorgehoben.</em>");
             }, 1000);
@@ -2773,6 +2797,25 @@ Gib nur den verbesserten Text zurück, ohne zusätzliche Erklärungen.`, 'text-i
                 }
             });
         });
+
+        // Add initial block inserter for empty outline
+        function addInitialBlockInserter() {
+            const outlineContainer = document.getElementById('outlineContainer');
+            const outlineContent = document.getElementById('outlineContent');
+            
+            if (!outlineContent || !outlineContainer) return;
+            
+            // Check if outline is visible and empty
+            if (!outlineContainer.classList.contains('visible')) {
+                return;
+            }
+            
+            const hasContent = outlineContent.children.length > 0;
+            if (!hasContent) {
+                const inserter = createBlockInserter();
+                outlineContent.appendChild(inserter);
+            }
+        }
     </script>
 </body>
 </html>
