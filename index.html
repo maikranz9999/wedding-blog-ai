@@ -609,6 +609,115 @@
             100% { transform: rotate(360deg) scale(1.1); }
         }
 
+        /* API Status Box Styles */
+        .api-status-container {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1000;
+            animation: slideInStatus 0.3s ease-out;
+        }
+
+        @keyframes slideInStatus {
+            from {
+                opacity: 0;
+                transform: translateX(-50%) translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(-50%) translateY(0);
+            }
+        }
+
+        .api-status-box {
+            background: rgba(26, 26, 46, 0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(40, 167, 69, 0.3);
+            border-radius: 12px;
+            padding: 12px 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+            position: relative;
+            overflow: hidden;
+            min-width: 300px;
+        }
+
+        .api-status-box::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #28a745, #20c997);
+            animation: progressGlow 3s ease-in-out infinite;
+        }
+
+        @keyframes progressGlow {
+            0%, 100% { opacity: 0.6; transform: scaleX(0.8); }
+            50% { opacity: 1; transform: scaleX(1); }
+        }
+
+        .api-status-box .status-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 6px;
+        }
+
+        .api-status-box .status-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .api-status-box .status-indicator {
+            width: 12px;
+            height: 12px;
+            background: #666;
+            border-radius: 50%;
+            flex-shrink: 0;
+            transition: all 0.3s ease;
+        }
+
+        .api-status-box .status-indicator.active {
+            background: #20c997;
+            box-shadow: 0 0 15px rgba(32, 201, 151, 0.6);
+            animation: statusPulse 1s infinite;
+        }
+
+        .api-status-box .status-indicator.processing {
+            background: #ffc107;
+            animation: statusSpin 0.8s infinite;
+        }
+
+        .api-status-box .status-indicator.complete {
+            background: #28a745;
+            box-shadow: 0 0 10px rgba(40, 167, 69, 0.5);
+        }
+
+        @keyframes statusPulse {
+            0%, 100% { 
+                box-shadow: 0 0 10px rgba(32, 201, 151, 0.6);
+                transform: scale(1);
+            }
+            50% { 
+                box-shadow: 0 0 20px rgba(32, 201, 151, 1);
+                transform: scale(1.2);
+            }
+        }
+
+        @keyframes statusSpin {
+            0% { transform: scale(1) rotate(0deg); }
+            50% { transform: scale(1.1) rotate(180deg); }
+            100% { transform: scale(1) rotate(360deg); }
+        }
+
+        .api-status-box .status-text {
+            font-size: 12px;
+            font-weight: 500;
+            color: rgba(255, 255, 255, 0.9);
+            transition: opacity 0.3s ease;
+        }
+
         @media (max-width: 768px) {
             .container {
                 padding: 16px;
@@ -747,6 +856,26 @@
         </div>
     </div>
 
+    <!-- Status Box (nur während API-Calls sichtbar) -->
+    <div class="api-status-container" id="apiStatusContainer" style="display: none;">
+        <div class="api-status-box">
+            <div class="status-item">
+                <div class="status-indicator" id="statusIndicator1"></div>
+                <div class="status-text" id="statusText1">Anti-KI-Like-Textgenerierung</div>
+            </div>
+            
+            <div class="status-item">
+                <div class="status-indicator" id="statusIndicator2"></div>
+                <div class="status-text" id="statusText2">Deep Content Output</div>
+            </div>
+            
+            <div class="status-item">
+                <div class="status-indicator" id="statusIndicator3"></div>
+                <div class="status-text" id="statusText3">SEO-Optimierung</div>
+            </div>
+        </div>
+    </div>
+
     <script>
         // Wedding Blog AI - Hauptlogik mit Keyword-Limit
         // Globale Variablen
@@ -812,8 +941,14 @@
 
         // Demo AI Function (simuliert API-Aufrufe)
         async function callAI(prompt, type = 'general') {
+            // Status-Box anzeigen
+            showApiStatus();
+            
             // Simulierte Verzögerung
             await new Promise(resolve => setTimeout(resolve, 1500 + Math.random() * 1000));
+            
+            // Status-Box verstecken
+            hideApiStatus();
             
             // Simulierte Antworten basierend auf dem Typ
             if (type === 'title-optimization') {
@@ -842,6 +977,112 @@ Denkt auch an praktische Aspekte wie Parkmöglichkeiten, Barrierefreiheit und di
             }
             
             return "Demo-Antwort: Diese Funktion würde in der echten Anwendung mit der Claude API kommunizieren.";
+        }
+
+        // API Status Box Functions
+        let isApiStatusRunning = false;
+
+        const apiStatusTexts = {
+            1: [
+                "Anti-KI-Like-Textgenerierung",
+                "Initialisiere natürliche Sprachmuster...",
+                "Analysiere menschliche Schreibstile...", 
+                "Generiere authentischen Content...",
+                "Anti-KI-Like-Textgenerierung ✓"
+            ],
+            2: [
+                "Deep Content Output",
+                "Aktiviere neuronale Netzwerke...",
+                "Verarbeite semantische Strukturen...",
+                "Generiere tiefgehende Inhalte...",
+                "Deep Content Output ✓"
+            ],
+            3: [
+                "SEO-Optimierung",
+                "Scanne Keyword-Dichte...",
+                "Optimiere Meta-Strukturen...",
+                "Verbessere Readability-Score...",
+                "SEO-Optimierung ✓"
+            ]
+        };
+
+        async function updateApiStatus(statusId, textIndex, className = '') {
+            const indicator = document.getElementById(`statusIndicator${statusId}`);
+            const textElement = document.getElementById(`statusText${statusId}`);
+            
+            if (!indicator || !textElement) return;
+            
+            indicator.className = `status-indicator ${className}`;
+            
+            textElement.style.opacity = '0.5';
+            await sleep(150);
+            textElement.textContent = apiStatusTexts[statusId][textIndex];
+            textElement.style.opacity = '1';
+        }
+
+        async function runApiStatusSequence() {
+            // Status 1
+            await updateApiStatus(1, 1, 'processing');
+            await sleep(400);
+            await updateApiStatus(1, 2, 'active');
+            await sleep(600);
+            await updateApiStatus(1, 3, 'active');
+            await sleep(500);
+            await updateApiStatus(1, 4, 'complete');
+            
+            await sleep(200);
+            
+            // Status 2
+            await updateApiStatus(2, 1, 'processing');
+            await sleep(350);
+            await updateApiStatus(2, 2, 'active');
+            await sleep(550);
+            await updateApiStatus(2, 3, 'active');
+            await sleep(450);
+            await updateApiStatus(2, 4, 'complete');
+            
+            await sleep(200);
+            
+            // Status 3
+            await updateApiStatus(3, 1, 'processing');
+            await sleep(300);
+            await updateApiStatus(3, 2, 'active');
+            await sleep(400);
+            await updateApiStatus(3, 3, 'active');
+            await sleep(350);
+            await updateApiStatus(3, 4, 'complete');
+        }
+
+        function showApiStatus() {
+            if (isApiStatusRunning) return;
+            
+            const container = document.getElementById('apiStatusContainer');
+            if (!container) return;
+            
+            isApiStatusRunning = true;
+            container.style.display = 'block';
+            
+            // Reset all indicators
+            for (let i = 1; i <= 3; i++) {
+                updateApiStatus(i, 0, '');
+            }
+            
+            // Start sequence
+            runApiStatusSequence();
+        }
+
+        function hideApiStatus() {
+            const container = document.getElementById('apiStatusContainer');
+            if (!container) return;
+            
+            setTimeout(() => {
+                container.style.display = 'none';
+                isApiStatusRunning = false;
+            }, 500);
+        }
+
+        function sleep(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
         }
 
         // Highlight Primary Keyword Function
