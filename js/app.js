@@ -8,56 +8,70 @@ let currentEditingContent = null;
 
 // Vordefinierte Keywords für die Hochzeitsbranche
 const predefinedKeywords = [
+    // Allgemeine Begriffe
+    "Hochzeit",
+    "Hochzeitsplanung",
+    "Hochzeitsideen",
+    "Hochzeitsblog",
+    "Hochzeitsratgeber",
+    "Hochzeitscheckliste",
+
+    // Location & Ort
     "Hochzeitslocation",
-    "Hochzeitsplanung", 
-    "Hochzeitsfotograf",
-    "Brautkleid",
-    "Hochzeitsdeko",
-    "Trauung",
-    "Hochzeitsfeier",
-    "Brautpaar",
-    "Hochzeitssaison",
-    "Destination Wedding",
-    "Vintage Hochzeit",
-    "Freie Trauung",
-    "Hochzeitsbudget",
-    "Hochzeitstorte",
-    "Brautstrauß",
-    "Hochzeitseinladung",
     "Standesamt",
-    "Kirche",
-    "Trauringe",
-    "Hochzeitsmusik",
+    "Kirchliche Trauung",
+    "Freie Trauung",
+    "Outdoor Hochzeit",
+    "Scheunenhochzeit",
+    "Strandhochzeit",
+    "Destination Wedding",
+    "Schloss Hochzeit",
+    "Gartenhochzeit",
+
+    // Dienstleister
+    "Hochzeitsfotograf",
+    "Hochzeitsvideograf",
+    "Freier Trauredner",
     "DJ Hochzeit",
     "Hochzeitsband",
-    "Catering",
-    "Hochzeitsmenu",
-    "Polterabend",
-    "Junggesellenabschied",
+    "Hochzeitsplaner",
+    "Catering Hochzeit",
+    "Hochzeitstorte",
+    "Florist Hochzeit",
+
+    // Braut & Bräutigam
+    "Brautkleid",
+    "Hochzeitsanzug",
+    "Brautfrisur",
+    "Hochzeitsmakeup",
+    "Brautstrauß",
     "Brautjungfern",
     "Trauzeugen",
-    "Hochzeitsgeschenk",
-    "Flitterwochen",
-    "Hochzeitskleid",
-    "Hochzeitsfrisur",
-    "Hochzeitsmakeup",
-    "Eheringe",
-    "Hochzeitsauto",
-    "Hochzeitsreise",
-    "Hochzeitsgäste",
+
+    // Ablauf & Programm
+    "Hochzeitseinladung",
+    "Hochzeitsdeko",
+    "Hochzeitsfeier",
+    "Hochzeitstanz",
     "Sektempfang",
     "Hochzeitsspiele",
-    "Tischkarten",
-    "Gastgeschenke",
     "Hochzeitsrede",
-    "Brautstrauß werfen",
-    "Hochzeitstanz",
-    "Kirchliche Trauung",
-    "Standesamtliche Trauung",
-    "Outdoor Hochzeit",
+    "Gastgeschenke",
+
+    // Budget & Organisation
+    "Hochzeitsbudget",
+    "Kosten Hochzeit",
+    "Hochzeitskostenplaner",
+    "Spartipps Hochzeit",
+
+    // Trends & Stile
+    "Vintage Hochzeit",
+    "Boho Hochzeit",
     "Winterhochzeit",
     "Sommerhochzeit",
-    "Boho Hochzeit"
+    "Luxushochzeit",
+    "Nachhaltige Hochzeit",
+    "Moderne Hochzeit"
 ];
 
 // Demo-Funktionen (da keine echte API verfügbar)
