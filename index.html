@@ -157,6 +157,24 @@
             align-items: center;
             gap: 6px;
             box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+            position: relative;
+        }
+
+        .keyword-pill.primary {
+            background: linear-gradient(135deg, #ff6b35, #f7931e);
+            box-shadow: 0 4px 12px rgba(255, 107, 53, 0.4);
+            font-weight: 600;
+            animation: primaryGlow 2s ease-in-out infinite alternate;
+        }
+
+        .keyword-pill.primary::before {
+            content: "👑";
+            margin-right: 4px;
+        }
+
+        @keyframes primaryGlow {
+            0% { box-shadow: 0 4px 12px rgba(255, 107, 53, 0.4); }
+            100% { box-shadow: 0 6px 20px rgba(255, 107, 53, 0.6); }
         }
 
         .keyword-remove {
@@ -169,6 +187,17 @@
 
         .keyword-remove:hover {
             opacity: 1;
+        }
+
+        .keyword-limit-info {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.7);
+            margin-top: 4px;
+        }
+
+        .keyword-limit-warning {
+            color: #ff6b35;
+            font-weight: 500;
         }
 
         .dropdown {
@@ -202,6 +231,16 @@
         .dropdown-item.create-new {
             color: #20c997;
             font-weight: 500;
+        }
+
+        .dropdown-item.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            background: rgba(255, 107, 53, 0.1);
+        }
+
+        .dropdown-item.disabled:hover {
+            background: rgba(255, 107, 53, 0.1);
         }
 
         .generate-outline-btn {
@@ -309,6 +348,21 @@
         .outline-content h2:hover,
         .outline-content h3:hover {
             background: rgba(255, 255, 255, 0.05);
+        }
+
+        /* Primary Keyword Highlighting */
+        .primary-keyword-highlight {
+            background: linear-gradient(135deg, rgba(255, 107, 53, 0.3), rgba(247, 147, 30, 0.3));
+            border-bottom: 2px solid #ff6b35;
+            border-radius: 4px;
+            padding: 2px 4px;
+            font-weight: 600;
+            animation: keywordPulse 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes keywordPulse {
+            0% { background: linear-gradient(135deg, rgba(255, 107, 53, 0.3), rgba(247, 147, 30, 0.3)); }
+            100% { background: linear-gradient(135deg, rgba(255, 107, 53, 0.5), rgba(247, 147, 30, 0.5)); }
         }
 
         .heading-actions {
@@ -550,343 +604,6 @@
             40% { transform: scale(1); opacity: 1; }
         }
 
-        /* Chat Popup Styles */
-        .chat-popup-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.8);
-            backdrop-filter: blur(10px);
-            z-index: 10000;
-            display: none;
-            align-items: center;
-            justify-content: center;
-            animation: fadeInOverlay 0.3s ease;
-        }
-
-        .chat-popup-overlay.visible {
-            display: flex;
-        }
-
-        @keyframes fadeInOverlay {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
-        .chat-popup {
-            background: rgba(26, 26, 46, 0.95);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            border-radius: 16px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
-            width: 95%;
-            max-width: 1200px;
-            height: 85vh;
-            max-height: 700px;
-            display: flex;
-            flex-direction: column;
-            animation: slideInPopup 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-            overflow: hidden;
-        }
-
-        @keyframes slideInPopup {
-            from { 
-                opacity: 0;
-                transform: scale(0.8) translateY(-50px);
-            }
-            to { 
-                opacity: 1;
-                transform: scale(1) translateY(0);
-            }
-        }
-
-        .chat-popup-header {
-            background: linear-gradient(135deg, #7209b7, #533483);
-            color: white;
-            padding: 16px 20px;
-            font-weight: 600;
-            font-size: 16px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            border-radius: 16px 16px 0 0;
-        }
-
-        .chat-popup-header .close-btn {
-            background: none;
-            border: none;
-            color: white;
-            font-size: 24px;
-            cursor: pointer;
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.2s ease;
-        }
-
-        .chat-popup-header .close-btn:hover {
-            background: rgba(255, 255, 255, 0.2);
-            transform: scale(1.1);
-        }
-
-        .chat-popup-content {
-            flex: 1;
-            display: flex;
-            flex-direction: row;
-            overflow: hidden;
-            gap: 1px;
-        }
-
-        .original-text-section {
-            background: rgba(40, 167, 69, 0.1);
-            border-right: 1px solid rgba(255, 255, 255, 0.1);
-            width: 40%;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-        }
-
-        .original-text-label {
-            font-size: 12px;
-            color: #20c997;
-            font-weight: 600;
-            padding: 16px 20px 8px 20px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            background: rgba(32, 201, 151, 0.1);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-        }
-
-        .original-text-content {
-            flex: 1;
-            font-size: 14px;
-            color: rgba(255, 255, 255, 0.9);
-            line-height: 1.6;
-            background: rgba(0, 0, 0, 0.2);
-            padding: 20px;
-            overflow-y: auto;
-            margin: 0;
-        }
-
-        .chat-section {
-            width: 60%;
-            display: flex;
-            flex-direction: column;
-            background: rgba(0, 0, 0, 0.1);
-        }
-
-        .chat-popup-messages {
-            flex: 1;
-            padding: 20px;
-            overflow-y: auto;
-            scroll-behavior: smooth;
-        }
-
-        .chat-popup-messages::-webkit-scrollbar {
-            width: 6px;
-        }
-
-        .chat-popup-messages::-webkit-scrollbar-track {
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 3px;
-        }
-
-        .chat-popup-messages::-webkit-scrollbar-thumb {
-            background: linear-gradient(to bottom, rgba(114, 9, 183, 0.6), rgba(83, 52, 131, 0.6));
-            border-radius: 3px;
-        }
-
-        .popup-message {
-            margin-bottom: 16px;
-            animation: fadeInMessage 0.3s ease;
-        }
-
-        @keyframes fadeInMessage {
-            from { 
-                opacity: 0;
-                transform: translateY(10px);
-            }
-            to { 
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .popup-message.user {
-            text-align: right;
-        }
-
-        .popup-message.bot {
-            text-align: left;
-        }
-
-        .popup-message-content {
-            display: inline-block;
-            max-width: 85%;
-            padding: 12px 16px;
-            border-radius: 12px;
-            font-size: 14px;
-            line-height: 1.5;
-        }
-
-        .popup-message.user .popup-message-content {
-            background: linear-gradient(135deg, #7209b7, #533483);
-            color: white;
-        }
-
-        .popup-message.bot .popup-message-content {
-            background: rgba(26, 26, 46, 0.8);
-            backdrop-filter: blur(15px);
-            color: rgba(255, 255, 255, 0.95);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-        }
-
-        .chat-popup-input-area {
-            padding: 16px 20px;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            background: rgba(0, 0, 0, 0.2);
-        }
-
-        .chat-popup-input-container {
-            display: flex;
-            gap: 12px;
-            align-items: flex-end;
-        }
-
-        .chat-popup-input {
-            flex: 1;
-            background: rgba(0, 0, 0, 0.4);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 12px;
-            padding: 12px 16px;
-            color: white;
-            font-size: 14px;
-            resize: none;
-            min-height: 20px;
-            max-height: 120px;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            outline: none;
-            transition: all 0.2s ease;
-        }
-
-        .chat-popup-input:focus {
-            border-color: #7209b7;
-            box-shadow: 0 0 0 3px rgba(114, 9, 183, 0.3);
-            background: rgba(0, 0, 0, 0.6);
-        }
-
-        .chat-popup-input::placeholder {
-            color: rgba(255, 255, 255, 0.5);
-        }
-
-        .chat-popup-send-btn {
-            background: linear-gradient(135deg, #7209b7, #533483);
-            border: none;
-            border-radius: 12px;
-            color: white;
-            width: 48px;
-            height: 48px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 18px;
-            box-shadow: 0 4px 12px rgba(114, 9, 183, 0.3);
-        }
-
-        .chat-popup-send-btn:hover:not(:disabled) {
-            transform: translateY(-1px) scale(1.05);
-            box-shadow: 0 6px 16px rgba(114, 9, 183, 0.4);
-        }
-
-        .chat-popup-send-btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-            transform: none;
-        }
-
-        .chat-popup-actions {
-            display: flex;
-            gap: 12px;
-            padding: 16px 20px 20px 20px;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            background: rgba(0, 0, 0, 0.2);
-        }
-
-        .chat-popup-action-btn {
-            flex: 1;
-            padding: 12px 16px;
-            border: none;
-            border-radius: 10px;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-        }
-
-        .chat-popup-action-btn.confirm {
-            background: linear-gradient(135deg, #28a745, #20c997);
-            color: white;
-            box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
-        }
-
-        .chat-popup-action-btn.confirm:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 6px 16px rgba(40, 167, 69, 0.4);
-        }
-
-        .chat-popup-action-btn.cancel {
-            background: rgba(108, 117, 125, 0.2);
-            color: rgba(255, 255, 255, 0.8);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-        }
-
-        .chat-popup-action-btn.cancel:hover {
-            background: rgba(108, 117, 125, 0.4);
-            color: white;
-        }
-
-        .popup-typing {
-            text-align: left;
-            margin-bottom: 16px;
-        }
-
-        .popup-typing .popup-message-content {
-            background: rgba(26, 26, 46, 0.8);
-            backdrop-filter: blur(15px);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-        }
-
-        .improved-text-preview {
-            background: rgba(40, 167, 69, 0.1);
-            border: 1px solid rgba(40, 167, 69, 0.3);
-            border-radius: 8px;
-            padding: 12px;
-            margin: 8px 0;
-            font-size: 13px;
-            line-height: 1.5;
-            color: rgba(255, 255, 255, 0.9);
-        }
-
-        .improved-text-label {
-            font-size: 11px;
-            color: #20c997;
-            font-weight: 600;
-            margin-bottom: 6px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
         @keyframes actionSpin {
             0% { transform: rotate(0deg) scale(1.1); }
             100% { transform: rotate(360deg) scale(1.1); }
@@ -943,27 +660,6 @@
                 padding: 6px;
                 border-radius: 8px;
             }
-
-            .chat-popup {
-                width: 98%;
-                height: 90vh;
-                max-height: none;
-            }
-
-            .chat-popup-content {
-                flex-direction: column;
-            }
-
-            .original-text-section {
-                width: 100%;
-                max-height: 150px;
-                border-right: none;
-                border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            }
-
-            .chat-section {
-                width: 100%;
-            }
         }
     </style>
 </head>
@@ -988,13 +684,15 @@
         </div>
 
         <div class="input-group">
-            <label>Hauptkeywords (SEO)</label>
+            <label>Hauptkeywords (SEO) - Max. 3 Keywords</label>
             <div class="tag-input-container">
                 <div class="keywords-display" id="keywordsDisplay"></div>
                 <input type="text" id="mainKeyword" placeholder="z.B. Hochzeitslocation, Hochzeitsplanung..." autocomplete="off">
                 <div class="dropdown" id="keywordDropdown"></div>
+                <div class="keyword-limit-info" id="keywordLimitInfo">
+                    0/3 Keywords • Das erste Keyword wird als Haupt-Keyword hervorgehoben
+                </div>
             </div>
-            <small>Gib Keywords ein und drücke Enter um sie hinzuzufügen</small>
         </div>
 
         <div class="input-group">
@@ -1049,72 +747,14 @@
         </div>
     </div>
 
-    <!-- Chat Popup for Text Improvement -->
-    <div class="chat-popup-overlay" id="chatPopupOverlay">
-        <div class="chat-popup">
-            <div class="chat-popup-header">
-                <span>🪄 Text mit KI verbessern</span>
-                <button class="close-btn" onclick="closeChatPopup()">&times;</button>
-            </div>
-            <div class="chat-popup-content">
-                <div class="original-text-section">
-                    <div class="original-text-label">📝 Aktueller Text:</div>
-                    <div class="original-text-content" id="originalTextDisplay">
-                        <!-- Original text will be shown here -->
-                    </div>
-                </div>
-                <div class="chat-section">
-                    <div class="chat-popup-messages" id="chatPopupMessages">
-                        <!-- Chat messages will appear here -->
-                    </div>
-                    <div class="popup-typing" id="popupTyping" style="display: none;">
-                        <div class="popup-message-content">
-                            <div class="typing-dots">
-                                <span></span>
-                                <span></span>
-                                <span></span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="chat-popup-input-area">
-                        <div class="chat-popup-input-container">
-                            <textarea 
-                                id="chatPopupInput" 
-                                class="chat-popup-input" 
-                                placeholder="Beschreibe, wie der Text verbessert werden soll..."
-                                rows="1"></textarea>
-                            <button id="chatPopupSendBtn" class="chat-popup-send-btn" onclick="sendChatMessage()">
-                                ➤
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="chat-popup-actions">
-                <button class="chat-popup-action-btn cancel" onclick="closeChatPopup()">
-                    ✕ Abbrechen
-                </button>
-                <button class="chat-popup-action-btn confirm" id="confirmImprovedTextBtn" onclick="confirmImprovedText()" disabled>
-                    ✓ Text übernehmen
-                </button>
-            </div>
-        </div>
-    </div>
-
     <script>
-        // Wedding Blog AI - Hauptlogik
+        // Wedding Blog AI - Hauptlogik mit Keyword-Limit
         // Globale Variablen
         let currentOutline = '';
         let currentBlogPost = '';
         let isGenerating = false;
         let selectedKeywords = [];
-        let currentEditingContent = null;
-
-        // Chat Popup Variablen
-        let currentChatContent = null;
-        let chatMessages = [];
-        let improvedTextContent = '';
-        let isChatGenerating = false;
+        const MAX_KEYWORDS = 3;
 
         // Vordefinierte Keywords für die Hochzeitsbranche
         const predefinedKeywords = [
@@ -1170,32 +810,54 @@
             "Boho Hochzeit"
         ];
 
-        // Claude API Integration über Backend
+        // Demo AI Function (simuliert API-Aufrufe)
         async function callAI(prompt, type = 'general') {
-            try {
-                const response = await fetch('/api/claude', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        prompt: prompt,
-                        type: type
-                    })
-                });
+            // Simulierte Verzögerung
+            await new Promise(resolve => setTimeout(resolve, 1500 + Math.random() * 1000));
+            
+            // Simulierte Antworten basierend auf dem Typ
+            if (type === 'title-optimization') {
+                return "Die perfekte Hochzeitslocation finden - Ultimativer Guide 2024";
+            } else if (type === 'outline-generation') {
+                const primaryKeyword = selectedKeywords[0] || 'Hochzeitslocation';
+                return `<h2>Was macht die perfekte ${highlightPrimaryKeyword(primaryKeyword)} aus?</h2>
+<h3>Wichtige Kriterien bei der ${highlightPrimaryKeyword('Hochzeitsplanung')}</h3>
+<h3>Budget und Kosten richtig kalkulieren</h3>
 
-                if (!response.ok) {
-                    const errorData = await response.json();
-                    throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
-                }
+<h2>Die besten ${highlightPrimaryKeyword(primaryKeyword)} Arten im Überblick</h2>
+<h3>Schlösser und historische Gebäude</h3>
+<h3>Moderne Hotels und Event-Locations</h3>
+<h3>Outdoor ${highlightPrimaryKeyword('Hochzeitsfeier')} im Freien</h3>
 
-                const data = await response.json();
-                return data.content;
+<h2>Praktische Tipps für die Location-Besichtigung</h2>
+<h3>Die richtige Vorbereitung</h3>
+<h3>Wichtige Fragen an den Veranstalter</h3>`;
+            } else if (type === 'content-generation') {
+                const primaryKeyword = selectedKeywords[0] || 'Hochzeitslocation';
+                return `Die Wahl der richtigen ${highlightPrimaryKeyword(primaryKeyword)} ist einer der wichtigsten Entscheidungen bei der ${highlightPrimaryKeyword('Hochzeitsplanung')}. Sie bildet den Rahmen für euren besonderen Tag und prägt die Atmosphäre eurer ${highlightPrimaryKeyword('Hochzeitsfeier')} maßgeblich.
 
-            } catch (error) {
-                console.error('API Error:', error);
-                throw new Error(`Fehler bei der KI-Anfrage: ${error.message}`);
+Bei der Auswahl solltet ihr verschiedene Faktoren berücksichtigen: die Anzahl eurer Gäste, euer Budget, den gewünschten Stil und die Jahreszeit. Eine gute ${highlightPrimaryKeyword(primaryKeyword)} bietet nicht nur ausreichend Platz, sondern auch die richtige Stimmung für eure Traumhochzeit.
+
+Denkt auch an praktische Aspekte wie Parkmöglichkeiten, Barrierefreiheit und die Ausstattung der Location. Viele Paare unterschätzen diese Details, die jedoch entscheidend für das Gelingen der Feier sind.`;
             }
+            
+            return "Demo-Antwort: Diese Funktion würde in der echten Anwendung mit der Claude API kommunizieren.";
+        }
+
+        // Highlight Primary Keyword Function
+        function highlightPrimaryKeyword(text) {
+            const primaryKeyword = selectedKeywords[0];
+            if (!primaryKeyword || typeof text !== 'string') return text;
+            
+            // Nur für die Anzeige hervorheben, nicht für HTML-Export
+            const regex = new RegExp(`(${primaryKeyword})`, 'gi');
+            return text.replace(regex, '<span class="primary-keyword-highlight">$1</span>');
+        }
+
+        // Remove highlighting for clean HTML export
+        function removeHighlighting(text) {
+            if (typeof text !== 'string') return text;
+            return text.replace(/<span class="primary-keyword-highlight">(.*?)<\/span>/gi, '$1');
         }
 
         // Status Message Functions
@@ -1227,7 +889,734 @@
             }
         }
 
-        // WordPress Download Funktion
+        // Tag-System für Keywords mit 3er-Limit
+        function initKeywordTagSystem() {
+            const input = document.getElementById('mainKeyword');
+            const dropdown = document.getElementById('keywordDropdown');
+
+            if (!input || !dropdown) return;
+
+            input.addEventListener('input', function(e) {
+                const value = e.target.value.trim();
+                if (value.length > 0) {
+                    showKeywordDropdown(value);
+                } else {
+                    showAllKeywords();
+                }
+            });
+
+            input.addEventListener('click', function(e) {
+                const value = e.target.value.trim();
+                if (value.length > 0) {
+                    showKeywordDropdown(value);
+                } else {
+                    showAllKeywords();
+                }
+            });
+
+            input.addEventListener('focus', function(e) {
+                const value = e.target.value.trim();
+                if (value.length > 0) {
+                    showKeywordDropdown(value);
+                } else {
+                    showAllKeywords();
+                }
+            });
+
+            input.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    const value = e.target.value.trim();
+                    if (value && selectedKeywords.length < MAX_KEYWORDS) {
+                        addKeyword(value);
+                        e.target.value = '';
+                        hideKeywordDropdown();
+                    } else if (selectedKeywords.length >= MAX_KEYWORDS) {
+                        showStatusMessage('❌ Maximum von 3 Keywords erreicht!');
+                    }
+                }
+            });
+
+            document.addEventListener('click', function(e) {
+                if (!e.target.closest('.tag-input-container') && !e.target.closest('.dropdown')) {
+                    hideKeywordDropdown();
+                }
+            });
+        }
+
+        function addKeyword(keywordText) {
+            if (selectedKeywords.length >= MAX_KEYWORDS) {
+                showStatusMessage('❌ <strong>Keyword-Limit erreicht!</strong><br>Entferne ein Keyword um ein neues hinzuzufügen.');
+                return;
+            }
+
+            if (!selectedKeywords.includes(keywordText)) {
+                selectedKeywords.push(keywordText);
+                renderKeywords();
+                updateKeywordLimitInfo();
+                const input = document.getElementById('mainKeyword');
+                if (input) input.value = '';
+                hideKeywordDropdown();
+            }
+        }
+
+        function removeKeyword(keywordText) {
+            selectedKeywords = selectedKeywords.filter(keyword => keyword !== keywordText);
+            renderKeywords();
+            updateKeywordLimitInfo();
+        }
+
+        function getKeywordsString() {
+            return selectedKeywords.join(', ');
+        }
+
+        function updateKeywordLimitInfo() {
+            const infoElement = document.getElementById('keywordLimitInfo');
+            if (!infoElement) return;
+
+            const count = selectedKeywords.length;
+            const isMaxReached = count >= MAX_KEYWORDS;
+            
+            let infoText = `${count}/${MAX_KEYWORDS} Keywords`;
+            
+            if (count === 0) {
+                infoText += ' • Das erste Keyword wird als Haupt-Keyword hervorgehoben';
+                infoElement.className = 'keyword-limit-info';
+            } else if (count === 1) {
+                infoText += ` • "${selectedKeywords[0]}" ist dein Haupt-Keyword 👑`;
+                infoElement.className = 'keyword-limit-info';
+            } else if (isMaxReached) {
+                infoText += ' • Maximum erreicht!';
+                infoElement.className = 'keyword-limit-info keyword-limit-warning';
+            } else {
+                infoText += ` • "${selectedKeywords[0]}" ist dein Haupt-Keyword 👑`;
+                infoElement.className = 'keyword-limit-info';
+            }
+            
+            infoElement.textContent = infoText;
+        }
+
+        function showAllKeywords() {
+            const dropdown = document.getElementById('keywordDropdown');
+            if (!dropdown) return;
+
+            const availableKeywords = predefinedKeywords.filter(keyword => !selectedKeywords.includes(keyword));
+            const isMaxReached = selectedKeywords.length >= MAX_KEYWORDS;
+
+            let dropdownHTML = '';
+            
+            if (isMaxReached) {
+                dropdownHTML += `<div class="dropdown-item disabled">Maximum von ${MAX_KEYWORDS} Keywords erreicht</div>`;
+            } else {
+                availableKeywords.slice(0, 10).forEach(keyword => {
+                    dropdownHTML += `<div class="dropdown-item" onclick="addKeyword('${keyword.replace(/'/g, "\\'")}')">${keyword}</div>`;
+                });
+            }
+
+            if (dropdownHTML) {
+                dropdown.innerHTML = dropdownHTML;
+                dropdown.style.display = 'block';
+            } else {
+                hideKeywordDropdown();
+            }
+        }
+
+        function showKeywordDropdown(searchTerm) {
+            const dropdown = document.getElementById('keywordDropdown');
+            if (!dropdown) return;
+
+            const matches = predefinedKeywords.filter(keyword => 
+                keyword.toLowerCase().includes(searchTerm.toLowerCase()) &&
+                !selectedKeywords.includes(keyword)
+            );
+
+            const isMaxReached = selectedKeywords.length >= MAX_KEYWORDS;
+
+            let dropdownHTML = '';
+
+            if (isMaxReached) {
+                dropdownHTML += `<div class="dropdown-item disabled">Maximum von ${MAX_KEYWORDS} Keywords erreicht</div>`;
+            } else {
+                matches.slice(0, 8).forEach(keyword => {
+                    dropdownHTML += `<div class="dropdown-item" onclick="addKeyword('${keyword.replace(/'/g, "\\'")}')">${keyword}</div>`;
+                });
+
+                if (!matches.includes(searchTerm) && !selectedKeywords.includes(searchTerm)) {
+                    dropdownHTML += `<div class="dropdown-item create-new" onclick="addKeyword('${searchTerm.replace(/'/g, "\\'")}')">\u002B "${searchTerm}" hinzufügen</div>`;
+                }
+            }
+
+            if (dropdownHTML) {
+                dropdown.innerHTML = dropdownHTML;
+                dropdown.style.display = 'block';
+            } else {
+                hideKeywordDropdown();
+            }
+        }
+
+        function hideKeywordDropdown() {
+            const dropdown = document.getElementById('keywordDropdown');
+            if (dropdown) {
+                dropdown.style.display = 'none';
+            }
+        }
+
+        function renderKeywords() {
+            const container = document.getElementById('keywordsDisplay');
+            if (!container) return;
+
+            container.innerHTML = '';
+
+            selectedKeywords.forEach((keyword, index) => {
+                const pill = document.createElement('div');
+                pill.className = index === 0 ? 'keyword-pill primary' : 'keyword-pill';
+                
+                const content = index === 0 ? 
+                    `<span>${keyword}</span><span class="keyword-remove" onclick="removeKeyword('${keyword.replace(/'/g, "\\'")}')">\u00D7</span>` :
+                    `<span>${keyword}</span><span class="keyword-remove" onclick="removeKeyword('${keyword.replace(/'/g, "\\'")}')">\u00D7</span>`;
+                
+                pill.innerHTML = content;
+                container.appendChild(pill);
+            });
+        }
+
+        function showTyping() {
+            const typing = document.getElementById('typing');
+            if (typing) typing.style.display = 'block';
+        }
+
+        function hideTyping() {
+            const typing = document.getElementById('typing');
+            if (typing) typing.style.display = 'none';
+        }
+
+        async function optimizeTitle() {
+            const titleInput = document.getElementById('blogTitle');
+            if (!titleInput) return;
+
+            const originalTitle = titleInput.value.trim();
+            
+            if (!originalTitle) {
+                showStatusMessage('❌ Bitte gib zuerst einen Titel ein!');
+                return;
+            }
+
+            const optimizeBtn = document.getElementById('optimizeTitleBtn');
+            if (optimizeBtn) {
+                optimizeBtn.classList.add('loading');
+                optimizeBtn.disabled = true;
+            }
+
+            showTyping();
+
+            try {
+                const optimizedTitle = await callAI(
+                    `Optimiere diesen Hochzeitsblog-Titel für SEO: "${originalTitle}"`, 
+                    'title-optimization'
+                );
+                
+                titleInput.value = optimizedTitle;
+                
+                hideTyping();
+                showStatusMessage(`✅ <strong>SEO-optimierter Titel:</strong><br>"${optimizedTitle}"<br><br>💡 <em>Optimiert für: Keyword-Integration, Länge, Klick-Appeal</em>`);
+                
+            } catch (error) {
+                hideTyping();
+                showStatusMessage(`❌ <strong>Fehler bei der Titel-Optimierung:</strong> ${error.message}`);
+            } finally {
+                if (optimizeBtn) {
+                    optimizeBtn.classList.remove('loading');
+                    optimizeBtn.disabled = false;
+                }
+            }
+        }
+
+        async function generateOutline() {
+            const titleInput = document.getElementById('blogTitle');
+            const wordCountSelect = document.getElementById('wordCount');
+            const toneSelect = document.getElementById('toneStyle');
+
+            if (!titleInput || !wordCountSelect || !toneSelect) return;
+
+            const title = titleInput.value.trim();
+            const keywords = getKeywordsString();
+            const wordCount = wordCountSelect.value;
+            const tone = toneSelect.value;
+            
+            if (!title) {
+                showStatusMessage('❌ Bitte gib zuerst einen Titel ein!');
+                return;
+            }
+
+            if (selectedKeywords.length === 0) {
+                showStatusMessage('❌ Bitte füge mindestens ein Keyword hinzu!');
+                return;
+            }
+
+            if (isGenerating) return;
+            isGenerating = true;
+
+            const generateBtn = document.getElementById('generateOutlineBtn');
+            const downloadBtn = document.getElementById('downloadOutlineBtn');
+            if (generateBtn) {
+                generateBtn.disabled = true;
+                generateBtn.innerHTML = '⏳ Generiere Gliederung...';
+            }
+
+            showTyping();
+            clearStatusMessages();
+
+            try {
+                const outline = await callAI(`Erstelle eine SEO-optimierte Gliederung für: "${title}"
+
+Keywords: ${keywords}
+Haupt-Keyword: ${selectedKeywords[0]}
+Wortanzahl: ${wordCount}
+Stil: ${tone}`, 'outline-generation');
+                
+                currentOutline = outline;
+                
+                const outlineContent = document.getElementById('outlineContent');
+                const outlineContainer = document.getElementById('outlineContainer');
+                
+                if (outlineContent) outlineContent.innerHTML = outline;
+                if (outlineContainer) outlineContainer.classList.add('visible');
+                if (downloadBtn) downloadBtn.style.display = 'block';
+                
+                setTimeout(() => {
+                    addHeadingActions();
+                }, 100);
+                
+                hideTyping();
+                showStatusMessage(`✅ <strong>Gliederung erfolgreich erstellt!</strong><br><br>👑 <strong>Haupt-Keyword:</strong> ${selectedKeywords[0]}<br>📋 Die H2 und H3-Struktur wurde automatisch generiert und ist SEO-optimiert.<br><br>💡 <em>Das Haupt-Keyword wird in der Anzeige farblich hervorgehoben!</em>`);
+                
+            } catch (error) {
+                hideTyping();
+                showStatusMessage(`❌ <strong>Fehler bei der Gliederung-Generierung:</strong> ${error.message}`);
+            } finally {
+                if (generateBtn) {
+                    generateBtn.disabled = false;
+                    generateBtn.innerHTML = '🪄 Gliederung generieren';
+                }
+                isGenerating = false;
+            }
+        }
+
+        function addHeadingActions() {
+            const outlineContent = document.getElementById('outlineContent');
+            if (!outlineContent) return;
+
+            const headings = outlineContent.querySelectorAll('h2, h3');
+            headings.forEach((heading, index) => {
+                const existingActions = heading.querySelector('.heading-actions');
+                if (existingActions) {
+                    existingActions.remove();
+                }
+
+                const actions = document.createElement('div');
+                actions.className = 'heading-actions';
+                
+                const editBtn = document.createElement('button');
+                editBtn.className = 'action-btn edit';
+                editBtn.innerHTML = '✎';
+                editBtn.title = 'Bearbeiten';
+                editBtn.onclick = (e) => {
+                    e.stopPropagation();
+                    editHeading(heading);
+                };
+
+                const deleteBtn = document.createElement('button');
+                deleteBtn.className = 'action-btn delete';
+                deleteBtn.innerHTML = '×';
+                deleteBtn.title = 'Löschen';
+                deleteBtn.onclick = (e) => {
+                    e.stopPropagation();
+                    deleteHeading(heading);
+                };
+
+                const generateBtn = document.createElement('button');
+                generateBtn.className = 'action-btn generate';
+                generateBtn.innerHTML = '✦';
+                generateBtn.title = 'Text generieren';
+                generateBtn.onclick = (e) => {
+                    e.stopPropagation();
+                    generateContentForHeading(heading);
+                };
+
+                actions.appendChild(editBtn);
+                actions.appendChild(deleteBtn);
+                actions.appendChild(generateBtn);
+                heading.appendChild(actions);
+            });
+        }
+
+        function editHeading(heading) {
+            const actionsElement = heading.querySelector('.heading-actions');
+            
+            let currentText = heading.innerHTML;
+            if (actionsElement) {
+                currentText = currentText.replace(actionsElement.outerHTML, '').trim();
+            }
+            
+            // Remove highlighting for editing
+            const cleanText = removeHighlighting(currentText);
+            
+            const originalActions = actionsElement ? actionsElement.cloneNode(true) : null;
+            
+            if (actionsElement) {
+                actionsElement.remove();
+            }
+            
+            const input = document.createElement('input');
+            input.className = 'heading-edit-input';
+            input.type = 'text';
+            input.value = cleanText;
+            
+            heading.innerHTML = '';
+            heading.appendChild(input);
+            
+            input.focus();
+            input.select();
+            
+            let isHandled = false;
+            
+            function saveEdit() {
+                if (isHandled) return;
+                isHandled = true;
+                
+                const newText = input.value.trim();
+                if (newText && newText !== cleanText) {
+                    // Apply highlighting to new text
+                    heading.innerHTML = highlightPrimaryKeyword(newText);
+                    if (originalActions) {
+                        heading.appendChild(originalActions);
+                        reattachEventListeners(heading);
+                    }
+                } else if (newText === cleanText) {
+                    heading.innerHTML = currentText;
+                    if (originalActions) {
+                        heading.appendChild(originalActions);
+                        reattachEventListeners(heading);
+                    }
+                } else {
+                    heading.innerHTML = currentText;
+                    if (originalActions) {
+                        heading.appendChild(originalActions);
+                        reattachEventListeners(heading);
+                    }
+                    showStatusMessage('❌ Überschrift-Änderung abgebrochen (leerer Text)');
+                }
+            }
+            
+            function cancelEdit() {
+                if (isHandled) return;
+                isHandled = true;
+                
+                heading.innerHTML = currentText;
+                if (originalActions) {
+                    heading.appendChild(originalActions);
+                    reattachEventListeners(heading);
+                }
+            }
+            
+            input.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    saveEdit();
+                } else if (e.key === 'Escape') {
+                    e.preventDefault();
+                    cancelEdit();
+                }
+            });
+            
+            input.addEventListener('blur', saveEdit);
+        }
+
+        function reattachEventListeners(heading) {
+            const actions = heading.querySelector('.heading-actions');
+            if (!actions) return;
+            
+            const editBtn = actions.querySelector('.edit');
+            const deleteBtn = actions.querySelector('.delete');
+            const generateBtn = actions.querySelector('.generate');
+            
+            if (editBtn) {
+                editBtn.onclick = (e) => {
+                    e.stopPropagation();
+                    editHeading(heading);
+                };
+            }
+            
+            if (deleteBtn) {
+                deleteBtn.onclick = (e) => {
+                    e.stopPropagation();
+                    deleteHeading(heading);
+                };
+            }
+            
+            if (generateBtn) {
+                generateBtn.onclick = (e) => {
+                    e.stopPropagation();
+                    generateContentForHeading(heading);
+                };
+            }
+        }
+
+        function deleteHeading(heading) {
+            const actionsElement = heading.querySelector('.heading-actions');
+            let headingText = heading.textContent.trim();
+            
+            if (actionsElement) {
+                const actionsText = actionsElement.textContent.trim();
+                headingText = headingText.replace(actionsText, '').trim();
+            }
+            
+            const isH2 = heading.tagName === 'H2';
+            
+            if (!confirm(`Möchtest du "${headingText}" wirklich löschen?${isH2 ? '\n\n(Alle untergeordneten H3-Überschriften werden mitgelöscht)' : ''}`)) {
+                return;
+            }
+            
+            try {
+                const outlineContent = document.getElementById('outlineContent');
+                if (!outlineContent || !outlineContent.contains(heading)) {
+                    return;
+                }
+                
+                if (isH2) {
+                    let currentElement = heading;
+                    const elementsToDelete = [heading];
+                    
+                    while (currentElement.nextElementSibling) {
+                        const nextElement = currentElement.nextElementSibling;
+                        
+                        if (nextElement.tagName === 'H2') {
+                            break;
+                        }
+                        
+                        if (nextElement.tagName === 'H3' || nextElement.classList.contains('generated-content')) {
+                            elementsToDelete.push(nextElement);
+                        }
+                        
+                        currentElement = nextElement;
+                    }
+                    
+                    elementsToDelete.forEach(el => {
+                        if (el && el.parentNode) {
+                            el.parentNode.removeChild(el);
+                        }
+                    });
+                    
+                } else {
+                    const elementsToDelete = [heading];
+                    
+                    let nextElement = heading.nextElementSibling;
+                    while (nextElement && nextElement.classList.contains('generated-content')) {
+                        elementsToDelete.push(nextElement);
+                        nextElement = nextElement.nextElementSibling;
+                    }
+                    
+                    elementsToDelete.forEach(el => {
+                        if (el && el.parentNode) {
+                            el.parentNode.removeChild(el);
+                        }
+                    });
+                }
+                
+            } catch (error) {
+                showStatusMessage(`❌ Fehler beim Löschen: ${error.message}`);
+            }
+        }
+
+        async function generateContentForHeading(heading) {
+            const headingText = heading.textContent.trim();
+            const headingLevel = heading.tagName;
+            const isH2 = headingLevel === 'H2';
+            
+            const generateBtn = heading.querySelector('.action-btn.generate');
+            if (generateBtn) {
+                generateBtn.classList.add('loading');
+                generateBtn.disabled = true;
+            }
+            
+            showTyping();
+            
+            try {
+                const blogTitle = document.getElementById('blogTitle')?.value.trim() || '';
+                const keywords = getKeywordsString();
+                const wordCount = document.getElementById('wordCount')?.value || '1500';
+                const tone = document.getElementById('toneStyle')?.value || 'freundlich-beratend';
+                
+                const demoContent = await callAI(`Generiere Text für: "${headingText}"
+
+Blog: ${blogTitle}
+Keywords: ${keywords}
+Stil: ${tone}`, 'content-generation');
+                
+                hideTyping();
+                
+                const contentDiv = document.createElement('div');
+                contentDiv.className = 'generated-content';
+                
+                // Konvertiere Zeilenwechsel zu HTML-Absätzen
+                const formattedContent = demoContent.split('\n\n').map(paragraph => 
+                    paragraph.trim() ? `<p>${paragraph.trim()}</p>` : ''
+                ).filter(p => p).join('');
+                
+                contentDiv.innerHTML = formattedContent || `<p>${demoContent}</p>`;
+                
+                heading.insertAdjacentElement('afterend', contentDiv);
+                
+                // Füge Content-Actions hinzu
+                addContentActions(contentDiv);
+                
+                showStatusMessage(`✅ Content erfolgreich generiert für "${removeHighlighting(headingText)}"`);
+                
+            } catch (error) {
+                hideTyping();
+                showStatusMessage(`❌ <strong>Fehler bei der Content-Generierung:</strong> ${error.message}`);
+            } finally {
+                if (generateBtn) {
+                    generateBtn.classList.remove('loading');
+                    generateBtn.disabled = false;
+                }
+            }
+        }
+
+        function addContentActions(contentDiv) {
+            const actions = document.createElement('div');
+            actions.className = 'content-actions';
+            
+            const editBtn = document.createElement('button');
+            editBtn.className = 'action-btn edit';
+            editBtn.innerHTML = '✎';
+            editBtn.title = 'Text bearbeiten';
+            editBtn.onclick = (e) => {
+                e.stopPropagation();
+                editContent(contentDiv);
+            };
+
+            const deleteBtn = document.createElement('button');
+            deleteBtn.className = 'action-btn delete';
+            deleteBtn.innerHTML = '×';
+            deleteBtn.title = 'Löschen';
+            deleteBtn.onclick = (e) => {
+                e.stopPropagation();
+                deleteContent(contentDiv);
+            };
+
+            const regenerateBtn = document.createElement('button');
+            regenerateBtn.className = 'action-btn magic';
+            regenerateBtn.innerHTML = '🪄';
+            regenerateBtn.title = 'Neu generieren';
+            regenerateBtn.onclick = (e) => {
+                e.stopPropagation();
+                regenerateContent(contentDiv);
+            };
+
+            actions.appendChild(editBtn);
+            actions.appendChild(deleteBtn);
+            actions.appendChild(regenerateBtn);
+            contentDiv.appendChild(actions);
+        }
+
+        function editContent(contentDiv) {
+            const currentParagraphs = Array.from(contentDiv.querySelectorAll('p')).map(p => removeHighlighting(p.textContent)).join('\n\n');
+            const textarea = document.createElement('textarea');
+            textarea.value = currentParagraphs;
+            textarea.style.width = '100%';
+            textarea.style.minHeight = '120px';
+            textarea.style.background = 'rgba(0, 0, 0, 0.5)';
+            textarea.style.border = '1px solid #7209b7';
+            textarea.style.borderRadius = '8px';
+            textarea.style.color = 'white';
+            textarea.style.padding = '12px';
+            textarea.style.fontFamily = 'inherit';
+            textarea.style.fontSize = '14px';
+            textarea.style.outline = 'none';
+            textarea.style.resize = 'vertical';
+            
+            contentDiv.innerHTML = '';
+            contentDiv.appendChild(textarea);
+            textarea.focus();
+            
+            function saveEdit() {
+                const newText = textarea.value.trim();
+                if (newText) {
+                    // Konvertiere Absätze zu HTML und wende Highlighting an
+                    const formattedContent = newText.split('\n\n').map(paragraph => 
+                        paragraph.trim() ? `<p>${highlightPrimaryKeyword(paragraph.trim())}</p>` : ''
+                    ).filter(p => p).join('');
+                    
+                    contentDiv.innerHTML = formattedContent || `<p>${highlightPrimaryKeyword(newText)}</p>`;
+                    addContentActions(contentDiv);
+                } else {
+                    deleteContent(contentDiv);
+                }
+            }
+            
+            textarea.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' && e.ctrlKey) {
+                    e.preventDefault();
+                    saveEdit();
+                } else if (e.key === 'Escape') {
+                    e.preventDefault();
+                    const formattedContent = currentParagraphs.split('\n\n').map(paragraph => 
+                        paragraph.trim() ? `<p>${highlightPrimaryKeyword(paragraph.trim())}</p>` : ''
+                    ).filter(p => p).join('');
+                    contentDiv.innerHTML = formattedContent || `<p>${highlightPrimaryKeyword(currentParagraphs)}</p>`;
+                    addContentActions(contentDiv);
+                }
+            });
+            
+            textarea.addEventListener('blur', saveEdit);
+        }
+
+        function deleteContent(contentDiv) {
+            if (confirm('Möchtest du diesen generierten Content wirklich löschen?')) {
+                contentDiv.remove();
+            }
+        }
+
+        async function regenerateContent(contentDiv) {
+            const regenerateBtn = contentDiv.querySelector('.action-btn.magic');
+            if (regenerateBtn) {
+                regenerateBtn.classList.add('loading');
+                regenerateBtn.disabled = true;
+            }
+            
+            showTyping();
+            
+            try {
+                const newContent = await callAI(`Generiere neuen alternativen Text`, 'content-regeneration');
+                
+                hideTyping();
+                
+                const currentActions = contentDiv.querySelector('.content-actions');
+                if (currentActions) currentActions.remove();
+                
+                // Konvertiere Zeilenwechsel zu HTML-Absätzen mit Highlighting
+                const formattedContent = newContent.split('\n\n').map(paragraph => 
+                    paragraph.trim() ? `<p>${highlightPrimaryKeyword(paragraph.trim())}</p>` : ''
+                ).filter(p => p).join('');
+                
+                contentDiv.innerHTML = formattedContent || `<p>${highlightPrimaryKeyword(newContent)}</p>`;
+                addContentActions(contentDiv);
+                
+                showStatusMessage('✅ Content erfolgreich neu generiert!');
+                
+            } catch (error) {
+                hideTyping();
+                showStatusMessage(`❌ <strong>Fehler bei der Neu-Generierung:</strong> ${error.message}`);
+            } finally {
+                if (regenerateBtn) {
+                    regenerateBtn.classList.remove('loading');
+                    regenerateBtn.disabled = false;
+                }
+            }
+        }
+
+        // WordPress Download Funktion (ohne Highlighting)
         function downloadForWordpress() {
             const titleInput = document.getElementById('blogTitle');
             const outlineContent = document.getElementById('outlineContent');
@@ -1242,29 +1631,25 @@
             const wordCount = document.getElementById('wordCount')?.value || '1500';
             const tone = document.getElementById('toneStyle')?.value || 'freundlich-beratend';
             
-            // Sammle alle Inhalte aus der Outline
+            // Sammle alle Inhalte aus der Outline (ohne Highlighting)
             let wordpressContent = '';
             let excerpt = '';
             let firstParagraph = '';
             
-            // Durchlaufe alle Kinder der Outline
             const allElements = Array.from(outlineContent.children);
             
             allElements.forEach((element, index) => {
                 if (element.tagName === 'H2') {
-                    // Entferne Action-Buttons aus dem Text
-                    const headingText = element.textContent.replace(/✎×✦/g, '').trim();
+                    const headingText = removeHighlighting(element.textContent.replace(/✎×✦/g, '').trim());
                     wordpressContent += `<!-- wp:heading {"level":2} -->\n<h2 class="wp-block-heading">${headingText}</h2>\n<!-- /wp:heading -->\n\n`;
                 } else if (element.tagName === 'H3') {
-                    // Entferne Action-Buttons aus dem Text
-                    const headingText = element.textContent.replace(/✎×✦/g, '').trim();
+                    const headingText = removeHighlighting(element.textContent.replace(/✎×✦/g, '').trim());
                     wordpressContent += `<!-- wp:heading {"level":3} -->\n<h3 class="wp-block-heading">${headingText}</h3>\n<!-- /wp:heading -->\n\n`;
                 } else if (element.classList.contains('generated-content')) {
-                    // Füge generierten Content hinzu
                     const paragraphs = element.querySelectorAll('p');
                     paragraphs.forEach(paragraph => {
                         if (paragraph) {
-                            const paragraphText = paragraph.textContent.trim();
+                            const paragraphText = removeHighlighting(paragraph.textContent.trim());
                             wordpressContent += `<!-- wp:paragraph -->\n<p>${paragraphText}</p>\n<!-- /wp:paragraph -->\n\n`;
                             
                             // Verwende ersten Paragraph als Excerpt
@@ -1395,6 +1780,7 @@ Zielwortanzahl: ${wordCount}
 Stil: ${tone.replace('-', ' & ')}
 Tool: Wedding Blog AI
 Version: 1.0
+Haupt-Keyword: ${selectedKeywords[0] || 'Hochzeit'}
 
 </body>
 </html>`;
@@ -1410,985 +1796,16 @@ Version: 1.0
             document.body.removeChild(a);
             URL.revokeObjectURL(url);
             
-            showStatusMessage('📄 <strong>WordPress-Import erfolgreich!</strong><br><br>✅ Die Datei enthält:<br>• Gutenberg-kompatiblen Content<br>• SEO-Metadaten<br>• Import-Anleitung<br>• Schema Markup<br><br>💡 <em>Öffne die Datei und folge der Schritt-für-Schritt Anleitung!</em>');
-        }
-
-        // Tag-System für Keywords
-        function initKeywordTagSystem() {
-            const input = document.getElementById('mainKeyword');
-            const dropdown = document.getElementById('keywordDropdown');
-
-            if (!input || !dropdown) return;
-
-            input.addEventListener('input', function(e) {
-                const value = e.target.value.trim();
-                if (value.length > 0) {
-                    showKeywordDropdown(value);
-                } else {
-                    showAllKeywords();
-                }
-            });
-
-            input.addEventListener('click', function(e) {
-                const value = e.target.value.trim();
-                if (value.length > 0) {
-                    showKeywordDropdown(value);
-                } else {
-                    showAllKeywords();
-                }
-            });
-
-            input.addEventListener('focus', function(e) {
-                const value = e.target.value.trim();
-                if (value.length > 0) {
-                    showKeywordDropdown(value);
-                } else {
-                    showAllKeywords();
-                }
-            });
-
-            input.addEventListener('keydown', function(e) {
-                if (e.key === 'Enter') {
-                    e.preventDefault();
-                    const value = e.target.value.trim();
-                    if (value) {
-                        addKeyword(value);
-                        e.target.value = '';
-                        hideKeywordDropdown();
-                    }
-                }
-            });
-
-            document.addEventListener('click', function(e) {
-                if (!e.target.closest('.tag-input-container') && !e.target.closest('.dropdown')) {
-                    hideKeywordDropdown();
-                }
-            });
-        }
-
-        function addKeyword(keywordText) {
-            if (!selectedKeywords.includes(keywordText)) {
-                selectedKeywords.push(keywordText);
-                renderKeywords();
-                const input = document.getElementById('mainKeyword');
-                if (input) input.value = '';
-                hideKeywordDropdown();
-            }
-        }
-
-        function removeKeyword(keywordText) {
-            selectedKeywords = selectedKeywords.filter(keyword => keyword !== keywordText);
-            renderKeywords();
-        }
-
-        function getKeywordsString() {
-            return selectedKeywords.join(', ');
-        }
-
-        function showAllKeywords() {
-            const dropdown = document.getElementById('keywordDropdown');
-            if (!dropdown) return;
-
-            const availableKeywords = predefinedKeywords.filter(keyword => !selectedKeywords.includes(keyword));
-
-            let dropdownHTML = '';
-            availableKeywords.slice(0, 10).forEach(keyword => {
-                dropdownHTML += `<div class="dropdown-item" onclick="addKeyword('${keyword.replace(/'/g, "\\'")}')">${keyword}</div>`;
-            });
-
-            if (dropdownHTML) {
-                dropdown.innerHTML = dropdownHTML;
-                dropdown.style.display = 'block';
-            } else {
-                hideKeywordDropdown();
-            }
-        }
-
-        function showKeywordDropdown(searchTerm) {
-            const dropdown = document.getElementById('keywordDropdown');
-            if (!dropdown) return;
-
-            const matches = predefinedKeywords.filter(keyword => 
-                keyword.toLowerCase().includes(searchTerm.toLowerCase()) &&
-                !selectedKeywords.includes(keyword)
-            );
-
-            let dropdownHTML = '';
-
-            matches.slice(0, 8).forEach(keyword => {
-                dropdownHTML += `<div class="dropdown-item" onclick="addKeyword('${keyword.replace(/'/g, "\\'")}')">${keyword}</div>`;
-            });
-
-            if (!matches.includes(searchTerm) && !selectedKeywords.includes(searchTerm)) {
-                dropdownHTML += `<div class="dropdown-item create-new" onclick="addKeyword('${searchTerm.replace(/'/g, "\\'")}')">\u002B "${searchTerm}" hinzufügen</div>`;
-            }
-
-            if (dropdownHTML) {
-                dropdown.innerHTML = dropdownHTML;
-                dropdown.style.display = 'block';
-            } else {
-                hideKeywordDropdown();
-            }
-        }
-
-        function hideKeywordDropdown() {
-            const dropdown = document.getElementById('keywordDropdown');
-            if (dropdown) {
-                dropdown.style.display = 'none';
-            }
-        }
-
-        function renderKeywords() {
-            const container = document.getElementById('keywordsDisplay');
-            if (!container) return;
-
-            container.innerHTML = '';
-
-            selectedKeywords.forEach(keyword => {
-                const pill = document.createElement('div');
-                pill.className = 'keyword-pill';
-                pill.innerHTML = `
-                    <span>${keyword}</span>
-                    <span class="keyword-remove" onclick="removeKeyword('${keyword.replace(/'/g, "\\'")}')">\u00D7</span>
-                `;
-                container.appendChild(pill);
-            });
-        }
-
-        function showTyping() {
-            const typing = document.getElementById('typing');
-            if (typing) typing.style.display = 'block';
-            
-            // Auto-Scrolling entfernt - Seite bleibt an aktueller Position
-        }
-
-        function hideTyping() {
-            const typing = document.getElementById('typing');
-            if (typing) typing.style.display = 'none';
-        }
-
-        async function optimizeTitle() {
-            const titleInput = document.getElementById('blogTitle');
-            if (!titleInput) return;
-
-            const originalTitle = titleInput.value.trim();
-            
-            if (!originalTitle) {
-                showStatusMessage('❌ Bitte gib zuerst einen Titel ein!');
-                return;
-            }
-
-            const optimizeBtn = document.getElementById('optimizeTitleBtn');
-            if (optimizeBtn) {
-                optimizeBtn.classList.add('loading');
-                optimizeBtn.disabled = true;
-            }
-
-            showTyping();
-
-            try {
-                const optimizedTitle = await callAI(
-                    `Optimiere diesen Hochzeitsblog-Titel für SEO: "${originalTitle}"
-
-Anforderungen:
-- Maximal 60 Zeichen
-- Keyword-optimiert für Hochzeitsbranche
-- Ansprechend für Hochzeitspaare
-- Aktuelle Jahreszahl wenn sinnvoll
-
-Antworte NUR mit dem optimierten Titel, ohne Anführungszeichen oder Erklärungen.`, 
-                    'title-optimization'
-                );
-                
-                titleInput.value = optimizedTitle;
-                
-                hideTyping();
-                showStatusMessage(`✅ <strong>SEO-optimierter Titel:</strong><br>"${optimizedTitle}"<br><br>💡 <em>Optimiert für: Keyword-Integration, Länge, Klick-Appeal</em>`);
-                
-            } catch (error) {
-                hideTyping();
-                showStatusMessage(`❌ <strong>Fehler bei der Titel-Optimierung:</strong> ${error.message}`);
-            } finally {
-                if (optimizeBtn) {
-                    optimizeBtn.classList.remove('loading');
-                    optimizeBtn.disabled = false;
-                }
-            }
-        }
-
-        async function generateOutline() {
-            const titleInput = document.getElementById('blogTitle');
-            const wordCountSelect = document.getElementById('wordCount');
-            const toneSelect = document.getElementById('toneStyle');
-
-            if (!titleInput || !wordCountSelect || !toneSelect) return;
-
-            const title = titleInput.value.trim();
-            const keywords = getKeywordsString();
-            const wordCount = wordCountSelect.value;
-            const tone = toneSelect.value;
-            
-            if (!title) {
-                showStatusMessage('❌ Bitte gib zuerst einen Titel ein!');
-                return;
-            }
-
-            if (isGenerating) return;
-            isGenerating = true;
-
-            const generateBtn = document.getElementById('generateOutlineBtn');
-            const downloadBtn = document.getElementById('downloadOutlineBtn');
-            if (generateBtn) {
-                generateBtn.disabled = true;
-                generateBtn.innerHTML = '⏳ Generiere Gliederung...';
-            }
-
-            showTyping();
-            clearStatusMessages();
-
-            try {
-                const outline = await callAI(`Erstelle eine SEO-optimierte Gliederung für diesen Hochzeitsblog:
-
-TITEL: "${title}"
-
-PFLICHT-KEYWORDS (MÜSSEN in Überschriften verwendet werden):
-${keywords}
-
-ZWINGENDE ANFORDERUNGEN:
-- JEDES der oben genannten Keywords MUSS mindestens 1x in einer H2 oder H3 Überschrift vorkommen
-- Verwende weitere relevante Begriffe, aber die Pflicht-Keywords sind NICHT optional
-- Wortanzahl: ${wordCount}
-- Stil: ${tone}
-- Format: NUR HTML <h2> und <h3> Tags
-
-Beispiel einer korrekten Verwendung:
-<h2>Die perfekte Hochzeitslocation finden</h2>
-<h3>Hochzeitsplanung leicht gemacht</h3>
-
-WICHTIG: Überprüfe vor der Antwort, dass wirklich ALLE Keywords in den Überschriften verwendet wurden!`, 'outline-generation');
-                
-                currentOutline = outline;
-                
-                const outlineContent = document.getElementById('outlineContent');
-                const outlineContainer = document.getElementById('outlineContainer');
-                
-                if (outlineContent) outlineContent.innerHTML = outline;
-                if (outlineContainer) outlineContainer.classList.add('visible');
-                if (downloadBtn) downloadBtn.style.display = 'block';
-                
-                setTimeout(() => {
-                    addHeadingActions();
-                }, 100);
-                
-                hideTyping();
-                showStatusMessage('✅ <strong>Gliederung erfolgreich erstellt!</strong><br><br>📋 Die H2 und H3-Struktur wurde automatisch generiert und ist SEO-optimiert.<br><br>💡 <em>Generiere Texte zu einzelnen Überschriften oder lade die Outline als HTML herunter!</em>');
-                
-            } catch (error) {
-                hideTyping();
-                showStatusMessage(`❌ <strong>Fehler bei der Gliederung-Generierung:</strong> ${error.message}`);
-            } finally {
-                if (generateBtn) {
-                    generateBtn.disabled = false;
-                    generateBtn.innerHTML = '🪄 Gliederung generieren';
-                }
-                isGenerating = false;
-            }
-        }
-
-        function addHeadingActions() {
-            const outlineContent = document.getElementById('outlineContent');
-            if (!outlineContent) return;
-
-            const headings = outlineContent.querySelectorAll('h2, h3');
-            headings.forEach((heading, index) => {
-                const existingActions = heading.querySelector('.heading-actions');
-                if (existingActions) {
-                    existingActions.remove();
-                }
-
-                const actions = document.createElement('div');
-                actions.className = 'heading-actions';
-                
-                const editBtn = document.createElement('button');
-                editBtn.className = 'action-btn edit';
-                editBtn.innerHTML = '✎';
-                editBtn.title = 'Bearbeiten';
-                editBtn.onclick = (e) => {
-                    e.stopPropagation();
-                    editHeading(heading);
-                };
-
-                const deleteBtn = document.createElement('button');
-                deleteBtn.className = 'action-btn delete';
-                deleteBtn.innerHTML = '×';
-                deleteBtn.title = 'Löschen';
-                deleteBtn.onclick = (e) => {
-                    e.stopPropagation();
-                    deleteHeading(heading);
-                };
-
-                const generateBtn = document.createElement('button');
-                generateBtn.className = 'action-btn generate';
-                generateBtn.innerHTML = '✦';
-                generateBtn.title = 'Text generieren';
-                generateBtn.onclick = (e) => {
-                    e.stopPropagation();
-                    generateContentForHeading(heading);
-                };
-
-                actions.appendChild(editBtn);
-                actions.appendChild(deleteBtn);
-                actions.appendChild(generateBtn);
-                heading.appendChild(actions);
-            });
-        }
-
-        function editHeading(heading) {
-            const actionsElement = heading.querySelector('.heading-actions');
-            
-            let currentText = heading.textContent.trim();
-            if (actionsElement) {
-                const actionsText = actionsElement.textContent.trim();
-                currentText = currentText.replace(actionsText, '').trim();
-            }
-            
-            const originalActions = actionsElement ? actionsElement.cloneNode(true) : null;
-            
-            if (actionsElement) {
-                actionsElement.remove();
-            }
-            
-            const input = document.createElement('input');
-            input.className = 'heading-edit-input';
-            input.type = 'text';
-            input.value = currentText;
-            
-            heading.innerHTML = '';
-            heading.appendChild(input);
-            
-            input.focus();
-            input.select();
-            
-            let isHandled = false;
-            
-            function saveEdit() {
-                if (isHandled) return;
-                isHandled = true;
-                
-                const newText = input.value.trim();
-                if (newText && newText !== currentText) {
-                    heading.textContent = newText;
-                    if (originalActions) {
-                        heading.appendChild(originalActions);
-                        reattachEventListeners(heading);
-                    }
-                } else if (newText === currentText) {
-                    heading.textContent = currentText;
-                    if (originalActions) {
-                        heading.appendChild(originalActions);
-                        reattachEventListeners(heading);
-                    }
-                } else {
-                    heading.textContent = currentText;
-                    if (originalActions) {
-                        heading.appendChild(originalActions);
-                        reattachEventListeners(heading);
-                    }
-                    showStatusMessage('❌ Überschrift-Änderung abgebrochen (leerer Text)');
-                }
-            }
-            
-            function cancelEdit() {
-                if (isHandled) return;
-                isHandled = true;
-                
-                heading.textContent = currentText;
-                if (originalActions) {
-                    heading.appendChild(originalActions);
-                    reattachEventListeners(heading);
-                }
-            }
-            
-            input.addEventListener('keydown', (e) => {
-                if (e.key === 'Enter') {
-                    e.preventDefault();
-                    saveEdit();
-                } else if (e.key === 'Escape') {
-                    e.preventDefault();
-                    cancelEdit();
-                }
-            });
-            
-            input.addEventListener('blur', saveEdit);
-        }
-
-        function reattachEventListeners(heading) {
-            const actions = heading.querySelector('.heading-actions');
-            if (!actions) return;
-            
-            const editBtn = actions.querySelector('.edit');
-            const deleteBtn = actions.querySelector('.delete');
-            const generateBtn = actions.querySelector('.generate');
-            
-            if (editBtn) {
-                editBtn.onclick = (e) => {
-                    e.stopPropagation();
-                    editHeading(heading);
-                };
-            }
-            
-            if (deleteBtn) {
-                deleteBtn.onclick = (e) => {
-                    e.stopPropagation();
-                    deleteHeading(heading);
-                };
-            }
-            
-            if (generateBtn) {
-                generateBtn.onclick = (e) => {
-                    e.stopPropagation();
-                    generateContentForHeading(heading);
-                };
-            }
-        }
-
-        function deleteHeading(heading) {
-            const actionsElement = heading.querySelector('.heading-actions');
-            let headingText = heading.textContent.trim();
-            
-            if (actionsElement) {
-                const actionsText = actionsElement.textContent.trim();
-                headingText = headingText.replace(actionsText, '').trim();
-            }
-            
-            const isH2 = heading.tagName === 'H2';
-            
-            if (!confirm(`Möchtest du "${headingText}" wirklich löschen?${isH2 ? '\n\n(Alle untergeordneten H3-Überschriften werden mitgelöscht)' : ''}`)) {
-                return;
-            }
-            
-            try {
-                const outlineContent = document.getElementById('outlineContent');
-                if (!outlineContent || !outlineContent.contains(heading)) {
-                    return;
-                }
-                
-                if (isH2) {
-                    let currentElement = heading;
-                    const elementsToDelete = [heading];
-                    
-                    while (currentElement.nextElementSibling) {
-                        const nextElement = currentElement.nextElementSibling;
-                        
-                        if (nextElement.tagName === 'H2') {
-                            break;
-                        }
-                        
-                        if (nextElement.tagName === 'H3' || nextElement.classList.contains('generated-content')) {
-                            elementsToDelete.push(nextElement);
-                        }
-                        
-                        currentElement = nextElement;
-                    }
-                    
-                    elementsToDelete.forEach(el => {
-                        if (el && el.parentNode) {
-                            el.parentNode.removeChild(el);
-                        }
-                    });
-                    
-                } else {
-                    const elementsToDelete = [heading];
-                    
-                    let nextElement = heading.nextElementSibling;
-                    while (nextElement && nextElement.classList.contains('generated-content')) {
-                        elementsToDelete.push(nextElement);
-                        nextElement = nextElement.nextElementSibling;
-                    }
-                    
-                    elementsToDelete.forEach(el => {
-                        if (el && el.parentNode) {
-                            el.parentNode.removeChild(el);
-                        }
-                    });
-                }
-                
-            } catch (error) {
-                showStatusMessage(`❌ Fehler beim Löschen: ${error.message}`);
-            }
-        }
-
-        // VERBESSERTE generateContentForHeading Funktion mit vollem Kontext
-        async function generateContentForHeading(heading) {
-            const headingText = heading.textContent.trim();
-            const headingLevel = heading.tagName;
-            const isH2 = headingLevel === 'H2';
-            
-            const outlineContent = document.getElementById('outlineContent');
-            const allElements = Array.from(outlineContent.children);
-            const headingIndex = allElements.indexOf(heading);
-            
-            let hasSubHeadings = false;
-            if (isH2) {
-                for (let i = headingIndex + 1; i < allElements.length; i++) {
-                    const element = allElements[i];
-                    if (element.tagName === 'H2') break;
-                    if (element.tagName === 'H3') {
-                        hasSubHeadings = true;
-                        break;
-                    }
-                }
-            }
-            
-            const generateBtn = heading.querySelector('.action-btn.generate');
-            if (generateBtn) {
-                generateBtn.classList.add('loading');
-                generateBtn.disabled = true;
-            }
-            
-            showTyping();
-            
-            try {
-                // Sammle alle Kontextinformationen
-                const blogTitle = document.getElementById('blogTitle')?.value.trim() || '';
-                const keywords = getKeywordsString();
-                const wordCount = document.getElementById('wordCount')?.value || '1500';
-                const tone = document.getElementById('toneStyle')?.value || 'freundlich-beratend';
-                
-                // Erweiterte Prompt mit allen Kontextinformationen
-                const enhancedPrompt = `BLOG-HAUPTTITEL: "${blogTitle}"
-
-AKTUELLE HEADLINE: "${headingText}"
-
-KEYWORDS (integriere diese natürlich): ${keywords || 'Hochzeit, Hochzeitsplanung'}
-
-TONFALL & STIL: ${tone.replace('-', ' & ')}
-
-ZIELWORTANZAHL GESAMT: ${wordCount} Wörter
-
-TEXTTYP: ${hasSubHeadings ? 'Kurze Einleitung (da Unterüberschriften folgen)' : 'Vollständiger Abschnitt'}
-
-WICHTIG FÜR SEO: Strukturiere den Text in mehrere Absätze (2-4 Sätze pro Absatz) für bessere Lesbarkeit. Nutze <br><br> zwischen den Absätzen.
-
-AUFGABE: Generiere einen informativen Text für die oben genannte Headline. Der Text soll sich nahtlos in den Gesamtblog einfügen, die Keywords natürlich verwenden und in sinnvolle Absätze unterteilt sein.`;
-
-                const demoContent = await callAI(enhancedPrompt, 'content-generation');
-                
-                hideTyping();
-                
-                const contentDiv = document.createElement('div');
-                contentDiv.className = 'generated-content';
-                
-                // Konvertiere Zeilenwechsel zu HTML-Absätzen
-                const formattedContent = demoContent.split('\n\n').map(paragraph => 
-                    paragraph.trim() ? `<p>${paragraph.trim()}</p>` : ''
-                ).filter(p => p).join('');
-                
-                contentDiv.innerHTML = formattedContent || `<p>${demoContent}</p>`;
-                
-                heading.insertAdjacentElement('afterend', contentDiv);
-                
-                // Füge Content-Actions hinzu
-                addContentActions(contentDiv);
-                
-                const contentType = hasSubHeadings ? 'Einleitungstext' : 'Vollständiger Abschnitt';
-                showStatusMessage(`✅ ${contentType} erfolgreich generiert für "${headingText}"`);
-                
-            } catch (error) {
-                hideTyping();
-                showStatusMessage(`❌ <strong>Fehler bei der Content-Generierung:</strong> ${error.message}`);
-            } finally {
-                if (generateBtn) {
-                    generateBtn.classList.remove('loading');
-                    generateBtn.disabled = false;
-                }
-            }
-        }
-
-        function addContentActions(contentDiv) {
-            const actions = document.createElement('div');
-            actions.className = 'content-actions';
-            
-            const editBtn = document.createElement('button');
-            editBtn.className = 'action-btn edit';
-            editBtn.innerHTML = '✎';
-            editBtn.title = 'Text bearbeiten';
-            editBtn.onclick = (e) => {
-                e.stopPropagation();
-                editContent(contentDiv);
-            };
-
-            const deleteBtn = document.createElement('button');
-            deleteBtn.className = 'action-btn delete';
-            deleteBtn.innerHTML = '×';
-            deleteBtn.title = 'Löschen';
-            deleteBtn.onclick = (e) => {
-                e.stopPropagation();
-                deleteContent(contentDiv);
-            };
-
-            const regenerateBtn = document.createElement('button');
-            regenerateBtn.className = 'action-btn magic';
-            regenerateBtn.innerHTML = '🪄';
-            regenerateBtn.title = 'Neu generieren';
-            regenerateBtn.onclick = (e) => {
-                e.stopPropagation();
-                regenerateContent(contentDiv);
-            };
-
-            const improveBtn = document.createElement('button');
-            improveBtn.className = 'action-btn magic';
-            improveBtn.innerHTML = '✨';
-            improveBtn.title = 'Mit KI verbessern';
-            improveBtn.onclick = (e) => {
-                e.stopPropagation();
-                openChatPopup(contentDiv);
-            };
-
-            actions.appendChild(editBtn);
-            actions.appendChild(deleteBtn);
-            actions.appendChild(regenerateBtn);
-            actions.appendChild(improveBtn);
-            contentDiv.appendChild(actions);
-        }
-
-        function editContent(contentDiv) {
-            const currentParagraphs = Array.from(contentDiv.querySelectorAll('p')).map(p => p.textContent).join('\n\n');
-            const textarea = document.createElement('textarea');
-            textarea.value = currentParagraphs;
-            textarea.style.width = '100%';
-            textarea.style.minHeight = '120px';
-            textarea.style.background = 'rgba(0, 0, 0, 0.5)';
-            textarea.style.border = '1px solid #7209b7';
-            textarea.style.borderRadius = '8px';
-            textarea.style.color = 'white';
-            textarea.style.padding = '12px';
-            textarea.style.fontFamily = 'inherit';
-            textarea.style.fontSize = '14px';
-            textarea.style.outline = 'none';
-            textarea.style.resize = 'vertical';
-            
-            contentDiv.innerHTML = '';
-            contentDiv.appendChild(textarea);
-            textarea.focus();
-            
-            function saveEdit() {
-                const newText = textarea.value.trim();
-                if (newText) {
-                    // Konvertiere Absätze zu HTML
-                    const formattedContent = newText.split('\n\n').map(paragraph => 
-                        paragraph.trim() ? `<p>${paragraph.trim()}</p>` : ''
-                    ).filter(p => p).join('');
-                    
-                    contentDiv.innerHTML = formattedContent || `<p>${newText}</p>`;
-                    addContentActions(contentDiv);
-                } else {
-                    deleteContent(contentDiv);
-                }
-            }
-            
-            textarea.addEventListener('keydown', (e) => {
-                if (e.key === 'Enter' && e.ctrlKey) {
-                    e.preventDefault();
-                    saveEdit();
-                } else if (e.key === 'Escape') {
-                    e.preventDefault();
-                    const formattedContent = currentParagraphs.split('\n\n').map(paragraph => 
-                        paragraph.trim() ? `<p>${paragraph.trim()}</p>` : ''
-                    ).filter(p => p).join('');
-                    contentDiv.innerHTML = formattedContent || `<p>${currentParagraphs}</p>`;
-                    addContentActions(contentDiv);
-                }
-            });
-            
-            textarea.addEventListener('blur', saveEdit);
-        }
-
-        function deleteContent(contentDiv) {
-            if (confirm('Möchtest du diesen generierten Content wirklich löschen?')) {
-                contentDiv.remove();
-            }
-        }
-
-        async function regenerateContent(contentDiv) {
-            const regenerateBtn = contentDiv.querySelector('.action-btn.magic');
-            if (regenerateBtn) {
-                regenerateBtn.classList.add('loading');
-                regenerateBtn.disabled = true;
-            }
-            
-            showTyping();
-            
-            try {
-                const newContent = await callAI(`Generiere einen neuen, alternativen Text für diesen Abschnitt eines Hochzeitsblogs. Der Text sollte das gleiche Thema behandeln, aber anders formuliert und mit frischen Ideen. 
-
-WICHTIG: Strukturiere den Text in mehrere sinnvolle Absätze (2-4 Sätze pro Absatz) für bessere SEO-Lesbarkeit. Verwende doppelte Zeilenwechsel zwischen den Absätzen.`, 'content-regeneration');
-                
-                hideTyping();
-                
-                const currentActions = contentDiv.querySelector('.content-actions');
-                if (currentActions) currentActions.remove();
-                
-                // Konvertiere Zeilenwechsel zu HTML-Absätzen
-                const formattedContent = newContent.split('\n\n').map(paragraph => 
-                    paragraph.trim() ? `<p>${paragraph.trim()}</p>` : ''
-                ).filter(p => p).join('');
-                
-                contentDiv.innerHTML = formattedContent || `<p>${newContent}</p>`;
-                addContentActions(contentDiv);
-                
-                showStatusMessage('✅ Content erfolgreich neu generiert!');
-                
-            } catch (error) {
-                hideTyping();
-                showStatusMessage(`❌ <strong>Fehler bei der Neu-Generierung:</strong> ${error.message}`);
-            } finally {
-                if (regenerateBtn) {
-                    regenerateBtn.classList.remove('loading');
-                    regenerateBtn.disabled = false;
-                }
-            }
-        }
-
-        // Chat Popup Functions
-        function openChatPopup(contentElement) {
-            const allParagraphs = Array.from(contentElement.querySelectorAll('p')).map(p => p.textContent).join('\n\n');
-            const textContent = allParagraphs || contentElement.textContent || '';
-            
-            if (!textContent.trim()) {
-                showStatusMessage('❌ Kein Text zum Verbessern gefunden!');
-                return;
-            }
-
-            currentChatContent = contentElement;
-            chatMessages = [];
-            improvedTextContent = '';
-            
-            // Set original text
-            const originalTextDisplay = document.getElementById('originalTextDisplay');
-            if (originalTextDisplay) {
-                originalTextDisplay.textContent = textContent;
-            }
-            
-            // Clear chat messages
-            const chatPopupMessages = document.getElementById('chatPopupMessages');
-            if (chatPopupMessages) {
-                chatPopupMessages.innerHTML = '';
-            }
-            
-            // Reset input
-            const chatInput = document.getElementById('chatPopupInput');
-            if (chatInput) {
-                chatInput.value = '';
-                chatInput.style.height = 'auto';
-            }
-            
-            // Disable confirm button initially
-            const confirmBtn = document.getElementById('confirmImprovedTextBtn');
-            if (confirmBtn) {
-                confirmBtn.disabled = true;
-            }
-            
-            // Show popup
-            const overlay = document.getElementById('chatPopupOverlay');
-            if (overlay) {
-                overlay.classList.add('visible');
-                document.body.style.overflow = 'hidden';
-            }
-            
-            // Add initial AI message
-            setTimeout(() => {
-                addChatMessage('bot', '👋 Hallo! Ich helfe dir dabei, deinen Text zu verbessern. Beschreibe einfach, was geändert werden soll - zum Beispiel:<br><br>• "Mache den Text emotionaler"<br>• "Füge mehr praktische Tipps hinzu"<br>• "Verkürze den Text auf die Kernpunkte"<br>• "Mache ihn SEO-freundlicher"<br>• "Teile den Text in mehr Absätze auf"');
-                
-                // Focus input
-                const chatInput = document.getElementById('chatPopupInput');
-                if (chatInput) {
-                    chatInput.focus();
-                }
-            }, 300);
-        }
-
-        function closeChatPopup() {
-            const overlay = document.getElementById('chatPopupOverlay');
-            if (overlay) {
-                overlay.classList.remove('visible');
-                document.body.style.overflow = '';
-            }
-            
-            // Reset variables
-            currentChatContent = null;
-            chatMessages = [];
-            improvedTextContent = '';
-            isChatGenerating = false;
-        }
-
-        function addChatMessage(type, content, isImprovedText = false) {
-            const chatPopupMessages = document.getElementById('chatPopupMessages');
-            if (!chatPopupMessages) return;
-            
-            const message = document.createElement('div');
-            message.className = `popup-message ${type}`;
-            
-            const messageContent = document.createElement('div');
-            messageContent.className = 'popup-message-content';
-            
-            if (isImprovedText) {
-                messageContent.innerHTML = `
-                    <div class="improved-text-label">✨ Verbesserter Text:</div>
-                    <div class="improved-text-preview">${content}</div>
-                `;
-            } else {
-                messageContent.innerHTML = content;
-            }
-            
-            message.appendChild(messageContent);
-            chatPopupMessages.appendChild(message);
-            
-            // Scroll to bottom
-            chatPopupMessages.scrollTop = chatPopupMessages.scrollHeight;
-            
-            // Store message
-            chatMessages.push({ type, content, isImprovedText });
-        }
-
-        function showPopupTyping() {
-            const popupTyping = document.getElementById('popupTyping');
-            const chatPopupMessages = document.getElementById('chatPopupMessages');
-            if (popupTyping) {
-                popupTyping.style.display = 'block';
-            }
-            if (chatPopupMessages) {
-                chatPopupMessages.scrollTop = chatPopupMessages.scrollHeight + 100;
-            }
-        }
-
-        function hidePopupTyping() {
-            const popupTyping = document.getElementById('popupTyping');
-            if (popupTyping) {
-                popupTyping.style.display = 'none';
-            }
-        }
-
-        async function sendChatMessage() {
-            const chatInput = document.getElementById('chatPopupInput');
-            const sendBtn = document.getElementById('chatPopupSendBtn');
-            
-            if (!chatInput || !sendBtn) return;
-            
-            const message = chatInput.value.trim();
-            if (!message || isChatGenerating) return;
-            
-            // Add user message
-            addChatMessage('user', message);
-            
-            // Clear input
-            chatInput.value = '';
-            chatInput.style.height = 'auto';
-            
-            // Disable send button
-            sendBtn.disabled = true;
-            isChatGenerating = true;
-            
-            // Show typing
-            showPopupTyping();
-            
-            try {
-                // Get original text
-                const originalText = document.getElementById('originalTextDisplay')?.textContent || '';
-                
-                // Call AI for text improvement
-                const improvedText = await callAI(`Verbessere folgenden Text basierend auf dieser Anweisung: "${message}"
-
-Originaltext: "${originalText}"
-
-Anweisung: ${message}
-
-WICHTIG: Strukturiere den verbesserten Text in sinnvolle Absätze (2-4 Sätze pro Absatz) für bessere SEO-Lesbarkeit. Verwende doppelte Zeilenwechsel zwischen den Absätzen.
-
-Gib nur den verbesserten Text zurück, ohne zusätzliche Erklärungen.`, 'text-improvement');
-                
-                improvedTextContent = improvedText;
-                
-                hidePopupTyping();
-                
-                // Add AI response with improved text
-                addChatMessage('bot', improvedText, true);
-                
-                // Enable confirm button
-                const confirmBtn = document.getElementById('confirmImprovedTextBtn');
-                if (confirmBtn) {
-                    confirmBtn.disabled = false;
-                }
-                
-                // Add follow-up message
-                setTimeout(() => {
-                    addChatMessage('bot', '✅ Perfekt! Der Text wurde entsprechend deiner Anfrage überarbeitet. Du kannst weitere Änderungen vornehmen oder den verbesserten Text übernehmen.');
-                }, 1000);
-                
-            } catch (error) {
-                hidePopupTyping();
-                addChatMessage('bot', `❌ Fehler bei der Text-Verbesserung: ${error.message}`);
-            } finally {
-                sendBtn.disabled = false;
-                isChatGenerating = false;
-                chatInput.focus();
-            }
-        }
-
-        function confirmImprovedText() {
-            if (!currentChatContent || !improvedTextContent.trim()) {
-                return;
-            }
-            
-            // Remove existing content-actions to avoid duplication
-            const existingActions = currentChatContent.querySelector('.content-actions');
-            if (existingActions) {
-                existingActions.remove();
-            }
-            
-            // Replace the entire content with improved text
-            // Konvertiere Zeilenwechsel zu HTML-Absätzen
-            const formattedContent = improvedTextContent.split('\n\n').map(paragraph => 
-                paragraph.trim() ? `<p>${paragraph.trim()}</p>` : ''
-            ).filter(p => p).join('');
-            
-            currentChatContent.innerHTML = formattedContent || `<p>${improvedTextContent.replace(/\n/g, '<br>')}</p>`;
-            
-            // Re-add content actions
-            addContentActions(currentChatContent);
-            
-            // Close popup
-            closeChatPopup();
-            
-            // Show success message
-            showStatusMessage('✅ Text erfolgreich verbessert und übernehmen!');
-        }
-
-        // Auto-resize textarea
-        function setupTextareaAutoResize() {
-            const chatInput = document.getElementById('chatPopupInput');
-            if (!chatInput) return;
-            
-            chatInput.addEventListener('input', function() {
-                this.style.height = 'auto';
-                this.style.height = Math.min(this.scrollHeight, 120) + 'px';
-            });
-            
-            chatInput.addEventListener('keydown', function(e) {
-                if (e.key === 'Enter' && !e.shiftKey) {
-                    e.preventDefault();
-                    sendChatMessage();
-                }
-            });
+            showStatusMessage(`📄 <strong>WordPress-Import erfolgreich!</strong><br><br>✅ Die Datei enthält:<br>• Gutenberg-kompatiblen Content (ohne Highlighting)<br>• SEO-Metadaten<br>• Import-Anleitung<br>• Schema Markup<br>👑 <strong>Haupt-Keyword:</strong> ${selectedKeywords[0] || 'Hochzeit'}<br><br>💡 <em>Öffne die Datei und folge der Schritt-für-Schritt Anleitung!</em>`);
         }
 
         // Initialisierung
         document.addEventListener('DOMContentLoaded', function() {
             initKeywordTagSystem();
-            setupTextareaAutoResize();
+            updateKeywordLimitInfo();
             
             setTimeout(() => {
-                showStatusMessage("🎯 <strong>Wedding Blog AI ist bereit!</strong><br><br>Konfiguriere deine KI-API und beginne mit der Eingabe deines Blog-Titels. Klicke auf den Zauberstab für SEO-Optimierung und generiere anschließend eine strukturierte Gliederung.<br><br>💡 <em>Tipp: Nutze aussagekräftige Keywords für bessere SEO-Ergebnisse!</em>");
+                showStatusMessage("🎯 <strong>Wedding Blog AI ist bereit!</strong><br><br>✨ <strong>Neu:</strong> Keyword-System mit Haupt-Keyword Highlighting<br>• Maximal 3 Keywords erlaubt<br>• Erstes Keyword = Haupt-Keyword 👑<br>• Farbliche Hervorhebung in der Anzeige<br>• Sauberer HTML-Export ohne Styling<br><br>💡 <em>Tipp: Das erste Keyword wird besonders hervorgehoben und sollte dein wichtigstes SEO-Keyword sein!</em>");
             }, 1000);
 
             // Enter-Taste für Titel-Input
@@ -2400,26 +1817,6 @@ Gib nur den verbesserten Text zurück, ohne zusätzliche Erklärungen.`, 'text-i
                     }
                 });
             }
-
-            // Close popup on overlay click
-            const overlay = document.getElementById('chatPopupOverlay');
-            if (overlay) {
-                overlay.addEventListener('click', function(e) {
-                    if (e.target === overlay) {
-                        closeChatPopup();
-                    }
-                });
-            }
-
-            // ESC key to close popup
-            document.addEventListener('keydown', function(e) {
-                if (e.key === 'Escape') {
-                    const popup = document.getElementById('chatPopupOverlay');
-                    if (popup && popup.classList.contains('visible')) {
-                        closeChatPopup();
-                    }
-                }
-            });
         });
     </script>
 </body>
