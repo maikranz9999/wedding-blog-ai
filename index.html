@@ -441,6 +441,105 @@
             animation: actionSpin 1s linear infinite;
         }
 
+        /* Block Inserter Styles (Gutenberg-like) */
+        .block-inserter {
+            position: relative;
+            height: 0;
+            margin: 0;
+            overflow: visible;
+            z-index: 100;
+        }
+
+        .block-inserter-trigger {
+            position: absolute;
+            left: 50%;
+            top: -12px;
+            transform: translateX(-50%);
+            width: 24px;
+            height: 24px;
+            background: linear-gradient(135deg, #ff6b35, #f7931e);
+            border: 2px solid rgba(255, 255, 255, 0.9);
+            border-radius: 50%;
+            cursor: pointer;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            font-weight: bold;
+            color: white;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 8px rgba(255, 107, 53, 0.4);
+            z-index: 101;
+        }
+
+        .block-inserter-trigger:hover {
+            transform: translateX(-50%) scale(1.1);
+            box-shadow: 0 4px 12px rgba(255, 107, 53, 0.6);
+        }
+
+        .block-inserter.show .block-inserter-trigger {
+            display: flex;
+        }
+
+        .block-inserter-options {
+            position: absolute;
+            left: 50%;
+            top: -8px;
+            transform: translateX(-50%);
+            background: rgba(26, 26, 46, 0.95);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            padding: 8px;
+            display: none;
+            gap: 8px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+            z-index: 102;
+            animation: slideInOptions 0.2s ease;
+        }
+
+        @keyframes slideInOptions {
+            from {
+                opacity: 0;
+                transform: translateX(-50%) translateY(-10px) scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(-50%) translateY(0) scale(1);
+            }
+        }
+
+        .block-inserter-options.show {
+            display: flex;
+        }
+
+        .block-option-btn {
+            background: linear-gradient(135deg, #7209b7, #533483);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            padding: 8px 12px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            box-shadow: 0 2px 8px rgba(114, 9, 183, 0.3);
+            white-space: nowrap;
+        }
+
+        .block-option-btn:hover {
+            transform: translateY(-1px) scale(1.05);
+            box-shadow: 0 4px 12px rgba(114, 9, 183, 0.4);
+            background: linear-gradient(135deg, #8a2be2, #6a4c93);
+        }
+
+        .block-option-btn:active {
+            transform: scale(0.95);
+        }
+
         .generated-content {
             background: rgba(40, 167, 69, 0.1);
             border: 1px solid rgba(40, 167, 69, 0.3);
@@ -1013,6 +1112,25 @@
 
             .chat-section {
                 width: 100%;
+            }
+
+            /* Mobile Block Inserter Adjustments */
+            .block-inserter-trigger {
+                width: 28px;
+                height: 28px;
+                font-size: 18px;
+                top: -14px;
+            }
+
+            .block-inserter-options {
+                top: -10px;
+                padding: 10px;
+                gap: 10px;
+            }
+
+            .block-option-btn {
+                padding: 10px 14px;
+                font-size: 13px;
             }
         }
     </style>
@@ -1798,7 +1916,12 @@ WICHTIG: Überprüfe vor der Antwort, dass wirklich ALLE Keywords in den Übersc
             const outlineContent = document.getElementById('outlineContent');
             if (!outlineContent) return;
 
+            // Remove existing block inserters first
+            const existingInserters = outlineContent.querySelectorAll('.block-inserter');
+            existingInserters.forEach(inserter => inserter.remove());
+
             const headings = outlineContent.querySelectorAll('h2, h3');
+            
             headings.forEach((heading, index) => {
                 const existingActions = heading.querySelector('.heading-actions');
                 if (existingActions) {
@@ -1839,7 +1962,136 @@ WICHTIG: Überprüfe vor der Antwort, dass wirklich ALLE Keywords in den Übersc
                 actions.appendChild(deleteBtn);
                 actions.appendChild(generateBtn);
                 heading.appendChild(actions);
+
+                // Add block inserter after each heading (except the last one)
+                addBlockInserterAfter(heading);
             });
+
+            // Add block inserter at the very beginning if there are headings
+            if (headings.length > 0) {
+                addBlockInserterBefore(headings[0]);
+            }
+
+            // Add block inserter at the very end
+            addBlockInserterAtEnd();
+        }
+
+        function addBlockInserterBefore(element) {
+            const inserter = createBlockInserter();
+            element.parentNode.insertBefore(inserter, element);
+        }
+
+        function addBlockInserterAfter(element) {
+            const inserter = createBlockInserter();
+            
+            // Find the next heading or end of content
+            let nextElement = element.nextElementSibling;
+            while (nextElement && nextElement.classList.contains('generated-content')) {
+                nextElement = nextElement.nextElementSibling;
+            }
+            
+            if (nextElement) {
+                element.parentNode.insertBefore(inserter, nextElement);
+            } else {
+                element.parentNode.appendChild(inserter);
+            }
+        }
+
+        function addBlockInserterAtEnd() {
+            const outlineContent = document.getElementById('outlineContent');
+            if (!outlineContent) return;
+            
+            const inserter = createBlockInserter();
+            outlineContent.appendChild(inserter);
+        }
+
+        function createBlockInserter() {
+            const inserter = document.createElement('div');
+            inserter.className = 'block-inserter';
+            
+            const trigger = document.createElement('div');
+            trigger.className = 'block-inserter-trigger';
+            trigger.innerHTML = '+';
+            trigger.title = 'Überschrift hinzufügen';
+            
+            const options = document.createElement('div');
+            options.className = 'block-inserter-options';
+            
+            const h2Btn = document.createElement('button');
+            h2Btn.className = 'block-option-btn';
+            h2Btn.innerHTML = 'H2';
+            h2Btn.title = 'Hauptüberschrift hinzufügen';
+            h2Btn.onclick = (e) => {
+                e.stopPropagation();
+                insertHeading('h2', inserter);
+            };
+            
+            const h3Btn = document.createElement('button');
+            h3Btn.className = 'block-option-btn';
+            h3Btn.innerHTML = 'H3';
+            h3Btn.title = 'Unterüberschrift hinzufügen';
+            h3Btn.onclick = (e) => {
+                e.stopPropagation();
+                insertHeading('h3', inserter);
+            };
+            
+            options.appendChild(h2Btn);
+            options.appendChild(h3Btn);
+            
+            inserter.appendChild(trigger);
+            inserter.appendChild(options);
+            
+            // Event listeners for show/hide
+            inserter.addEventListener('mouseenter', () => {
+                inserter.classList.add('show');
+            });
+            
+            inserter.addEventListener('mouseleave', () => {
+                if (!options.matches(':hover')) {
+                    inserter.classList.remove('show');
+                    options.classList.remove('show');
+                }
+            });
+            
+            trigger.addEventListener('click', (e) => {
+                e.stopPropagation();
+                options.classList.toggle('show');
+            });
+            
+            // Hide options when clicking outside
+            document.addEventListener('click', (e) => {
+                if (!inserter.contains(e.target)) {
+                    options.classList.remove('show');
+                    inserter.classList.remove('show');
+                }
+            });
+            
+            return inserter;
+        }
+
+        function insertHeading(type, inserter) {
+            const newHeading = document.createElement(type);
+            newHeading.textContent = 'Neue Überschrift';
+            
+            // Insert the heading before the inserter
+            inserter.parentNode.insertBefore(newHeading, inserter);
+            
+            // Refresh all heading actions and inserters
+            setTimeout(() => {
+                addHeadingActions();
+                
+                // Automatically start editing the new heading
+                editHeading(newHeading);
+                
+                showStatusMessage(`✅ ${type.toUpperCase()}-Überschrift hinzugefügt! Bearbeite den Text direkt.`);
+            }, 100);
+            
+            // Hide the options
+            const options = inserter.querySelector('.block-inserter-options');
+            if (options) {
+                options.classList.remove('show');
+            }
+            inserter.classList.remove('show');
         }
 
         function editHeading(heading) {
