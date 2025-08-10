@@ -159,6 +159,19 @@
             box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
         }
 
+        .keyword-pill.primary {
+            background: linear-gradient(135deg, #ff6b35, #f7931e);
+            box-shadow: 0 3px 10px rgba(255, 107, 53, 0.4);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            font-weight: 600;
+            animation: primaryPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes primaryPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
         .keyword-remove {
             cursor: pointer;
             font-weight: bold;
@@ -878,6 +891,16 @@
             color: rgba(255, 255, 255, 0.9);
         }
 
+        .primary-keyword {
+            background: linear-gradient(135deg, rgba(255, 107, 53, 0.3), rgba(247, 147, 30, 0.2));
+            color: #ff6b35;
+            padding: 2px 4px;
+            border-radius: 4px;
+            font-weight: 600;
+            border-bottom: 2px solid #ff6b35;
+            box-shadow: 0 1px 3px rgba(255, 107, 53, 0.2);
+        }
+
         .improved-text-label {
             font-size: 11px;
             color: #20c997;
@@ -891,8 +914,6 @@
             0% { transform: rotate(0deg) scale(1.1); }
             100% { transform: rotate(360deg) scale(1.1); }
         }
-
-        @media (max-width: 768px) {
             .container {
                 padding: 16px;
                 margin: 10px;
@@ -994,7 +1015,7 @@
                 <input type="text" id="mainKeyword" placeholder="z.B. Hochzeitslocation, Hochzeitsplanung..." autocomplete="off">
                 <div class="dropdown" id="keywordDropdown"></div>
             </div>
-            <small>Gib Keywords ein und drücke Enter um sie hinzuzufügen</small>
+            <small>Gib Keywords ein und drücke Enter um sie hinzuzufügen (max. 3 Keywords)</small>
         </div>
 
         <div class="input-group">
@@ -1467,12 +1488,14 @@ Version: 1.0
         }
 
         function addKeyword(keywordText) {
-            if (!selectedKeywords.includes(keywordText)) {
+            if (!selectedKeywords.includes(keywordText) && selectedKeywords.length < 3) {
                 selectedKeywords.push(keywordText);
                 renderKeywords();
                 const input = document.getElementById('mainKeyword');
                 if (input) input.value = '';
                 hideKeywordDropdown();
+            } else if (selectedKeywords.length >= 3) {
+                showStatusMessage('⚠️ Maximal 3 Keywords erlaubt! Entferne zuerst ein Keyword, um ein neues hinzuzufügen.');
             }
         }
 
@@ -1544,11 +1567,11 @@ Version: 1.0
 
             container.innerHTML = '';
 
-            selectedKeywords.forEach(keyword => {
+            selectedKeywords.forEach((keyword, index) => {
                 const pill = document.createElement('div');
-                pill.className = 'keyword-pill';
+                pill.className = index === 0 ? 'keyword-pill primary' : 'keyword-pill';
                 pill.innerHTML = `
-                    <span>${keyword}</span>
+                    <span>${keyword}${index === 0 ? ' (Haupt-Keyword)' : ''}</span>
                     <span class="keyword-remove" onclick="removeKeyword('${keyword.replace(/'/g, "\\'")}')">\u00D7</span>
                 `;
                 container.appendChild(pill);
@@ -1672,7 +1695,14 @@ WICHTIG: Überprüfe vor der Antwort, dass wirklich ALLE Keywords in den Übersc
                 const outlineContent = document.getElementById('outlineContent');
                 const outlineContainer = document.getElementById('outlineContainer');
                 
-                if (outlineContent) outlineContent.innerHTML = outline;
+                if (outlineContent) {
+                    outlineContent.innerHTML = outline;
+                    // Hebe Haupt-Keyword in Headlines hervor
+                    const headings = outlineContent.querySelectorAll('h2, h3');
+                    headings.forEach(heading => {
+                        heading.innerHTML = highlightPrimaryKeyword(heading.innerHTML, true);
+                    });
+                }
                 if (outlineContainer) outlineContainer.classList.add('visible');
                 if (downloadBtn) downloadBtn.style.display = 'block';
                 
@@ -1919,7 +1949,22 @@ WICHTIG: Überprüfe vor der Antwort, dass wirklich ALLE Keywords in den Übersc
         }
 
         // VERBESSERTE generateContentForHeading Funktion mit vollem Kontext
-        async function generateContentForHeading(heading) {
+        // Funktion zum Hervorheben des Haupt-Keywords
+        function highlightPrimaryKeyword(text, isForDisplay = true) {
+            if (!selectedKeywords.length || !text) return text;
+            
+            const primaryKeyword = selectedKeywords[0];
+            if (!primaryKeyword) return text;
+            
+            if (isForDisplay) {
+                // Für die Anzeige: mit Hervorhebung
+                const regex = new RegExp(`(${primaryKeyword})`, 'gi');
+                return text.replace(regex, '<span class="primary-keyword">$1</span>');
+            } else {
+                // Für HTML-Export: ohne Hervorhebung
+                return text;
+            }
+        }
             const headingText = heading.textContent.trim();
             const headingLevel = heading.tagName;
             const isH2 = headingLevel === 'H2';
@@ -1979,12 +2024,12 @@ AUFGABE: Generiere einen informativen Text für die oben genannte Headline. Der 
                 const contentDiv = document.createElement('div');
                 contentDiv.className = 'generated-content';
                 
-                // Konvertiere Zeilenwechsel zu HTML-Absätzen
+                // Konvertiere Zeilenwechsel zu HTML-Absätzen und hebe Haupt-Keyword hervor
                 const formattedContent = demoContent.split('\n\n').map(paragraph => 
-                    paragraph.trim() ? `<p>${paragraph.trim()}</p>` : ''
+                    paragraph.trim() ? `<p>${highlightPrimaryKeyword(paragraph.trim(), true)}</p>` : ''
                 ).filter(p => p).join('');
                 
-                contentDiv.innerHTML = formattedContent || `<p>${demoContent}</p>`;
+                contentDiv.innerHTML = formattedContent || `<p>${highlightPrimaryKeyword(demoContent, true)}</p>`;
                 
                 heading.insertAdjacentElement('afterend', contentDiv);
                 
@@ -2129,12 +2174,12 @@ WICHTIG: Strukturiere den Text in mehrere sinnvolle Absätze (2-4 Sätze pro Abs
                 const currentActions = contentDiv.querySelector('.content-actions');
                 if (currentActions) currentActions.remove();
                 
-                // Konvertiere Zeilenwechsel zu HTML-Absätzen
+                // Konvertiere Zeilenwechsel zu HTML-Absätzen und hebe Haupt-Keyword hervor
                 const formattedContent = newContent.split('\n\n').map(paragraph => 
-                    paragraph.trim() ? `<p>${paragraph.trim()}</p>` : ''
+                    paragraph.trim() ? `<p>${highlightPrimaryKeyword(paragraph.trim(), true)}</p>` : ''
                 ).filter(p => p).join('');
                 
-                contentDiv.innerHTML = formattedContent || `<p>${newContent}</p>`;
+                contentDiv.innerHTML = formattedContent || `<p>${highlightPrimaryKeyword(newContent, true)}</p>`;
                 addContentActions(contentDiv);
                 
                 showStatusMessage('✅ Content erfolgreich neu generiert!');
@@ -2347,12 +2392,12 @@ Gib nur den verbesserten Text zurück, ohne zusätzliche Erklärungen.`, 'text-i
             }
             
             // Replace the entire content with improved text
-            // Konvertiere Zeilenwechsel zu HTML-Absätzen
+            // Konvertiere Zeilenwechsel zu HTML-Absätzen und hebe Haupt-Keyword hervor
             const formattedContent = improvedTextContent.split('\n\n').map(paragraph => 
-                paragraph.trim() ? `<p>${paragraph.trim()}</p>` : ''
+                paragraph.trim() ? `<p>${highlightPrimaryKeyword(paragraph.trim(), true)}</p>` : ''
             ).filter(p => p).join('');
             
-            currentChatContent.innerHTML = formattedContent || `<p>${improvedTextContent.replace(/\n/g, '<br>')}</p>`;
+            currentChatContent.innerHTML = formattedContent || `<p>${highlightPrimaryKeyword(improvedTextContent.replace(/\n/g, '<br>'), true)}</p>`;
             
             // Re-add content actions
             addContentActions(currentChatContent);
