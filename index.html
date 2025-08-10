@@ -581,10 +581,10 @@
             border: 1px solid rgba(255, 255, 255, 0.15);
             border-radius: 16px;
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
-            width: 90%;
-            max-width: 800px;
-            height: 80vh;
-            max-height: 600px;
+            width: 95%;
+            max-width: 1200px;
+            height: 85vh;
+            max-height: 700px;
             display: flex;
             flex-direction: column;
             animation: slideInPopup 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
@@ -637,35 +637,47 @@
         .chat-popup-content {
             flex: 1;
             display: flex;
-            flex-direction: column;
+            flex-direction: row;
             overflow: hidden;
+            gap: 1px;
         }
 
         .original-text-section {
             background: rgba(40, 167, 69, 0.1);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 16px 20px;
-            max-height: 120px;
-            overflow-y: auto;
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
+            width: 40%;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
         }
 
         .original-text-label {
             font-size: 12px;
             color: #20c997;
             font-weight: 600;
-            margin-bottom: 8px;
+            padding: 16px 20px 8px 20px;
             text-transform: uppercase;
             letter-spacing: 0.5px;
+            background: rgba(32, 201, 151, 0.1);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
         }
 
         .original-text-content {
-            font-size: 13px;
+            flex: 1;
+            font-size: 14px;
             color: rgba(255, 255, 255, 0.9);
-            line-height: 1.5;
-            background: rgba(0, 0, 0, 0.3);
-            padding: 12px;
-            border-radius: 8px;
-            border-left: 3px solid #20c997;
+            line-height: 1.6;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 20px;
+            overflow-y: auto;
+            margin: 0;
+        }
+
+        .chat-section {
+            width: 60%;
+            display: flex;
+            flex-direction: column;
+            background: rgba(0, 0, 0, 0.1);
         }
 
         .chat-popup-messages {
@@ -715,7 +727,7 @@
 
         .popup-message-content {
             display: inline-block;
-            max-width: 80%;
+            max-width: 85%;
             padding: 12px 16px;
             border-radius: 12px;
             font-size: 14px;
@@ -931,6 +943,27 @@
                 padding: 6px;
                 border-radius: 8px;
             }
+
+            .chat-popup {
+                width: 98%;
+                height: 90vh;
+                max-height: none;
+            }
+
+            .chat-popup-content {
+                flex-direction: column;
+            }
+
+            .original-text-section {
+                width: 100%;
+                max-height: 150px;
+                border-right: none;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            }
+
+            .chat-section {
+                width: 100%;
+            }
         }
     </style>
 </head>
@@ -1030,28 +1063,30 @@
                         <!-- Original text will be shown here -->
                     </div>
                 </div>
-                <div class="chat-popup-messages" id="chatPopupMessages">
-                    <!-- Chat messages will appear here -->
-                </div>
-                <div class="popup-typing" id="popupTyping" style="display: none;">
-                    <div class="popup-message-content">
-                        <div class="typing-dots">
-                            <span></span>
-                            <span></span>
-                            <span></span>
+                <div class="chat-section">
+                    <div class="chat-popup-messages" id="chatPopupMessages">
+                        <!-- Chat messages will appear here -->
+                    </div>
+                    <div class="popup-typing" id="popupTyping" style="display: none;">
+                        <div class="popup-message-content">
+                            <div class="typing-dots">
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="chat-popup-input-area">
-                    <div class="chat-popup-input-container">
-                        <textarea 
-                            id="chatPopupInput" 
-                            class="chat-popup-input" 
-                            placeholder="Beschreibe, wie der Text verbessert werden soll..."
-                            rows="1"></textarea>
-                        <button id="chatPopupSendBtn" class="chat-popup-send-btn" onclick="sendChatMessage()">
-                            ➤
-                        </button>
+                    <div class="chat-popup-input-area">
+                        <div class="chat-popup-input-container">
+                            <textarea 
+                                id="chatPopupInput" 
+                                class="chat-popup-input" 
+                                placeholder="Beschreibe, wie der Text verbessert werden soll..."
+                                rows="1"></textarea>
+                            <button id="chatPopupSendBtn" class="chat-popup-send-btn" onclick="sendChatMessage()">
+                                ➤
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -1226,21 +1261,23 @@
                     wordpressContent += `<!-- wp:heading {"level":3} -->\n<h3 class="wp-block-heading">${headingText}</h3>\n<!-- /wp:heading -->\n\n`;
                 } else if (element.classList.contains('generated-content')) {
                     // Füge generierten Content hinzu
-                    const paragraph = element.querySelector('p');
-                    if (paragraph) {
-                        const paragraphText = paragraph.textContent.trim();
-                        wordpressContent += `<!-- wp:paragraph -->\n<p>${paragraphText}</p>\n<!-- /wp:paragraph -->\n\n`;
-                        
-                        // Verwende ersten Paragraph als Excerpt
-                        if (!firstParagraph && paragraphText.length > 50) {
-                            firstParagraph = paragraphText;
-                            // Erstelle Excerpt (erste 155 Zeichen für SEO)
-                            excerpt = paragraphText.substring(0, 155);
-                            if (paragraphText.length > 155) {
-                                excerpt += '...';
+                    const paragraphs = element.querySelectorAll('p');
+                    paragraphs.forEach(paragraph => {
+                        if (paragraph) {
+                            const paragraphText = paragraph.textContent.trim();
+                            wordpressContent += `<!-- wp:paragraph -->\n<p>${paragraphText}</p>\n<!-- /wp:paragraph -->\n\n`;
+                            
+                            // Verwende ersten Paragraph als Excerpt
+                            if (!firstParagraph && paragraphText.length > 50) {
+                                firstParagraph = paragraphText;
+                                // Erstelle Excerpt (erste 155 Zeichen für SEO)
+                                excerpt = paragraphText.substring(0, 155);
+                                if (paragraphText.length > 155) {
+                                    excerpt += '...';
+                                }
                             }
                         }
-                    }
+                    });
                 }
             });
 
@@ -1931,7 +1968,9 @@ ZIELWORTANZAHL GESAMT: ${wordCount} Wörter
 
 TEXTTYP: ${hasSubHeadings ? 'Kurze Einleitung (da Unterüberschriften folgen)' : 'Vollständiger Abschnitt'}
 
-AUFGABE: Generiere einen informativen Textabsatz für die oben genannte Headline. Der Text soll sich nahtlos in den Gesamtblog einfügen und die Keywords natürlich verwenden.`;
+WICHTIG FÜR SEO: Strukturiere den Text in mehrere Absätze (2-4 Sätze pro Absatz) für bessere Lesbarkeit. Nutze <br><br> zwischen den Absätzen.
+
+AUFGABE: Generiere einen informativen Text für die oben genannte Headline. Der Text soll sich nahtlos in den Gesamtblog einfügen, die Keywords natürlich verwenden und in sinnvolle Absätze unterteilt sein.`;
 
                 const demoContent = await callAI(enhancedPrompt, 'content-generation');
                 
@@ -1939,7 +1978,13 @@ AUFGABE: Generiere einen informativen Textabsatz für die oben genannte Headline
                 
                 const contentDiv = document.createElement('div');
                 contentDiv.className = 'generated-content';
-                contentDiv.innerHTML = `<p>${demoContent}</p>`;
+                
+                // Konvertiere Zeilenwechsel zu HTML-Absätzen
+                const formattedContent = demoContent.split('\n\n').map(paragraph => 
+                    paragraph.trim() ? `<p>${paragraph.trim()}</p>` : ''
+                ).filter(p => p).join('');
+                
+                contentDiv.innerHTML = formattedContent || `<p>${demoContent}</p>`;
                 
                 heading.insertAdjacentElement('afterend', contentDiv);
                 
@@ -2008,11 +2053,11 @@ AUFGABE: Generiere einen informativen Textabsatz für die oben genannte Headline
         }
 
         function editContent(contentDiv) {
-            const currentText = contentDiv.querySelector('p').textContent;
+            const currentParagraphs = Array.from(contentDiv.querySelectorAll('p')).map(p => p.textContent).join('\n\n');
             const textarea = document.createElement('textarea');
-            textarea.value = currentText;
+            textarea.value = currentParagraphs;
             textarea.style.width = '100%';
-            textarea.style.minHeight = '100px';
+            textarea.style.minHeight = '120px';
             textarea.style.background = 'rgba(0, 0, 0, 0.5)';
             textarea.style.border = '1px solid #7209b7';
             textarea.style.borderRadius = '8px';
@@ -2030,7 +2075,12 @@ AUFGABE: Generiere einen informativen Textabsatz für die oben genannte Headline
             function saveEdit() {
                 const newText = textarea.value.trim();
                 if (newText) {
-                    contentDiv.innerHTML = `<p>${newText}</p>`;
+                    // Konvertiere Absätze zu HTML
+                    const formattedContent = newText.split('\n\n').map(paragraph => 
+                        paragraph.trim() ? `<p>${paragraph.trim()}</p>` : ''
+                    ).filter(p => p).join('');
+                    
+                    contentDiv.innerHTML = formattedContent || `<p>${newText}</p>`;
                     addContentActions(contentDiv);
                 } else {
                     deleteContent(contentDiv);
@@ -2043,7 +2093,10 @@ AUFGABE: Generiere einen informativen Textabsatz für die oben genannte Headline
                     saveEdit();
                 } else if (e.key === 'Escape') {
                     e.preventDefault();
-                    contentDiv.innerHTML = `<p>${currentText}</p>`;
+                    const formattedContent = currentParagraphs.split('\n\n').map(paragraph => 
+                        paragraph.trim() ? `<p>${paragraph.trim()}</p>` : ''
+                    ).filter(p => p).join('');
+                    contentDiv.innerHTML = formattedContent || `<p>${currentParagraphs}</p>`;
                     addContentActions(contentDiv);
                 }
             });
@@ -2067,14 +2120,21 @@ AUFGABE: Generiere einen informativen Textabsatz für die oben genannte Headline
             showTyping();
             
             try {
-                const newContent = await callAI(`Generiere einen neuen, alternativen Text für diesen Abschnitt eines Hochzeitsblogs. Der Text sollte das gleiche Thema behandeln, aber anders formuliert und mit frischen Ideen.`, 'content-regeneration');
+                const newContent = await callAI(`Generiere einen neuen, alternativen Text für diesen Abschnitt eines Hochzeitsblogs. Der Text sollte das gleiche Thema behandeln, aber anders formuliert und mit frischen Ideen. 
+
+WICHTIG: Strukturiere den Text in mehrere sinnvolle Absätze (2-4 Sätze pro Absatz) für bessere SEO-Lesbarkeit. Verwende doppelte Zeilenwechsel zwischen den Absätzen.`, 'content-regeneration');
                 
                 hideTyping();
                 
                 const currentActions = contentDiv.querySelector('.content-actions');
                 if (currentActions) currentActions.remove();
                 
-                contentDiv.innerHTML = `<p>${newContent}</p>`;
+                // Konvertiere Zeilenwechsel zu HTML-Absätzen
+                const formattedContent = newContent.split('\n\n').map(paragraph => 
+                    paragraph.trim() ? `<p>${paragraph.trim()}</p>` : ''
+                ).filter(p => p).join('');
+                
+                contentDiv.innerHTML = formattedContent || `<p>${newContent}</p>`;
                 addContentActions(contentDiv);
                 
                 showStatusMessage('✅ Content erfolgreich neu generiert!');
@@ -2092,7 +2152,8 @@ AUFGABE: Generiere einen informativen Textabsatz für die oben genannte Headline
 
         // Chat Popup Functions
         function openChatPopup(contentElement) {
-            const textContent = contentElement.querySelector('p')?.textContent || contentElement.textContent || '';
+            const allParagraphs = Array.from(contentElement.querySelectorAll('p')).map(p => p.textContent).join('\n\n');
+            const textContent = allParagraphs || contentElement.textContent || '';
             
             if (!textContent.trim()) {
                 showStatusMessage('❌ Kein Text zum Verbessern gefunden!');
@@ -2137,7 +2198,7 @@ AUFGABE: Generiere einen informativen Textabsatz für die oben genannte Headline
             
             // Add initial AI message
             setTimeout(() => {
-                addChatMessage('bot', '👋 Hallo! Ich helfe dir dabei, deinen Text zu verbessern. Beschreibe einfach, was geändert werden soll - zum Beispiel:<br><br>• "Mache den Text emotionaler"<br>• "Füge mehr praktische Tipps hinzu"<br>• "Verkürze den Text auf die Kernpunkte"<br>• "Mache ihn SEO-freundlicher"');
+                addChatMessage('bot', '👋 Hallo! Ich helfe dir dabei, deinen Text zu verbessern. Beschreibe einfach, was geändert werden soll - zum Beispiel:<br><br>• "Mache den Text emotionaler"<br>• "Füge mehr praktische Tipps hinzu"<br>• "Verkürze den Text auf die Kernpunkte"<br>• "Mache ihn SEO-freundlicher"<br>• "Teile den Text in mehr Absätze auf"');
                 
                 // Focus input
                 const chatInput = document.getElementById('chatPopupInput');
@@ -2242,6 +2303,8 @@ Originaltext: "${originalText}"
 
 Anweisung: ${message}
 
+WICHTIG: Strukturiere den verbesserten Text in sinnvolle Absätze (2-4 Sätze pro Absatz) für bessere SEO-Lesbarkeit. Verwende doppelte Zeilenwechsel zwischen den Absätzen.
+
 Gib nur den verbesserten Text zurück, ohne zusätzliche Erklärungen.`, 'text-improvement');
                 
                 improvedTextContent = improvedText;
@@ -2284,7 +2347,12 @@ Gib nur den verbesserten Text zurück, ohne zusätzliche Erklärungen.`, 'text-i
             }
             
             // Replace the entire content with improved text
-            currentChatContent.innerHTML = `<p>${improvedTextContent.replace(/\n/g, '<br>')}</p>`;
+            // Konvertiere Zeilenwechsel zu HTML-Absätzen
+            const formattedContent = improvedTextContent.split('\n\n').map(paragraph => 
+                paragraph.trim() ? `<p>${paragraph.trim()}</p>` : ''
+            ).filter(p => p).join('');
+            
+            currentChatContent.innerHTML = formattedContent || `<p>${improvedTextContent.replace(/\n/g, '<br>')}</p>`;
             
             // Re-add content actions
             addContentActions(currentChatContent);
