@@ -441,6 +441,21 @@
             animation: actionSpin 1s linear infinite;
         }
 
+    .action-btn.generate.loading {
+    animation: actionPulse 1.5s ease-in-out infinite;
+}
+
+@keyframes actionPulse {
+    0%, 100% { 
+        transform: scale(1);
+        box-shadow: 0 2px 6px rgba(255, 107, 53, 0.4);
+    }
+    50% { 
+        transform: scale(1.15);
+        box-shadow: 0 6px 20px rgba(255, 107, 53, 0.8);
+    }
+}
+
         /* Block Inserter Styles (Gutenberg-like) */
         .block-inserter {
             position: relative;
