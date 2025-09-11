@@ -1,5 +1,4 @@
 import { Pool } from 'pg';
-
 const pool = new Pool({ connectionString: process.env.DATABASE_URL! });
 
 export default async function handler(req:any,res:any){
@@ -10,15 +9,19 @@ export default async function handler(req:any,res:any){
 
   const { id, slug } = req.query;
 
-  let q;
-  if (id) {
-    q = await pool.query('select * from tools where id=$1 and active=true limit 1',[id]);
-  } else if (slug) {
-    q = await pool.query('select * from tools where slug=$1 and active=true limit 1',[slug]);
-  } else {
-    q = await pool.query('select * from tools where active=true order by id');
+  // Beides muss übergeben werden
+  if (!id || !slug) {
+    return res.status(400).json({ error: 'id and slug required' });
   }
 
-  if(!q.rowCount) return res.status(404).json({error:'not found'});
-  res.json(id||slug ? q.rows[0] : q.rows);
+  const q = await pool.query(
+    `select id, name, slug, iframe_url, limit_monthly
+       from tools
+      where id = $1 and slug = $2 and active = true
+      limit 1`,
+    [id, String(slug).toLowerCase()]
+  );
+
+  if (!q.rowCount) return res.status(404).json({ error:'not found' });
+  res.json(q.rows[0]);
 }
