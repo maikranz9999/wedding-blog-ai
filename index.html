@@ -1842,7 +1842,8 @@ Antworte NUR mit dem optimierten Titel, ohne Anführungszeichen oder Erklärunge
                 
                 hideTyping();
                 showStatusMessage(`✅ <strong>SEO-optimierter Titel:</strong><br>"${optimizedTitle}"<br><br>💡 <em>Optimiert für: Keyword-Integration, Länge, Klick-Appeal</em>`);
-                
+                notifyParentConsume('tool', { action: 'optimize_title' });
+
             } catch (error) {
                 hideTyping();
                 showStatusMessage(`❌ <strong>Fehler bei der Titel-Optimierung:</strong> ${error.message}`);
@@ -1933,7 +1934,7 @@ WICHTIG: Überprüfe vor der Antwort, dass wirklich ALLE Keywords in den Übersc
                 
                 hideTyping();
                 showStatusMessage('✅ <strong>Gliederung erfolgreich erstellt!</strong><br><br>📋 Die H2 und H3-Struktur wurde automatisch generiert und ist SEO-optimiert.<br><br>💡 <em>Generiere Texte zu einzelnen Überschriften oder lade die Outline als HTML herunter!</em>');
-                
+                notifyParentConsume('tool', { action: 'generate_outline', title });
             } catch (error) {
                 hideTyping();
                 showStatusMessage(`❌ <strong>Fehler bei der Gliederung-Generierung:</strong> ${error.message}`);
@@ -2525,7 +2526,8 @@ WICHTIG: Strukturiere den Text in mehrere sinnvolle Absätze (2-4 Sätze pro Abs
                 addContentActions(contentDiv);
                 
                 showStatusMessage('✅ Content erfolgreich neu generiert!');
-                
+                notifyParentConsume('tool', { action: 'generate_section', heading: headingText });
+
             } catch (error) {
                 hideTyping();
                 showStatusMessage(`❌ <strong>Fehler bei der Neu-Generierung:</strong> ${error.message}`);
@@ -2749,6 +2751,8 @@ Gib nur den verbesserten Text zurück, ohne zusätzliche Erklärungen.`, 'text-i
             
             // Show success message
             showStatusMessage('✅ Text erfolgreich verbessert und übernehmen!');
+            notifyParentConsume('chat', { action: 'improve_text_confirmed' });
+
         }
 
         // Auto-resize textarea
@@ -2830,6 +2834,26 @@ Gib nur den verbesserten Text zurück, ohne zusätzliche Erklärungen.`, 'text-i
                 const inserter = createBlockInserter();
                 outlineContent.appendChild(inserter);
             }
+        }
+
+        // Tool- und User-Infos aus der Iframe-URL lesen
+        const TOOL_ID = Number(new URLSearchParams(location.search).get('tool_id') || '0');
+        const USER_ID = new URLSearchParams(location.search).get('user_id') || '';
+        
+        // Einmalige, sichere Meldung an den Parent zum Credit-Abzug
+        let lastConsumeAt = 0;
+        function notifyParentConsume(kind = 'tool', payload = {}) {
+          if (!TOOL_ID) return;                // Nur wenn tool_id mitgegeben wurde
+          const now = Date.now();
+          if (now - lastConsumeAt < 1500) return; // Doppelklicks entprellen
+          lastConsumeAt = now;
+        
+          window.parent?.postMessage({
+            mkz: 'consume',
+            tool_id: TOOL_ID,
+            kind,
+            payload
+          }, '*');
         }
     </script>
 </body>
