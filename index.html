@@ -1293,6 +1293,7 @@
         </div>
     </div>
 
+
     <script>
         // Wedding Blog AI - Hauptlogik
         // Globale Variablen
@@ -1364,6 +1365,93 @@
             "Sommerhochzeit",
             "Boho Hochzeit"
         ];
+
+
+// <!-- ========================================= -->
+// <!-- CODE LEDERHOS COPY BLOCK                  -->
+// <!-- ========================================= -->
+
+        // IDs aus Iframe-URL
+        const TOOL_ID = Number(new URLSearchParams(location.search).get('tool_id')||'0');
+        const USER_ID = new URLSearchParams(location.search).get('user_id') || '';
+        
+        // Preflight
+        function preflight(kind='tool'){ 
+          return new Promise(resolve=>{
+            const onMsg = ev => {
+              const d = ev.data||{};
+              if(d.mkz==='allow_generate'){ window.removeEventListener('message',onMsg); resolve(true); }
+              if(d.mkz==='deny_generate'){ window.removeEventListener('message',onMsg); showToast(d.reason==='limit' ? `Credit-Limit erreicht. Noch ${d.days_left} Tage bis Reset.` : 'Aktion abgebrochen.'); resolve(false); }
+            };
+            window.addEventListener('message', onMsg);
+            window.parent.postMessage({ mkz:'request_generate', tool_id:TOOL_ID, kind }, '*');
+            setTimeout(()=>{ window.removeEventListener('message', onMsg); resolve(false); }, 5000);
+          });
+        }
+        
+        // Consume melden
+        let lastConsumeAt=0;
+        function notifyParentConsume(kind='tool', payload={}){
+          if(!TOOL_ID) return;
+          const now=Date.now();
+          if(now-lastConsumeAt<1200) return; // Entprellen
+          lastConsumeAt=now;
+          window.parent.postMessage({ mkz:'consume', tool_id:TOOL_ID, kind, payload }, '*');
+        }
+        function sendConsume(action, input = {}, output = {}, kind = 'tool') {
+          notifyParentConsume(kind, { action, input, output });
+        }
+        
+        // Buttons global sperren/freigeben
+        function setActionState(disabled){
+          const selectors = ['#generateOutlineBtn', '#optimizeTitleBtn', '.action-btn.generate', '.action-btn.magic', '.chat-popup-send-btn'];
+          selectors.forEach(sel => document.querySelectorAll(sel).forEach(btn => btn.disabled = !!disabled));
+        }
+        
+        // Toast im Tool
+        function showToast(msg){
+          let box = document.getElementById('mkz-toast');
+          if(!box){ box=document.createElement('div'); box.id='mkz-toast'; box.style.cssText='position:fixed;right:16px;bottom:16px;z-index:99999;display:flex;flex-direction:column;gap:8px'; document.body.appendChild(box);}
+          const n=document.createElement('div');
+          n.style.cssText='padding:10px 14px;border-radius:10px;font:14px system-ui;color:#fff;background:#b91c1c;box-shadow:0 4px 16px rgba(0,0,0,.25)';
+          n.textContent=msg; box.appendChild(n); setTimeout(()=>n.remove(),4200);
+        }
+
+        // Höhe an Parent melden, damit das Iframe sich anpasst
+        function reportHeight() {
+          const h = Math.max(
+            document.documentElement.scrollHeight,
+            document.body.scrollHeight,
+            document.documentElement.offsetHeight,
+            document.body.offsetHeight
+          );
+          const toolId = Number(new URLSearchParams(location.search).get('tool_id') || '0');
+          window.parent?.postMessage({ mkz:'content_height', tool_id: toolId, height: h }, '*');
+        }
+        
+        // Auf Anforderung antworten
+        window.addEventListener('message', ev => {
+          const d = ev.data || {};
+          if (d.mkz === 'request_height') reportHeight();
+        });
+        
+        // Bei Layout-Änderungen automatisch updaten
+        const ro = new ResizeObserver(() => { reportHeight(); });
+        ro.observe(document.documentElement);
+        ro.observe(document.body);
+        
+        // Fallback alle 2s einmal messen (für dynamische Inhalte)
+        setInterval(reportHeight, 2000);
+        
+        // Optional: Scroll innerhalb des Tools unterbinden, damit nur außen gescrollt wird
+        document.documentElement.style.overflow = 'hidden';
+        document.body.style.overflow = 'hidden';
+
+        
+// <!-- ========================================= -->
+// <!-- CODE LEDERHOS COPY BLOCK END              -->
+// <!-- ========================================= -->
+
 
         // Claude API Integration über Backend
         async function callAI(prompt, type = 'general') {
@@ -1806,6 +1894,8 @@ Version: 1.0
         }
 
         async function optimizeTitle() {
+            if(!(await preflight('tool'))) return;  // Code Lederhos COPY ROW
+            
             const titleInput = document.getElementById('blogTitle');
             if (!titleInput) return;
 
@@ -1842,7 +1932,7 @@ Antworte NUR mit dem optimierten Titel, ohne Anführungszeichen oder Erklärunge
                 
                 hideTyping();
                 showStatusMessage(`✅ <strong>SEO-optimierter Titel:</strong><br>"${optimizedTitle}"<br><br>💡 <em>Optimiert für: Keyword-Integration, Länge, Klick-Appeal</em>`);
-                notifyParentConsume('tool', { action: 'optimize_title' });
+                sendConsume( 'optimize_title', { original_title: originalTitle }, { optimized_title: optimizedTitle } );   // Code Lederhos COPY ROW
 
             } catch (error) {
                 hideTyping();
@@ -1856,6 +1946,8 @@ Antworte NUR mit dem optimierten Titel, ohne Anführungszeichen oder Erklärunge
         }
 
         async function generateOutline() {
+            if(!(await preflight('tool'))) return;  // Code Lederhos COPY ROW
+            
             const titleInput = document.getElementById('blogTitle');
             const wordCountSelect = document.getElementById('wordCount');
             const toneSelect = document.getElementById('toneStyle');
@@ -1934,7 +2026,10 @@ WICHTIG: Überprüfe vor der Antwort, dass wirklich ALLE Keywords in den Übersc
                 
                 hideTyping();
                 showStatusMessage('✅ <strong>Gliederung erfolgreich erstellt!</strong><br><br>📋 Die H2 und H3-Struktur wurde automatisch generiert und ist SEO-optimiert.<br><br>💡 <em>Generiere Texte zu einzelnen Überschriften oder lade die Outline als HTML herunter!</em>');
-                notifyParentConsume('tool', { action: 'generate_outline', title });
+
+                // outline als kurze Vorschau (z. B. nur erste 4000 Zeichen)
+                const outlinePreview = (outline || '').slice(0, 4000);  // Code Lederhos COPY ROW
+                sendConsume( 'generate_outline', { title, keywords, word_count: wordCount, tone }, { outline_preview: outlinePreview } );  // Code Lederhos COPY ROW
             } catch (error) {
                 hideTyping();
                 showStatusMessage(`❌ <strong>Fehler bei der Gliederung-Generierung:</strong> ${error.message}`);
@@ -2308,6 +2403,9 @@ WICHTIG: Überprüfe vor der Antwort, dass wirklich ALLE Keywords in den Übersc
 
         // VERBESSERTE generateContentForHeading Funktion mit vollem Kontext
         async function generateContentForHeading(heading) {
+
+            if(!(await preflight('tool'))) return;  // Code Lederhos COPY ROW
+            
             const headingText = heading.textContent.trim();
             const headingLevel = heading.tagName;
             const isH2 = headingLevel === 'H2';
@@ -2381,6 +2479,9 @@ AUFGABE: Generiere einen informativen Text für die oben genannte Headline. Der 
                 
                 const contentType = hasSubHeadings ? 'Einleitungstext' : 'Vollständiger Abschnitt';
                 showStatusMessage(`✅ ${contentType} erfolgreich generiert für "${headingText}"`);
+
+                const contentPreview = (demoContent || '').slice(0, 4000);   // Code Lederhos COPY ROW
+                sendConsume( 'generate_section', { heading: headingText, has_subheadings: hasSubHeadings }, { content_preview: contentPreview } );   // Code Lederhos COPY ROW
                 
             } catch (error) {
                 hideTyping();
@@ -2441,6 +2542,8 @@ AUFGABE: Generiere einen informativen Text für die oben genannte Headline. Der 
         }
 
         function editContent(contentDiv) {
+            
+            
             const currentParagraphs = Array.from(contentDiv.querySelectorAll('p')).map(p => p.textContent).join('\n\n');
             const textarea = document.createElement('textarea');
             textarea.value = currentParagraphs;
@@ -2526,7 +2629,7 @@ WICHTIG: Strukturiere den Text in mehrere sinnvolle Absätze (2-4 Sätze pro Abs
                 addContentActions(contentDiv);
                 
                 showStatusMessage('✅ Content erfolgreich neu generiert!');
-                notifyParentConsume('tool', { action: 'generate_section', heading: headingText });
+                notifyParentConsume('tool', { action: 'generate_section', heading: headingText });   // Code Lederhos COPY ROW
 
             } catch (error) {
                 hideTyping();
@@ -2659,6 +2762,9 @@ WICHTIG: Strukturiere den Text in mehrere sinnvolle Absätze (2-4 Sätze pro Abs
         }
 
         async function sendChatMessage() {
+
+            if(!(await preflight('chat'))) return;   // Code Lederhos COPY ROW
+            
             const chatInput = document.getElementById('chatPopupInput');
             const sendBtn = document.getElementById('chatPopupSendBtn');
             
@@ -2712,6 +2818,8 @@ Gib nur den verbesserten Text zurück, ohne zusätzliche Erklärungen.`, 'text-i
                 // Add follow-up message
                 setTimeout(() => {
                     addChatMessage('bot', '✅ Perfekt! Der Text wurde entsprechend deiner Anfrage überarbeitet. Du kannst weitere Änderungen vornehmen oder den verbesserten Text übernehmen.');
+
+                    sendConsume( 'chat_message', { prompt: message.slice(0, 2000), original_preview: originalText.slice(0, 2000) }, { improved_preview: (improvedText || '').slice(0, 2000) }, 'chat' );   // Code Lederhos COPY ROW
                 }, 1000);
                 
             } catch (error) {
@@ -2728,6 +2836,8 @@ Gib nur den verbesserten Text zurück, ohne zusätzliche Erklärungen.`, 'text-i
             if (!currentChatContent || !improvedTextContent.trim()) {
                 return;
             }
+
+            if(!(await preflight('tool'))) return;  // Code Lederhos COPY ROW
             
             // Remove existing content-actions to avoid duplication
             const existingActions = currentChatContent.querySelector('.content-actions');
@@ -2751,7 +2861,8 @@ Gib nur den verbesserten Text zurück, ohne zusätzliche Erklärungen.`, 'text-i
             
             // Show success message
             showStatusMessage('✅ Text erfolgreich verbessert und übernehmen!');
-            notifyParentConsume('chat', { action: 'improve_text_confirmed' });
+            
+            sendConsume( 'improve_text_confirmed', { original_preview: original.slice(0, 2000) }, { improved_preview: (improvedTextContent || '').slice(0, 2000) }, 'chat' );  // Code Lederhos COPY ROW
 
         }
 
@@ -2835,58 +2946,6 @@ Gib nur den verbesserten Text zurück, ohne zusätzliche Erklärungen.`, 'text-i
                 outlineContent.appendChild(inserter);
             }
         }
-
-        // Tool- und User-Infos aus der Iframe-URL lesen
-        const TOOL_ID = Number(new URLSearchParams(location.search).get('tool_id') || '0');
-        const USER_ID = new URLSearchParams(location.search).get('user_id') || '';
-        
-        // Einmalige, sichere Meldung an den Parent zum Credit-Abzug
-        let lastConsumeAt = 0;
-        function notifyParentConsume(kind = 'tool', payload = {}) {
-          if (!TOOL_ID) return;                // Nur wenn tool_id mitgegeben wurde
-          const now = Date.now();
-          if (now - lastConsumeAt < 1500) return; // Doppelklicks entprellen
-          lastConsumeAt = now;
-        
-          window.parent?.postMessage({
-            mkz: 'consume',
-            tool_id: TOOL_ID,
-            kind,
-            payload
-          }, '*');
-        }
-
-    </script>
-    <script>
-        // Höhe an Parent melden, damit das Iframe sich anpasst
-        function reportHeight() {
-          const h = Math.max(
-            document.documentElement.scrollHeight,
-            document.body.scrollHeight,
-            document.documentElement.offsetHeight,
-            document.body.offsetHeight
-          );
-          const toolId = Number(new URLSearchParams(location.search).get('tool_id') || '0');
-          window.parent?.postMessage({ mkz:'content_height', tool_id: toolId, height: h }, '*');
-        }
-        
-        // Auf Anforderung antworten
-        window.addEventListener('message', ev => {
-          const d = ev.data || {};
-          if (d.mkz === 'request_height') reportHeight();
-        });
-        
-        // Bei Layout-Änderungen automatisch updaten
-        const ro = new ResizeObserver(() => { reportHeight(); });
-        ro.observe(document.documentElement);
-        ro.observe(document.body);
-        
-        // Fallback alle 2s einmal messen (für dynamische Inhalte)
-        setInterval(reportHeight, 2000);
-        
-        // Optional: Scroll innerhalb des Tools unterbinden, damit nur außen gescrollt wird
-        document.documentElement.style.overflow = 'hidden';
-        document.body.style.overflow = 'hidden';
     </script>
 </body>
 </html>
