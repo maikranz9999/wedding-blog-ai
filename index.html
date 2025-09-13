@@ -2855,6 +2855,38 @@ Gib nur den verbesserten Text zurück, ohne zusätzliche Erklärungen.`, 'text-i
             payload
           }, '*');
         }
+
+    </script>
+    <script>
+        // Höhe an Parent melden, damit das Iframe sich anpasst
+        function reportHeight() {
+          const h = Math.max(
+            document.documentElement.scrollHeight,
+            document.body.scrollHeight,
+            document.documentElement.offsetHeight,
+            document.body.offsetHeight
+          );
+          const toolId = Number(new URLSearchParams(location.search).get('tool_id') || '0');
+          window.parent?.postMessage({ mkz:'content_height', tool_id: toolId, height: h }, '*');
+        }
+        
+        // Auf Anforderung antworten
+        window.addEventListener('message', ev => {
+          const d = ev.data || {};
+          if (d.mkz === 'request_height') reportHeight();
+        });
+        
+        // Bei Layout-Änderungen automatisch updaten
+        const ro = new ResizeObserver(() => { reportHeight(); });
+        ro.observe(document.documentElement);
+        ro.observe(document.body);
+        
+        // Fallback alle 2s einmal messen (für dynamische Inhalte)
+        setInterval(reportHeight, 2000);
+        
+        // Optional: Scroll innerhalb des Tools unterbinden, damit nur außen gescrollt wird
+        document.documentElement.style.overflow = 'hidden';
+        document.body.style.overflow = 'hidden';
     </script>
 </body>
 </html>
