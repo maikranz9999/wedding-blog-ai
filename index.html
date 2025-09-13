@@ -34,7 +34,7 @@
             border: 1px solid rgba(255, 255, 255, 0.1);
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
             overflow-y: auto;
-            // max-height: 90vh;
+            /* max-height: 90vh; */
         }
 
         .logo {
@@ -2629,7 +2629,7 @@ WICHTIG: Strukturiere den Text in mehrere sinnvolle Absätze (2-4 Sätze pro Abs
                 addContentActions(contentDiv);
                 
                 showStatusMessage('✅ Content erfolgreich neu generiert!');
-                notifyParentConsume('tool', { action: 'generate_section', heading: headingText });   // Code Lederhos COPY ROW
+                sendConsume( 'regenerate_section', { heading: headingText }, { content_preview: (newContent || '').slice(0, 4000) }, 'tool' );   // Code Lederhos COPY ROW
 
             } catch (error) {
                 hideTyping();
@@ -2836,8 +2836,6 @@ Gib nur den verbesserten Text zurück, ohne zusätzliche Erklärungen.`, 'text-i
             if (!currentChatContent || !improvedTextContent.trim()) {
                 return;
             }
-
-            if(!(await preflight('tool'))) return;  // Code Lederhos COPY ROW
             
             // Remove existing content-actions to avoid duplication
             const existingActions = currentChatContent.querySelector('.content-actions');
@@ -2862,8 +2860,6 @@ Gib nur den verbesserten Text zurück, ohne zusätzliche Erklärungen.`, 'text-i
             // Show success message
             showStatusMessage('✅ Text erfolgreich verbessert und übernehmen!');
             
-            sendConsume( 'improve_text_confirmed', { original_preview: original.slice(0, 2000) }, { improved_preview: (improvedTextContent || '').slice(0, 2000) }, 'chat' );  // Code Lederhos COPY ROW
-
         }
 
         // Auto-resize textarea
