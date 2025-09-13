@@ -2602,45 +2602,55 @@ AUFGABE: Generiere einen informativen Text für die oben genannte Headline. Der 
         }
 
         async function regenerateContent(contentDiv) {
-            const regenerateBtn = contentDiv.querySelector('.action-btn.magic');
-            if (regenerateBtn) {
-                regenerateBtn.classList.add('loading');
-                regenerateBtn.disabled = true;
+          const regenerateBtn = contentDiv.querySelector('.action-btn.magic');
+          if (regenerateBtn) { regenerateBtn.classList.add('loading'); regenerateBtn.disabled = true; }
+        
+          showTyping();
+        
+          try {
+            const newContent = await callAI(
+              `Generiere einen neuen, alternativen Text für diesen Abschnitt eines Hochzeitsblogs. 
+Der Text soll dasselbe Thema behandeln, aber anders formuliert und mit frischen Ideen. 
+Strukturiere in Absätze (2–4 Sätze), Doppelzeilenwechsel zwischen den Absätzen.`,
+              'content-regeneration'
+            );
+        
+            hideTyping();
+        
+            const currentActions = contentDiv.querySelector('.content-actions');
+            if (currentActions) currentActions.remove();
+        
+            const formattedContent = newContent.split('\n\n')
+              .map(p => p.trim() ? `<p>${p.trim()}</p>` : '')
+              .filter(Boolean).join('');
+        
+            contentDiv.innerHTML = formattedContent || `<p>${newContent}</p>`;
+            addContentActions(contentDiv);
+            showStatusMessage('✅ Content erfolgreich neu generiert!');
+        
+            // Headline aus DOM ermitteln
+            let headingText = '';
+            let prev = contentDiv.previousElementSibling;
+            while (prev) {
+              if (prev.tagName === 'H2' || prev.tagName === 'H3') { headingText = prev.textContent.trim(); break; }
+              prev = prev.previousElementSibling;
             }
-            
-            showTyping();
-            
-            try {
-                const newContent = await callAI(`Generiere einen neuen, alternativen Text für diesen Abschnitt eines Hochzeitsblogs. Der Text sollte das gleiche Thema behandeln, aber anders formuliert und mit frischen Ideen. 
-
-WICHTIG: Strukturiere den Text in mehrere sinnvolle Absätze (2-4 Sätze pro Absatz) für bessere SEO-Lesbarkeit. Verwende doppelte Zeilenwechsel zwischen den Absätzen.`, 'content-regeneration');
-                
-                hideTyping();
-                
-                const currentActions = contentDiv.querySelector('.content-actions');
-                if (currentActions) currentActions.remove();
-                
-                // Konvertiere Zeilenwechsel zu HTML-Absätzen
-                const formattedContent = newContent.split('\n\n').map(paragraph => 
-                    paragraph.trim() ? `<p>${paragraph.trim()}</p>` : ''
-                ).filter(p => p).join('');
-                
-                contentDiv.innerHTML = formattedContent || `<p>${newContent}</p>`;
-                addContentActions(contentDiv);
-                
-                showStatusMessage('✅ Content erfolgreich neu generiert!');
-                sendConsume( 'regenerate_section', { heading: headingText }, { content_preview: (newContent || '').slice(0, 4000) }, 'tool' );   // Code Lederhos COPY ROW
-
-            } catch (error) {
-                hideTyping();
-                showStatusMessage(`❌ <strong>Fehler bei der Neu-Generierung:</strong> ${error.message}`);
-            } finally {
-                if (regenerateBtn) {
-                    regenerateBtn.classList.remove('loading');
-                    regenerateBtn.disabled = false;
-                }
-            }
+        
+            // sauber loggen
+            sendConsume('regenerate_section',
+              { heading: headingText },
+              { content_preview: (newContent || '').slice(0, 4000) },
+              'tool'
+            );
+        
+          } catch (error) {
+            hideTyping();
+            showStatusMessage(`❌ <strong>Fehler bei der Neu-Generierung:</strong> ${error.message}`);
+          } finally {
+            if (regenerateBtn) { regenerateBtn.classList.remove('loading'); regenerateBtn.disabled = false; }
+          }
         }
+
 
         // Chat Popup Functions
         function openChatPopup(contentElement) {
