@@ -15,12 +15,13 @@ export default async function handler(req:any,res:any){
   }
 
   const q = await pool.query(
-    `select id, name, slug, iframe_url, limit_monthly
+    `select id, name, slug, iframe_url, limit_monthly, cost_tool, cost_chat
        from tools
       where id = $1 and slug = $2 and active = true
       limit 1`,
     [id, String(slug).toLowerCase()]
   );
+
 
   if (!q.rowCount) return res.status(404).json({ error:'not found' });
   res.json(q.rows[0]);
