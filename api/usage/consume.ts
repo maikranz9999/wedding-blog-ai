@@ -15,14 +15,14 @@ export default async function handler(req: any, res: any) {
   const { user_id, tool_id, kind = 'tool', payload = {}, request_id } = req.body || {};
   if (!user_id || !tool_id) return res.status(400).json({ error: 'missing body' });
 
-  // Id für Idempotenz (client-provided oder neu generiert)
+  // Id für Idempotenz
   const rid: string = request_id || crypto.randomUUID();
 
   const client = await pool.connect();
   try {
     await client.query('begin');
 
-    // Früh-Idempotenz: Falls request_id schon geloggt wurde, NICHT erneut zählen
+    // Früh-Idempotenz: doppelten Request nicht erneut zählen
     const exists = await client.query('select 1 from usage_log where request_id = $1', [rid]);
     if (exists.rowCount) {
       const s = await client.query(
@@ -33,7 +33,6 @@ export default async function handler(req: any, res: any) {
         [user_id, tool_id]
       );
 
-      // Falls es (ausnahmsweise) noch keinen Ledger gibt, Limit aus tools ziehen
       let used = 0, credit_limit = 500, blocked = false;
       if (s.rowCount) {
         used = s.rows[0].used ?? 0;
@@ -54,20 +53,35 @@ export default async function handler(req: any, res: any) {
       });
     }
 
-    // Ledger anlegen/hochzählen, nur wenn nicht gesperrt und unter Limit
+    // Kosten je nach Aktion aus tools holen
+    const t = await client.query(
+      `select limit_monthly, cost_tool, cost_chat
+         from tools
+        where id = $1 and active = true
+        limit 1`,
+      [tool_id]
+    );
+    if (t.rowCount === 0) {
+      await client.query('rollback');
+      return res.status(404).json({ error: 'tool not found' });
+    }
+    const { cost_tool, cost_chat } = t.rows[0];
+    const units = String(kind) === 'chat' ? (cost_chat ?? 1) : (cost_tool ?? 1);
+
+    // Ledger anlegen/hochzählen um "units"
     const up = await client.query(
       `insert into usage_ledger (user_id, tool_id, month_key, used, credit_limit)
-       values ($1,$2,to_char(now() at time zone 'UTC','YYYYMM'), 1,
+       values ($1,$2,to_char(now() at time zone 'UTC','YYYYMM'), $3,
                coalesce((select limit_monthly from tools where id=$2), 500))
        on conflict (user_id, tool_id, month_key)
-       do update set used = usage_ledger.used + 1, updated_at = now()
+       do update set used = usage_ledger.used + $3, updated_at = now()
        where usage_ledger.blocked = false
-         and usage_ledger.used < usage_ledger.credit_limit
+         and usage_ledger.used + $3 <= usage_ledger.credit_limit
        returning id, used, credit_limit, blocked`,
-      [user_id, tool_id]
+      [user_id, tool_id, units]
     );
 
-    // Limit erreicht oder gesperrt
+    // Limit nicht genug
     if (up.rowCount === 0) {
       const s = await client.query(
         `select used, credit_limit, true as blocked
@@ -78,16 +92,16 @@ export default async function handler(req: any, res: any) {
       );
       await client.query('rollback');
       const r = s.rows[0] || { used: 0, credit_limit: 0, blocked: true };
-      return res.status(403).json({ ...r, remaining: Math.max(0, r.credit_limit - r.used) });
+      return res.status(403).json({ ...r, remaining: Math.max(0, r.credit_limit - r.used), needed: units });
     }
 
     const led = up.rows[0];
 
-    // Log schreiben (mit request_id; schützt auch serverseitig vor Doppel-Insert)
+    // Log schreiben mit units
     await client.query(
-      `insert into usage_log (ledger_id, user_id, tool_id, kind, payload, request_id)
-       values ($1,$2,$3,$4,$5,$6)`,
-      [led.id, user_id, tool_id, kind, payload, rid]
+      `insert into usage_log (ledger_id, user_id, tool_id, kind, payload, request_id, units)
+       values ($1,$2,$3,$4,$5,$6,$7)`,
+      [led.id, user_id, tool_id, kind, payload, rid, units]
     );
 
     await client.query('commit');
