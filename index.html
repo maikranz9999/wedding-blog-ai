@@ -2602,6 +2602,8 @@ AUFGABE: Generiere einen informativen Text für die oben genannte Headline. Der 
         }
 
         async function regenerateContent(contentDiv) {
+          if(!(await preflight('tool'))) return;  // Code Lederhos COPY ROW
+            
           const regenerateBtn = contentDiv.querySelector('.action-btn.magic');
           if (regenerateBtn) { regenerateBtn.classList.add('loading'); regenerateBtn.disabled = true; }
         
@@ -2627,6 +2629,8 @@ Strukturiere in Absätze (2–4 Sätze), Doppelzeilenwechsel zwischen den Absät
             contentDiv.innerHTML = formattedContent || `<p>${newContent}</p>`;
             addContentActions(contentDiv);
             showStatusMessage('✅ Content erfolgreich neu generiert!');
+
+            await sendConsume( 'regenerate_section.success', { heading: headingText, idem }, { content_preview: (newContent || '').slice(0, 4000) }, 'tool' );   // Code Lederhos COPY ROW
         
             // Headline aus DOM ermitteln
             let headingText = '';
