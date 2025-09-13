@@ -1,4 +1,14 @@
 // Wedding Blog AI - Hauptlogik
+// Hard init guard
+if (window.__WBAI_INIT__) {
+  console.debug('Wedding Blog AI already initialized, skipping re-init');
+  // Wichtig: sofort aussteigen, damit keine Listener doppelt hängen
+  // eslint-disable-next-line no-undef
+  throw new Error('__WBAI_DUP_INIT__');
+}
+window.__WBAI_INIT__ = true;
+
+
 // Globale Variablen
 let currentOutline = '';
 let currentBlogPost = '';
