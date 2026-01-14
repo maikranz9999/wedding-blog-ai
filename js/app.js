@@ -8,6 +8,10 @@ if (window.__WBAI_INIT__) {
 }
 window.__WBAI_INIT__ = true;
 
+const __qs = new URLSearchParams(location.search);
+const LS_USER_EMAIL = (__qs.get('email') || '').trim();
+const LS_FIRST_NAME = (__qs.get('first_name') || '').trim();
+const LS_USER_ID = (__qs.get('user_id') || '').trim();
 
 // Globale Variablen
 let currentOutline = '';
