@@ -306,9 +306,21 @@
     </div>
 
     <div class="input-group">
-      <label>Deine Dienstleistung (für passende Backlinks)</label>
-      <input type="text" id="service" placeholder="z.B. Hochzeitsplaner, Trauredner, Fotografin, Hochzeitslocation" />
-    </div>
+     <label>Deine Dienstleistung (für passende Backlinks)</label>
+     <select id="service" required>
+       <option value="" selected disabled>Bitte wählen</option>
+       <option value="Hochzeitsplaner">Hochzeitsplaner</option>
+       <option value="Deko">Deko</option>
+       <option value="Freie Trauung">Freie Trauung</option>
+       <option value="Musik">Musik</option>
+       <option value="Foto / Video">Foto / Video</option>
+       <option value="DJ">DJ</option>
+       <option value="Brautmode">Brautmode</option>
+       <option value="Herrenausstatter">Herrenausstatter</option>
+       <option value="Location">Location</option>
+     </select>
+   </div>
+
 
     <div class="input-group">
       <label>Gewünschte Wortanzahl</label>
